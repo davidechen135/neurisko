@@ -1,0 +1,21 @@
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+*.egg-info/
+dist/
+build/
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+
+# Secrets
+.env
+
+# Local evolution runs (curated demo runs go in runs/demo/)
+runs/*
+!runs/demo/
+
+# OS / editor
+.DS_Store
+.vscode/

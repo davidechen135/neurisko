@@ -1,0 +1,15 @@
+{
+  "version": "v1",
+  "hooks": [
+    {
+      "name": "Tests after spec task",
+      "trigger": "PostTaskExec",
+      "description": "Run the full test suite after each spec task completes",
+      "action": {
+        "type": "command",
+        "command": "uv run pytest -q",
+        "timeout": 300
+      }
+    }
+  ]
+}

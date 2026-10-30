@@ -1,0 +1,5 @@
+policies:
+  - allow-all
+rules:
+  - capability: all
+    effect: allow
