@@ -31,7 +31,7 @@ class Game(Protocol[D]):
 `Action` is a game-agnostic `{"kind": str, **params}` dict, checked against `action_schema()`.
 
 ### Monster Mash vocabulary
-- **Features**: `n_units`, `cost`, `unspent`, `n_ranged`, `n_melee`, `front_hp`, `front_armor`, `count_<unit>` ×12, `count_<faction>` ×4, `winrate_vs_<archetype>` ×6. That is 35 features.
+- **Features**: `n_units`, `cost`, `unspent`, `n_ranged`, `n_melee`, `front_hp`, `front_armor`, `count_<unit>` ×12, `count_<faction>` ×4, `winrate_vs_<archetype>` ×6. That is 29 features.
 - **Actions**:
   | kind | params |
   |---|---|
@@ -165,3 +165,21 @@ Runs the engine (`--no-llm`, and with the LLM when available) and a random-mutat
 - LLM: `FakeClient` returning a mix of valid and invalid items gives correct keep/reject events; a timeout is recorded as `llm_error` and the run continues; the API key never appears in `events.jsonl` or `meta.json`.
 - Determinism: same seed with `FakeClient` gives identical `generation` events; replaying a recorded run reproduces them.
 - Optional integration test against a live Ollama, marked `@pytest.mark.llm` and skipped by default.
+
+## Implementation notes (2026-10-30)
+Changes made while implementing, each driven by a measured problem. The code is the reference; this section explains why it differs from the design above.
+
+1. **No repeated credit for the same move.** In the first run, a seed heuristic reached worth 1000 by being credited every generation for the *same* parent → child transition on a stable population. This is a second, unplanned way to inflate worth without new work. The agenda now skips any `(parent, child)` transition that was already credited.
+2. **Immigrants.** After fix 1, the population converged and every reachable move had been tried by generation ~8 (applications dropped from 40 to 0–8 per generation). Each generation now replaces the 4 weakest designs with fresh random ones (`immigrants = 4`).
+3. **Hall-of-fame weighting.** With 24 gauntlet opponents and up to 12 hall-of-fame opponents, the hall of fame was only a third of the pool, so strong designs still saturated near 1.0. The optimised score is now `0.5 · gauntlet win rate + 0.5 · hall-of-fame win rate` (`hof_weight`, `engine/game.py: weighted_score`). The strongest design *not yet* in the hall of fame joins it each generation, so pressure keeps rising even when the champion does not change.
+4. **No misfires.** The agenda only schedules tasks whose action actually applies, so there is no misfire penalty. Heuristics with no applicable task for 5 generations retire as `dormant`.
+5. **Parasite check.** It runs whatever the current worth is, because the duplicate check's revocation usually already pulls worth below 600 in the same audit. The tainted ratio counts revoked contributions too. It needs at least 3 positive contributions.
+6. **Events.** `credited` is folded into `applied` (worth before/after, lineage). Added `meta_applied` and `llm_skipped`. `generation` summaries add `best_held_out_pool` (held-out gauntlet plus current hall of fame).
+7. **Tests.** Default `uv run pytest` skips the `slow` (20-generation budget test, extra H59 seeds) and `llm` (live endpoint) markers, so the post-task hook stays under a minute.
+
+## Measured results (2026-10-30)
+- **H59 demo**: small config, 9 generations, seeds 0–7. Without the auditor, M5 Clone was the highest-worth meta-heuristic on **8 of 8** seeds (worth 700–909). With the auditor, it was flagged as a parasite on **8 of 8** (worth 300).
+- **Speed**: 20 generations without the LLM take about 37 s with the full gauntlet (R8.3 limit: 60 s). About 220k battles.
+- **Live Qwen run** (`runs/demo/qwen-s0`, 20 generations, about 6 minutes): 18 LLM calls, 0 errors, 0 rejected heuristics, 54 heuristics invented. LLM-invented heuristics improved the design on 65% of applications (mean Δ +0.093), against 64% (+0.080) for the hand-written seeds. The top 5 heuristics by worth at the end: 4 were invented by the LLM, 1 came from Specialize.
+- **Baseline comparison** (`docs/BASELINE.md`, 5 seeds, equal battle budget about 214k): on the final exam, hc+hof scored 0.838, engine 0.826, engine+llm 0.794 and plain hill-climbing 0.629. The top three are within seed noise. The hall of fame accounts for the gain over plain hill-climbing; the heuristics and the LLM do not produce better champions. 20/20 champions across all methods contain witch or pumpkin_mage.
+- **Consequence for Spec 3**: the product claim is explanation (ranked, audited rules saying *why* designs win, plus the identified imbalance), not stronger search. Don't claim in the video or Devpost text that Neurisko out-searches a hill-climb.

@@ -3,9 +3,11 @@
 from __future__ import annotations
 
 import random
+from collections.abc import Sequence
 from pathlib import Path
 
-from neurisko.engine.game import BattleResult, ScoreReport
+from neurisko.engine.game import Action, ActionSchema, BattleResult, ScoreReport
+from neurisko.games.autobattler import actions as _actions
 from neurisko.games.autobattler import design as _design
 from neurisko.games.autobattler.combat import CompiledRules
 from neurisko.games.autobattler.combat import simulate as _simulate
@@ -24,13 +26,20 @@ class MonsterMash:
         gauntlet_seed: int = 1981,
         n_random: int = 18,
         n_seeds: int = 3,
+        seed_offset: int = 0,
     ) -> None:
         self.rules = rules if rules is not None else load_ruleset()
         self.ruleset_hash = self.rules.hash
+        self.gauntlet_seed = gauntlet_seed
+        self.n_random = n_random
         self.n_seeds = n_seeds
+        self.seed_offset = seed_offset
+        self.battles_run = 0  # battles actually simulated (cache misses), for budgets
         self._compiled = CompiledRules(self.rules)
         self.gauntlet: list[Opponent] = build_gauntlet(self.rules, gauntlet_seed, n_random)
-        self._cache: dict[Design, ScoreReport] = {}
+        self._cache: dict[tuple[Design, tuple[Design, ...]], ScoreReport] = {}
+        self._feature_names = _actions.feature_names(self.rules)
+        self._action_schema = _actions.action_schema(self.rules)
 
     @classmethod
     def from_file(cls, path: str | Path | None = None, **kwargs) -> MonsterMash:
@@ -46,15 +55,45 @@ class MonsterMash:
         return _design.mutations(self.rules, design, rng)
 
     def simulate(self, a: Design, b: Design, seed: int, log: bool = False) -> BattleResult:
+        self.battles_run += 1
         return _simulate(self._compiled, a, b, seed, log)
 
-    def score(self, design: Design) -> ScoreReport:
+    def score(self, design: Design, extra_opponents: Sequence[Design] = ()) -> ScoreReport:
         design = tuple(design)
-        cached = self._cache.get(design)
+        extras = tuple(tuple(e) for e in extra_opponents)
+        key = (design, extras)
+        cached = self._cache.get(key)
         if cached is None:
-            cached = _score(design, self.gauntlet, self.simulate, self.n_seeds)
-            self._cache[design] = cached
+            pool = self.gauntlet + [Opponent(f"hof_{i:02d}", e) for i, e in enumerate(extras)]
+            cached = _score(design, pool, self.simulate, self.n_seeds, self.seed_offset)
+            self._cache[key] = cached
         return cached
+
+    def feature_names(self) -> list[str]:
+        return list(self._feature_names)
+
+    def features(self, design: Design, report: ScoreReport) -> dict[str, float]:
+        return _actions.features(self.rules, tuple(design), report)
+
+    def action_schema(self) -> ActionSchema:
+        return {
+            k: {p: list(v) for p, v in params.items()} for k, params in self._action_schema.items()
+        }
+
+    def apply_action(self, design: Design, action: Action, rng: random.Random) -> Design | None:
+        return _actions.apply_action(self.rules, tuple(design), action)
+
+    def held_out(self) -> MonsterMash:
+        return MonsterMash(
+            self.rules,
+            gauntlet_seed=self.gauntlet_seed + 1,
+            n_random=self.n_random,
+            n_seeds=self.n_seeds,
+            seed_offset=self.seed_offset + 1,
+        )
+
+    def to_json(self, design: Design) -> list[str]:
+        return list(design)
 
     def describe(self, design: Design) -> str:
         cost = _design.cost(self.rules, design)

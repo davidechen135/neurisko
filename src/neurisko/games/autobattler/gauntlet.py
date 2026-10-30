@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import random
+import zlib
 from collections.abc import Callable
 from dataclasses import dataclass
 
@@ -50,19 +51,26 @@ def build_gauntlet(rules: Ruleset, seed: int = 1981, n_random: int = 18) -> list
     return pool
 
 
+def opponent_seed(opponent: Design, seed_offset: int = 0) -> int:
+    """Battle seed base for an opponent; stable no matter where it sits in the pool."""
+    return zlib.crc32(",".join(opponent).encode()) * 16 + seed_offset * 1_000_003
+
+
 def score(
     design: Design,
     gauntlet: list[Opponent],
     simulate: Callable[[Design, Design, int], BattleResult],
     n_seeds: int = 3,
+    seed_offset: int = 0,
 ) -> ScoreReport:
     """Win rate of `design` against every opponent, on both sides, over `n_seeds` seeds."""
     matchups: list[MatchupResult] = []
     battles = 0
-    for i, opp in enumerate(gauntlet):
+    for opp in gauntlet:
         m = MatchupResult(opp.name)
+        base = opponent_seed(opp.design, seed_offset)
         for s in range(n_seeds):
-            seed = i * 1000 + s
+            seed = base + s
             for as_a in (True, False):
                 r = (
                     simulate(design, opp.design, seed)

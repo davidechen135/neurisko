@@ -1,0 +1,64 @@
+# Hand-written seed heuristics for Monster Mash.
+#
+# These are deliberately plain rules of thumb, so a run works without an LLM and any
+# improvement found by the engine is visible against them.
+
+[[heuristics]]
+name = "Spend leftover gold"
+rationale = "Unspent gold is wasted strength."
+if = [{ feature = "unspent", op = ">=", value = 1 }]
+then = { kind = "add_unit", unit = "skeleton", position = "back" }
+
+[[heuristics]]
+name = "Bigger front line"
+rationale = "A team with spare gold and few units should add a tank in front."
+if = [{ feature = "unspent", op = ">=", value = 1 }, { feature = "n_units", op = "<=", value = 3 }]
+then = { kind = "add_unit", unit = "zombie", position = "front" }
+
+[[heuristics]]
+name = "Answer the armor wall"
+rationale = "Ghosts ignore armor."
+if = [{ feature = "winrate_vs_armor_wall", op = "<", value = 0.5 }]
+then = { kind = "replace_unit", old = "@cheapest", new = "ghost" }
+
+[[heuristics]]
+name = "Add healing"
+rationale = "Teams with no ranged support lose long fights."
+if = [{ feature = "n_ranged", op = "==", value = 0 }]
+then = { kind = "replace_unit", old = "@cheapest", new = "witch" }
+
+[[heuristics]]
+name = "Tank to the front"
+rationale = "The golem should take the hits."
+if = [{ feature = "count_flesh_golem", op = ">=", value = 1 }]
+then = { kind = "move_unit", unit = "flesh_golem", to = "front" }
+
+[[heuristics]]
+name = "Pair the beasts"
+rationale = "Two beasts turn on the beast attack bonus."
+if = [{ feature = "count_beast", op = "==", value = 1 }]
+then = { kind = "replace_unit", old = "@cheapest", new = "werewolf" }
+
+[[heuristics]]
+name = "Drop the most expensive"
+rationale = "Freeing gold lets the team field more units."
+if = [{ feature = "n_units", op = "<=", value = 3 }]
+then = { kind = "remove_unit", unit = "@most_expensive" }
+
+[[heuristics]]
+name = "Raise the dead"
+rationale = "A necromancer refills the front line with skeletons."
+if = [{ feature = "count_undead", op = ">=", value = 2 }, { feature = "count_necromancer", op = "==", value = 0 }]
+then = { kind = "replace_unit", old = "@cheapest", new = "necromancer" }
+
+[[heuristics]]
+name = "Answer the beast rush"
+rationale = "Armored units blunt fast attackers."
+if = [{ feature = "winrate_vs_beast_rush", op = "<", value = 0.5 }]
+then = { kind = "replace_unit", old = "@cheapest", new = "gargoyle" }
+
+[[heuristics]]
+name = "Backline the casters"
+rationale = "Ranged units are safest at the back."
+if = [{ feature = "count_witch", op = ">=", value = 1 }]
+then = { kind = "move_unit", unit = "witch", to = "back" }

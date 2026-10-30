@@ -9,7 +9,9 @@ authors = [
 ]
 requires-python = ">=3.12"
 dependencies = [
+    "openai>=3.41.0",
     "pydantic>=2.14.2",
+    "pydantic-settings>=2.16.2",
 ]
 
 [project.scripts]
@@ -35,3 +37,9 @@ select = ["E", "F", "W", "I", "B", "UP", "SIM"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
+# Default run skips slow and live-LLM tests: `uv run pytest -m slow` / `-m llm` to run them.
+addopts = "-m 'not slow and not llm'"
+markers = [
+    "slow: long engine runs (performance budget, extra H59 seeds)",
+    "llm: needs a live LLM endpoint from .env",
+]

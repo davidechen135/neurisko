@@ -62,7 +62,7 @@ Eurisko 引擎（与具体游戏无关）
 | LLM | 任意 OpenAI 兼容接口，默认本地 Ollama `qwen2.5:14b` |
 | 测试与规范 | pytest、ruff |
 
-比赛方不提供免费 LLM 额度，所以开发期用本地 Qwen。在 M4 Pro 上实测，热启动约 22 token/s，一次规则生成约 4 秒。
+比赛方不提供免费 LLM 额度，所以开发期用本地 Qwen。在 M4 Pro 上实测，一次 Invent 调用（约 1.7k token 提示词、250 token 输出）热启动约 16 秒；20 代完整运行约 6 分钟。
 
 ## 5. Kiro 的使用
 
@@ -81,7 +81,7 @@ Eurisko 引擎（与具体游戏无关）
 | 周 | 日期 | 目标 | 完成标准 |
 |---|---|---|---|
 | 1 ✅ | 10/30 – 11/05 | 项目骨架、Steering；Spec 1：自走棋模拟器 | 两支阵容可以按种子确定性地对战；有测试（10/30 完成：49 个测试，约 1.5 万场/秒） |
-| 2 | 11/06 – 11/12 | Spec 2：Eurisko 引擎 + 审计员（[spec](.kiro/specs/eurisko-engine/)） | 20 代运行分数上升；关掉审计员能复现 H59 寄生规则，打开能抓到；运行有记录可回放；和普通爬山算法对比的结果如实记录 |
+| 2 ✅ | 11/06 – 11/12 | Spec 2：Eurisko 引擎 + 审计员（[spec](.kiro/specs/eurisko-engine/)） | 20 代运行分数上升；关掉审计员能复现 H59 寄生规则，打开能抓到；运行有记录可回放；和普通爬山算法对比的结果如实记录（10/30 完成：H59 在 8/8 个种子上复现并被抓到；对比结果见 [docs/BASELINE.md](docs/BASELINE.md)） |
 | 3 | 11/13 – 11/19 | 平衡性报告；Spec 3：Web UI（实时 + 回放） | 能在浏览器里看到进化过程和报告；部署线上回放版 |
 | 4 | 11/20 – 11/26 | Spec 4：TCS-lite；UI 打磨；冻结功能 | 同一套引擎在两个游戏上都能跑 |
 | 5 | 11/27 – 12/04 | 视频、Devpost 描述、英文 README、博文、社媒 | **12/03 前提交** |
@@ -107,8 +107,17 @@ uv run neurisko score zombie,zombie,pumpkin_mage,pumpkin_mage,witch
 # 用改过的规则文件重跑
 uv run neurisko score zombie,ghost,witch --ruleset my_rules.toml
 
-uv run pytest                                  # 测试
-uv run python scripts/bench_autobattler.py     # 性能基准
+# 运行 Eurisko 引擎（默认用 .env 里的 LLM；记录写到 runs/<run_id>/）
+uv run neurisko evolve --generations 20 --seed 0
+uv run neurisko evolve --no-llm                # 只用种子规则和代码元规则，约 40 秒
+uv run neurisko evolve --no-llm --no-auditor   # 关掉审计员，看 M5 Clone 变成 H59 式寄生规则
+uv run neurisko evolve --replay runs/demo/qwen-s0   # 用记录的 LLM 回复重放，检查结果一致
+
+uv run pytest                                  # 测试（跳过慢测试和需要 LLM 的测试）
+uv run pytest -m slow                          # 慢测试：20 代性能预算、更多 H59 种子
+uv run pytest -m llm                           # 连接 .env 里的 LLM 做实测
+uv run python scripts/bench_autobattler.py     # 模拟器性能基准
+uv run python scripts/compare_baseline.py      # 和爬山算法对比，写入 docs/BASELINE.md
 ```
 
 开发记录（视频和博文素材）见 [docs/KIRO_NOTES.md](docs/KIRO_NOTES.md)。

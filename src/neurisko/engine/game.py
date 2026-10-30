@@ -6,8 +6,9 @@ The engine imports only this module, never a concrete game.
 from __future__ import annotations
 
 import random
+from collections.abc import Sequence
 from dataclasses import dataclass, field
-from typing import Literal, Protocol, TypeVar
+from typing import Any, Literal, Protocol, TypeVar
 
 Winner = Literal["A", "B", "draw"]
 
@@ -74,11 +75,33 @@ class ScoreReport:
     matchups: list[MatchupResult] = field(default_factory=list)
 
 
+def weighted_score(report: ScoreReport, n_extra: int, extra_weight: float) -> float:
+    """Blend of the win rate against the gauntlet and against the last `n_extra` opponents.
+
+    Without this, a hall of fame of 12 is only a third of a 36-opponent pool, and strong
+    designs saturate at 1.0 against the weak fixed gauntlet.
+    """
+    if n_extra == 0 or not report.matchups:
+        return report.score
+    base, extra = report.matchups[:-n_extra], report.matchups[-n_extra:]
+
+    def rate(ms: list[MatchupResult]) -> float:
+        games = sum(m.games for m in ms)
+        return sum(m.wins + 0.5 * m.draws for m in ms) / games if games else 0.0
+
+    return (1 - extra_weight) * rate(base) + extra_weight * rate(extra)
+
+
 D = TypeVar("D")
+
+# A game-agnostic action: {"kind": ..., <param>: <value>, ...}. All values are strings.
+Action = dict[str, str]
+# kind -> param -> allowed values
+ActionSchema = dict[str, dict[str, list[str]]]
 
 
 class Game(Protocol[D]):
-    """What the engine needs from a game. `D` is the game's design type."""
+    """What the engine needs from a game. `D` is the game's design type (hashable)."""
 
     name: str
     ruleset_hash: str
@@ -95,7 +118,34 @@ class Game(Protocol[D]):
 
     def simulate(self, a: D, b: D, seed: int, log: bool = False) -> BattleResult: ...
 
-    def score(self, design: D) -> ScoreReport: ...
+    def score(self, design: D, extra_opponents: Sequence[D] = ()) -> ScoreReport:
+        """Win rate against the fixed gauntlet plus `extra_opponents` (e.g. a hall of fame).
+
+        Matchups for the extra opponents must come last, in the order given.
+        """
+        ...
+
+    def feature_names(self) -> list[str]:
+        """Names usable in heuristic conditions."""
+        ...
+
+    def features(self, design: D, report: ScoreReport) -> dict[str, float]:
+        """Feature values of `design`; `report` is its score against the current pool."""
+        ...
+
+    def action_schema(self) -> ActionSchema: ...
+
+    def apply_action(self, design: D, action: Action, rng: random.Random) -> D | None:
+        """The resulting valid design, or None if the action does not apply or changes nothing."""
+        ...
+
+    def held_out(self) -> Game[D]:
+        """Same rules, but a gauntlet and battle seeds the engine never optimises against."""
+        ...
+
+    def to_json(self, design: D) -> Any:
+        """JSON-serialisable form of a design, for run records."""
+        ...
 
     def describe(self, design: D) -> str:
         """Compact text form of a design, for LLM prompts and the UI."""

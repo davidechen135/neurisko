@@ -100,6 +100,90 @@ def cmd_score(args: argparse.Namespace) -> int:
     return 0
 
 
+def _print_generation(gen: int, s: dict, ev) -> None:
+    calls = [e for e in ev.rec.of_type("llm_call") if e["gen"] == gen]
+    llm = f"llm {len(calls)} call {sum(e['latency_s'] for e in calls):.1f}s" if calls else "llm -"
+    print(
+        f"GEN {gen:02d}  best {s['best_pool']:.3f}  held-out {s['best_held_out_pool']:.3f}  "
+        f"hof {len(s['hof'])}/{ev.cfg.hof_cap}  improved {s['improvements']}/{s['applications']}  "
+        f"{llm}"
+    )
+    print(f"  best {s['best_text']}")
+    top = sorted(ev.design_heuristics(), key=lambda h: h.worth, reverse=True)[:3]
+    for h in top:
+        print(f"  {h.id:<5}{h.worth:>4.0f}  {h.name[:32]:<32}  {h.text()[:70]}")
+    metas = "  ".join(
+        f"{m.id} {m.name} {m.worth:.0f}" + ("!" if m.flags else "") for m in ev.metas.values()
+    )
+    print(f"  meta  {metas}")
+    for a in ev.rec.of_type("audit"):
+        if a["gen"] == gen and a["decision"] in ("demoted", "merged"):
+            extra = a.get("original") or a.get("tainted_ratio") or a.get("held_out_delta")
+            print(f"  AUDIT {a['target']} {a['check']} {a['decision']} ({extra})")
+    sys.stdout.flush()
+
+
+def cmd_evolve(args: argparse.Namespace) -> int:
+    from pathlib import Path
+
+    from neurisko.engine.evolve import EvolveConfig
+    from neurisko.llm import OpenAICompatClient
+    from neurisko.runs.session import RUNS_DIR, new_run_id, replay_run, start_run
+    from neurisko.settings import Settings
+
+    if args.replay:
+        print(f"replaying {args.replay}")
+        ev, problems = replay_run(Path(args.replay), on_generation=_print_generation)
+        if problems:
+            print("REPLAY MISMATCH:\n  " + "\n  ".join(problems), file=sys.stderr)
+            return 1
+        print("== replay identical to the recorded run ==")
+        return 0
+
+    settings = Settings()
+    llm = None
+    if not args.no_llm:
+        llm = OpenAICompatClient(
+            settings.llm_base_url,
+            settings.llm_model,
+            settings.llm_api_key.get_secret_value(),
+            timeout_s=settings.llm_timeout_s,
+            seed=args.seed,
+        )
+    cfg = EvolveConfig(
+        generations=args.generations,
+        max_generations=settings.max_generations,
+        seed=args.seed,
+        auditor=not args.no_auditor,
+        max_llm_calls_per_generation=settings.max_llm_calls_per_generation,
+    )
+    run_dir = Path(args.runs_dir or RUNS_DIR) / (args.run_id or new_run_id(args.seed))
+    if run_dir.exists():
+        print(f"error: {run_dir} already exists", file=sys.stderr)
+        return EXIT_USAGE
+    print(
+        f"NEURISKO  run {run_dir}  seed {args.seed}  "
+        f"llm {settings.llm_model if llm else 'off'}  auditor {'on' if cfg.auditor else 'OFF'}"
+    )
+    try:
+        _, result = start_run(
+            cfg,
+            llm,
+            run_dir,
+            ruleset=args.ruleset,
+            redact=[settings.llm_api_key.get_secret_value()],
+            on_generation=_print_generation,
+        )
+    except RulesetError as err:
+        print(f"error: {err}", file=sys.stderr)
+        return EXIT_USAGE
+    print(
+        f"\n== {result.reason.upper()} after {result.generations} generations; "
+        f"best {result.best_score:.3f} {list(result.best)} ==\nrecorded in {run_dir}"
+    )
+    return 130 if result.reason == "interrupted" else 0
+
+
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(prog="neurisko", description=__doc__)
     sub = parser.add_subparsers(dest="command", required=True)
@@ -117,6 +201,18 @@ def build_parser() -> argparse.ArgumentParser:
     p = sub.add_parser("score", parents=[common], help="score a team against the gauntlet")
     p.add_argument("design", help="comma-separated unit ids, front first")
     p.set_defaults(func=cmd_score)
+
+    p = sub.add_parser("evolve", parents=[common], help="run the Eurisko engine")
+    p.add_argument("--generations", type=int, default=20)
+    p.add_argument("--seed", type=int, default=0)
+    p.add_argument("--no-llm", action="store_true", help="seed heuristics and code metas only")
+    p.add_argument(
+        "--no-auditor", action="store_true", help="disable the auditor (shows the H59 pattern)"
+    )
+    p.add_argument("--run-id", default=None)
+    p.add_argument("--runs-dir", default=None, help="parent directory for runs (default: runs)")
+    p.add_argument("--replay", default=None, metavar="RUN_DIR", help="re-execute a recorded run")
+    p.set_defaults(func=cmd_evolve)
     return parser
 
 

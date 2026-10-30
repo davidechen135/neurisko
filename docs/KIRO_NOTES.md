@@ -23,3 +23,20 @@ Running log of how Kiro was used, for the demo video, Devpost description and bl
 - Probed local `qwen2.5:14b` with the planned heuristic DSL before writing the design: 9 of 9 proposed heuristics were valid; about 10 s per call when warm. This decided that the LLM is used for one meta-heuristic (Invent) only, and everything else stays in code.
 - H59 source found: Wikipedia "Reward hacking" names H59 as the parasitic heuristic that took unearned partial credit. Primary source to check before the video: Lenat, *EURISKO: A Program That Learns New Heuristics and Domain Concepts*, Artificial Intelligence 21 (1983).
 - Design decision: the engine reproduces the H59 pattern on purpose (lineage credit plus a Clone meta-heuristic), so the auditor's fix can be shown with it switched off and on.
+
+## 2026-10-30 · Spec 2 implemented: Eurisko engine
+
+**Spec as a contract**: all 13 tasks were implemented against the requirements. Where measurement contradicted the design, the change went into an "Implementation notes" section of `design.md` instead of silently diverging.
+
+**Problems found by running the engine, not by reading the code**:
+- **A second worth-inflation bug, unplanned.** In the first run, a plain seed heuristic hit worth 1000 by being credited every generation for the same parent → child move. That is H59-like inflation, without any meta-heuristic involved. Fix: a transition is credited at most once. Good material for the video: "we built an auditor for one kind of reward hacking and the system found another".
+- **Population collapse.** After that fix, every reachable move was tried by generation 8. Fix: 4 random immigrants per generation.
+- **Score saturation** (carried over from Spec 1). Fix: the hall of fame weighs 50% of the score.
+
+**H59 reproduced reliably**: over 8 seeds, Clone was the top meta-heuristic 8/8 times without the auditor and was flagged as a parasite 8/8 times with it. This is now a regression test (`tests/engine/test_auditor.py::test_h59_demo`).
+
+**Local Qwen as Invent**: 18 calls in a 20-generation run, 0 invalid heuristics. LLM-invented rules improved designs at about the same rate as hand-written seeds (65% vs 64%). 4 of the 5 highest-worth rules at the end were LLM-invented.
+
+**Hooks in practice**: the post-task pytest hook got slow (90 s) once engine tests existed, so slow and live-LLM tests moved behind markers. The default run is about 40 s.
+
+**Baseline result, reported as it came out**: at equal battle budget, the engine ties hill-climbing-with-hall-of-fame (0.826 vs 0.838, within noise), and the LLM version scores 0.794. The real win over plain hill-climbing (0.629) comes from the hall of fame. Writing this requirement into the spec up front (R8.2: "report the result whichever method wins") is what stopped the project from being pitched on a claim that wasn't true. The pitch shifts to explanation: ranked, audited, human-readable rules.
