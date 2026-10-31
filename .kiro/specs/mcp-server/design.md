@@ -76,3 +76,12 @@ Kiro's docs show both bare and prefixed tool names in `autoApprove` examples. Ta
 - `tests/mcp/test_server.py`: SDK in-memory client; lists the 7 tools and the prompt; calls `check_ruleset` and `score_team`; error result for a bad path.
 - `tests/mcp/test_jobs.py`: job lifecycle with a tiny report config; a second start returns the same job id.
 - `quick_balance` and `verify_patch` on the real ruleset are `slow` tests that also check the 60 s budget.
+
+## Implementation notes (2026-10-31)
+1. **Measured timings** (12-core M4 Pro, real settings): `quick_balance` 16.7 s, `verify_patch` 14.9 s; the slow test with a cold cache: both together 32 s. Well under the 60 s budget and Kiro's 120 s default.
+2. **Caches.** Games are cached by ruleset hash (keeps score caches); `quick_balance` results too, so `verify_patch` reuses the "before" runs and a repeated quick check is instant. Editing the file changes the hash, so stale results are never reused.
+3. **Invalid archetypes.** A designer's edit (e.g. a lower budget) can make a built-in archetype opponent invalid, which used to make the game fail to load. The tools now drop those opponents and report them (`dropped_archetypes`), using the same helper as patch verification.
+4. **Quick results differ from the full report**, as expected at 4 seeds and 8 generations: `witch.cost 2→3` gives witch 0.90 → 0.70 (still dominant, flesh_golem becomes dominant), while the 6-seed, 12-generation report gives 0.93 → 0.40. Tool notes and steering tell Kiro that quick results are noisy and to use the full report before recommending.
+5. **`mcp.json` could not be written by the agent**: `.kiro/settings/` is protected by a Kiro permission rule. The intended file is `docs/kiro-mcp.json`; the user copies it.
+6. **`autoApprove`** lists the read-only fast tools plus `report_status` (it only reads job state). `quick_balance`, `verify_patch` and `start_report` use several CPU cores and still ask.
+7. **Tests** go through the SDK's in-memory `Client` and through the real `neurisko-mcp` process over stdio.

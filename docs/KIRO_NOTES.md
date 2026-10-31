@@ -60,3 +60,10 @@ Running log of how Kiro was used, for the demo video, Devpost description and bl
 - **Seeing the UI found the bugs tests didn't.** Headless Chrome screenshots at 1280×720 and 390 px caught a CSS class collision, an overridden `hidden` attribute, and arrays printed as `[object HTMLOptionElement]`. All 131 tests were green at the time.
 - **A misleading flag.** The worth table showed M2 as PARASITE at generation 20, although later audits had cleared it. The flag now shows the latest verdict.
 - **The JS reducer is tested for real**: pytest runs it under Node and compares its final state with the Python run record.
+
+## 2026-10-31 · Spec 5 implemented: Neurisko as an MCP server
+
+- **Checked the SDK before writing code.** The MCP Python SDK is now 2.x (`FastMCP` renamed `MCPServer`); most examples online are 1.x. A 30-line probe confirmed the result shapes, that sync tools run on worker threads, and that prompts work.
+- **Checked Kiro's docs before designing.** The `introspect` agent answered from kiro.dev: 120 s default tool timeout, no documented progress notifications, servers start in the workspace root. So the 2-minute report became a background job with a status tool, and the quick tools were sized to finish in about 15 s.
+- **Three Kiro features around one MCP server**: a `fileMatch` steering file that activates only when a ruleset is open ("measure, don't guess; verify before recommending"), a `PostFileSave` hook on `rulesets/*.toml` that re-checks balance, and an MCP prompt (`balance_review`) in the `#` menu.
+- **A protected path.** Kiro's permission rules block agents from writing `.kiro/settings/`, so `mcp.json` is the one file the user creates by hand (`docs/kiro-mcp.json`).

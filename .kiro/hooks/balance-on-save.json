@@ -1,0 +1,15 @@
+{
+  "version": "v1",
+  "hooks": [
+    {
+      "name": "Balance check on ruleset save",
+      "trigger": "PostFileSave",
+      "description": "When a ruleset in rulesets/ is saved, ask Kiro to validate it and re-run the quick balance check with the neurisko MCP tools",
+      "matcher": "rulesets/.*\\.toml$",
+      "action": {
+        "type": "agent",
+        "prompt": "The designer saved a Monster Mash ruleset in rulesets/. Use the neurisko MCP tools on the saved file: run check_ruleset; if it is invalid, list the errors and stop. If it is valid, run quick_balance and compare with the previous quick_balance result in this conversation, if there is one. Report in at most 5 lines: dominant and underused units with shares, baseline and seed count, and what changed since the last check. Do not edit the file."
+      }
+    }
+  ]
+}

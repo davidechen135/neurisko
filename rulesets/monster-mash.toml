@@ -1,0 +1,199 @@
+# Monster Mash ruleset: the designer-editable copy used in the Kiro demo.
+# Ask Kiro "is this balanced?" with this file open (see .kiro/steering/balance.md).
+#
+# Edit any number and rerun to test a balance change; the ruleset hash changes with it.
+# This version deliberately contains imbalances (undead swarm, armor wall, ghost counter)
+# that Neurisko is expected to rediscover. See .kiro/specs/autobattler-simulator/design.md.
+
+name = "monster-mash"
+version = "0"
+
+[limits]
+budget = 10
+max_team_size = 5
+max_copies = 2
+max_ticks = 600  # 200 gave 18% draws on random matchups; 600 gives ~3.5%
+front_line_size = 2
+
+# --- Undead -----------------------------------------------------------------------------
+
+[[units]]
+id = "skeleton"
+faction = "undead"
+cost = 1
+hp = 40
+atk = 8
+armor = 0
+speed = 10
+range = "melee"
+
+[[units]]
+id = "zombie"
+faction = "undead"
+cost = 1
+hp = 80
+atk = 6
+armor = 0
+speed = 14
+range = "melee"
+
+[[units]]
+id = "necromancer"
+faction = "undead"
+cost = 3
+hp = 50
+atk = 6
+armor = 0
+speed = 12
+range = "ranged"
+ability = { kind = "summon_on_ally_death", unit = "skeleton", max = 3 }
+
+# --- Beast ------------------------------------------------------------------------------
+
+[[units]]
+id = "werewolf"
+faction = "beast"
+cost = 2
+hp = 90
+atk = 14
+armor = 0
+speed = 10
+range = "melee"
+ability = { kind = "lifesteal", fraction = 0.3 }
+
+[[units]]
+id = "bat_swarm"
+faction = "beast"
+cost = 1
+hp = 30
+atk = 5
+armor = 0
+speed = 5
+range = "melee"
+ability = { kind = "dodge", chance = 0.3 }
+
+[[units]]
+id = "hellhound"
+faction = "beast"
+cost = 3
+hp = 110
+atk = 18
+armor = 0
+speed = 12
+range = "melee"
+ability = { kind = "first_strike", multiplier = 2.0 }
+
+# --- Arcane -----------------------------------------------------------------------------
+
+[[units]]
+id = "witch"
+faction = "arcane"
+cost = 2
+hp = 45
+atk = 6
+armor = 0
+speed = 12
+range = "ranged"
+ability = { kind = "heal_lowest_ally", amount = 12 }
+
+[[units]]
+id = "pumpkin_mage"
+faction = "arcane"
+cost = 3
+hp = 50
+atk = 20
+armor = 0
+speed = 16
+range = "ranged"
+ability = { kind = "splash", fraction = 0.6 }
+
+[[units]]
+id = "ghost"
+faction = "arcane"
+cost = 2
+hp = 35
+atk = 9
+armor = 0
+speed = 10
+range = "ranged"
+ability = { kind = "ignore_armor" }
+
+# --- Construct --------------------------------------------------------------------------
+
+[[units]]
+id = "flesh_golem"
+faction = "construct"
+cost = 3
+hp = 160
+atk = 10
+armor = 6
+speed = 16
+range = "melee"
+
+[[units]]
+id = "gargoyle"
+faction = "construct"
+cost = 2
+hp = 70
+atk = 8
+armor = 4
+speed = 12
+range = "melee"
+
+[[units]]
+id = "scarecrow"
+faction = "construct"
+cost = 1
+hp = 60
+atk = 4
+armor = 2
+speed = 14
+range = "melee"
+
+# --- Synergies (active while >= threshold living units of the faction) -------------------
+
+[[synergies]]
+faction = "undead"
+threshold = 2
+hp_pct = 0.25
+
+[[synergies]]
+faction = "beast"
+threshold = 2
+atk_pct = 0.15
+
+[[synergies]]
+faction = "arcane"
+threshold = 2
+ability_pct = 0.3
+
+[[synergies]]
+faction = "construct"
+threshold = 2
+armor_flat = 3
+
+# --- Gauntlet archetypes (hand-written opponents; order = front to back) ----------------
+
+[[archetypes]]
+name = "balanced"
+units = ["gargoyle", "werewolf", "skeleton", "witch", "ghost"]
+
+[[archetypes]]
+name = "undead_swarm"
+units = ["zombie", "skeleton", "zombie", "skeleton", "necromancer"]
+
+[[archetypes]]
+name = "armor_wall"
+units = ["flesh_golem", "gargoyle", "gargoyle", "scarecrow", "scarecrow"]
+
+[[archetypes]]
+name = "beast_rush"
+units = ["hellhound", "werewolf", "werewolf", "bat_swarm", "bat_swarm"]
+
+[[archetypes]]
+name = "arcane_backline"
+units = ["gargoyle", "zombie", "witch", "pumpkin_mage", "ghost"]
+
+[[archetypes]]
+name = "ghost_counter"
+units = ["scarecrow", "zombie", "ghost", "ghost", "witch"]

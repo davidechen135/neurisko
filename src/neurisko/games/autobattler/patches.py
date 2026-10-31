@@ -71,11 +71,14 @@ def apply(rules: Ruleset, patch: Patch) -> tuple[Ruleset, list[str]]:
         unit["ability"][param] = int(value) if param in INT_PARAMS else float(value)
     else:
         raise RulesetError(f"unknown patch field {patch.field!r}")
-    patched = parse_ruleset(data, source=f"<patch {patch.text()}>")
-    keep, dropped = [], []
-    for a in data["archetypes"]:
-        (dropped if validate(patched, tuple(a["units"])) else keep).append(a)
-    if dropped:
-        data["archetypes"] = keep
-        patched = parse_ruleset(data, source=f"<patch {patch.text()}>")
-    return patched, [a["name"] for a in dropped]
+    return drop_invalid_archetypes(parse_ruleset(data, source=f"<patch {patch.text()}>"))
+
+
+def drop_invalid_archetypes(rules: Ruleset) -> tuple[Ruleset, list[str]]:
+    """Remove archetypes that are no longer valid teams (e.g. over budget after a cost change)."""
+    dropped = [a.name for a in rules.archetypes if validate(rules, tuple(a.units))]
+    if not dropped:
+        return rules, []
+    data = copy.deepcopy(rules.model_dump())
+    data["archetypes"] = [a for a in data["archetypes"] if a["name"] not in dropped]
+    return parse_ruleset(data, source=f"<{rules.name} without {', '.join(dropped)}>"), dropped

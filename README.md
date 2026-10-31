@@ -83,7 +83,7 @@ Eurisko 引擎（与具体游戏无关）
 | 1 ✅ | 10/30 – 11/05 | 项目骨架、Steering；Spec 1：自走棋模拟器 | 两支阵容可以按种子确定性地对战；有测试（10/30 完成：49 个测试，约 1.5 万场/秒） |
 | 2 ✅ | 11/06 – 11/12 | Spec 2：Eurisko 引擎 + 审计员（[spec](.kiro/specs/eurisko-engine/)） | 20 代运行分数上升；关掉审计员能复现 H59 寄生规则，打开能抓到；运行有记录可回放；和普通爬山算法对比的结果如实记录（10/30 完成：H59 在 8/8 个种子上复现并被抓到；对比结果见 [docs/BASELINE.md](docs/BASELINE.md)） |
 | 3 | 11/13 – 11/19 | Spec 3 ✅：平衡性报告（[spec](.kiro/specs/balance-report/)，[示例](reports/demo/default/report.md)）；Spec 4 ✅（待开 Pages）：Web UI（[spec](.kiro/specs/web-ui/)） | 默认规则下报告标出 witch 并找到经过验证的有效修改（10/31 完成：witch 费用 2→3 + flesh_golem 攻击 10→8）；GitHub Pages 上能打开回放版 |
-| 4 | 11/20 – 11/26 | Spec 5：MCP server（[spec](.kiro/specs/mcp-server/)）；Spec 6：TCS-lite；UI 打磨；冻结功能 | 在 Kiro 里改规则文件、问"平衡吗"能得到实测回答和验证过的修改建议；同一套引擎在两个游戏上都能跑 |
+| 4 | 11/20 – 11/26 | Spec 5（代码完成，待在 Kiro 里实测）：MCP server（[spec](.kiro/specs/mcp-server/)）；Spec 6：TCS-lite；UI 打磨；冻结功能 | 在 Kiro 里改规则文件、问"平衡吗"能得到实测回答和验证过的修改建议；同一套引擎在两个游戏上都能跑 |
 | 5 | 11/27 – 12/04 | 视频、Devpost 描述、英文 README、博文、社媒 | **12/03 前提交** |
 
 ## 7. 安全边界
@@ -112,6 +112,10 @@ uv run neurisko evolve --generations 20 --seed 0
 uv run neurisko evolve --no-llm                # 只用种子规则和代码元规则，约 40 秒
 uv run neurisko evolve --no-llm --no-auditor   # 关掉审计员，看 M5 Clone 变成 H59 式寄生规则
 uv run neurisko evolve --replay runs/demo/qwen-s0   # 用记录的 LLM 回复重放，检查结果一致
+
+# 在 Kiro 里用：把 docs/kiro-mcp.json 的内容放进 .kiro/settings/mcp.json，
+# 打开 rulesets/monster-mash.toml，问 Kiro "这套规则平衡吗？"
+uv run neurisko-mcp                            # MCP server（stdio，由 Kiro 启动，一般不用手动跑）
 
 # Web 控制台
 uv run neurisko serve                          # http://127.0.0.1:8000 ：回放记录、实时启动运行
