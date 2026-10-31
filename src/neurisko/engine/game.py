@@ -10,6 +10,8 @@ from collections.abc import Sequence
 from dataclasses import dataclass, field
 from typing import Any, Literal, Protocol, TypeVar
 
+from pydantic import BaseModel, ConfigDict
+
 Winner = Literal["A", "B", "draw"]
 
 
@@ -92,6 +94,23 @@ def weighted_score(report: ScoreReport, n_extra: int, extra_weight: float) -> fl
     return (1 - extra_weight) * rate(base) + extra_weight * rate(extra)
 
 
+class Patch(BaseModel):
+    """One numeric change to a ruleset, e.g. witch.cost 2 -> 3."""
+
+    model_config = ConfigDict(frozen=True)
+    target: str  # a part (unit id)
+    field: str  # "cost", "atk", "hp", "armor", "speed" or "ability.<param>"
+    old: float
+    new: float
+    label: str = ""
+
+    def text(self) -> str:
+        def fmt(v: float) -> str:
+            return str(int(v)) if float(v).is_integer() else f"{v:g}"
+
+        return self.label or f"{self.target}.{self.field} {fmt(self.old)}->{fmt(self.new)}"
+
+
 D = TypeVar("D")
 
 # A game-agnostic action: {"kind": ..., <param>: <value>, ...}. All values are strings.
@@ -153,4 +172,32 @@ class Game(Protocol[D]):
 
     def describe_rules(self) -> str:
         """Compact text form of the rules, for LLM prompts."""
+        ...
+
+    # --- balance report --------------------------------------------------------------------
+
+    def ruleset_json(self) -> str:
+        """The full ruleset as JSON; with `name`, enough to rebuild the game in a worker."""
+        ...
+
+    def settings(self) -> dict[str, Any]:
+        """Constructor arguments other than the rules (see `neurisko.games.registry`)."""
+        ...
+
+    def parts(self, design: D) -> set[str]:
+        """The components of a design that the balance report counts (e.g. unit ids)."""
+        ...
+
+    def part_names(self) -> list[str]: ...
+
+    def baseline_designs(self, rng: random.Random, n: int) -> list[D]:
+        """`n` random designs a real player might field (the comparison baseline)."""
+        ...
+
+    def patch_candidates(self, part: str) -> list[Patch]:
+        """Single-stat changes worth testing against a dominant part."""
+        ...
+
+    def with_patch(self, patch: Patch) -> tuple[Game[D], list[str]]:
+        """The patched game, plus the names of fixed opponents dropped as no longer valid."""
         ...

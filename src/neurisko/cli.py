@@ -184,6 +184,64 @@ def cmd_evolve(args: argparse.Namespace) -> int:
     return 130 if result.reason == "interrupted" else 0
 
 
+def cmd_report(args: argparse.Namespace) -> int:
+    from datetime import datetime
+    from pathlib import Path
+
+    from neurisko.report import ReportConfig, build_report, write_report
+    from neurisko.runs.session import default_seed_rules
+
+    game = _load_game(args)
+    out_dir = Path(args.reports_dir) / (args.report_id or f"{datetime.now():%Y%m%d-%H%M%S}")
+    if out_dir.exists():
+        print(f"error: {out_dir} already exists", file=sys.stderr)
+        return EXIT_USAGE
+    llm = None
+    if args.explain:
+        from neurisko.llm import OpenAICompatClient
+        from neurisko.settings import Settings
+
+        s = Settings()
+        llm = OpenAICompatClient(
+            s.llm_base_url, s.llm_model, s.llm_api_key.get_secret_value(), s.llm_timeout_s, seed=0
+        )
+    cfg = ReportConfig(
+        seeds=args.seeds,
+        verify_seeds=min(args.verify_seeds, args.seeds),
+        generations=args.generations,
+        fix_parts=args.fix_parts,
+        workers=args.workers,
+    )
+    print(
+        f"NEURISKO BALANCE REPORT  ruleset {game.ruleset_hash}  "
+        f"{cfg.seeds} seeds x {cfg.generations} gens"
+    )
+    report = build_report(
+        game,
+        default_seed_rules(game),
+        cfg,
+        llm=llm,
+        ruleset_source=args.ruleset,
+        progress=lambda m: print(f"  [{m}]", flush=True),
+    )
+    print()
+    for p in report.parts:
+        bar = "█" * round(p.evolved * 20)
+        flags = "  " + " ".join(p.flags).upper() if p.flags else ""
+        print(
+            f"  {p.part:<13} {bar:<20} {p.evolved:.2f} ({p.lo:.2f}-{p.hi:.2f})  "
+            f"base {p.baseline:.2f}  lift {p.lift:.1f}{flags}"
+        )
+    print("\n" + report.summary.template)
+    if report.summary.llm:
+        print(f"\nLLM summary ({report.summary.llm_model}, numbers checked):\n{report.summary.llm}")
+    elif report.summary.llm_rejected:
+        print(f"\nLLM summary discarded: {report.summary.llm_rejected['reason']}")
+    write_report(report, out_dir)
+    print(f"\n== report written to {out_dir}/report.md ({report.seconds:.0f}s) ==")
+    return 0
+
+
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(prog="neurisko", description=__doc__)
     sub = parser.add_subparsers(dest="command", required=True)
@@ -213,6 +271,17 @@ def build_parser() -> argparse.ArgumentParser:
     p.add_argument("--runs-dir", default=None, help="parent directory for runs (default: runs)")
     p.add_argument("--replay", default=None, metavar="RUN_DIR", help="re-execute a recorded run")
     p.set_defaults(func=cmd_evolve)
+
+    p = sub.add_parser("report", parents=[common], help="balance report with verified fixes")
+    p.add_argument("--seeds", type=int, default=8)
+    p.add_argument("--verify-seeds", type=int, default=6)
+    p.add_argument("--generations", type=int, default=12)
+    p.add_argument("--fix-parts", type=int, default=2)
+    p.add_argument("--workers", type=int, default=None, help="processes (default: all cores)")
+    p.add_argument("--explain", action="store_true", help="add an LLM summary (number-checked)")
+    p.add_argument("--report-id", default=None)
+    p.add_argument("--reports-dir", default="reports")
+    p.set_defaults(func=cmd_report)
     return parser
 
 

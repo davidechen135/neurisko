@@ -12,9 +12,11 @@ build/
 # Secrets
 .env
 
-# Local evolution runs (curated demo runs go in runs/demo/)
+# Local evolution runs and reports (curated demo ones go in */demo/)
 runs/*
 !runs/demo/
+reports/*
+!reports/demo/
 
 # OS / editor
 .DS_Store

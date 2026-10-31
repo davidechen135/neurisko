@@ -6,13 +6,14 @@ import random
 from collections.abc import Sequence
 from pathlib import Path
 
-from neurisko.engine.game import Action, ActionSchema, BattleResult, ScoreReport
+from neurisko.engine.game import Action, ActionSchema, BattleResult, Patch, ScoreReport
 from neurisko.games.autobattler import actions as _actions
 from neurisko.games.autobattler import design as _design
+from neurisko.games.autobattler import patches as _patches
 from neurisko.games.autobattler.combat import CompiledRules
 from neurisko.games.autobattler.combat import simulate as _simulate
 from neurisko.games.autobattler.design import Design
-from neurisko.games.autobattler.gauntlet import Opponent, build_gauntlet
+from neurisko.games.autobattler.gauntlet import Opponent, build_gauntlet, is_competitive
 from neurisko.games.autobattler.gauntlet import score as _score
 from neurisko.games.autobattler.rules import Ruleset, load_ruleset
 
@@ -94,6 +95,50 @@ class MonsterMash:
 
     def to_json(self, design: Design) -> list[str]:
         return list(design)
+
+    # --- balance report --------------------------------------------------------------------
+
+    def ruleset_json(self) -> str:
+        return self.rules.model_dump_json()
+
+    def parts(self, design: Design) -> set[str]:
+        return set(design)
+
+    def part_names(self) -> list[str]:
+        return [u.id for u in self.rules.units]
+
+    def baseline_designs(self, rng: random.Random, n: int) -> list[Design]:
+        out: list[Design] = []
+        for _ in range(n * 1000):
+            if len(out) == n:
+                break
+            d = self.random_design(rng)
+            if is_competitive(self.rules, d):
+                out.append(d)
+        return out
+
+    def patch_candidates(self, part: str) -> list[Patch]:
+        return _patches.candidates(self.rules, part)
+
+    def with_patch(self, patch: Patch) -> tuple[MonsterMash, list[str]]:
+        rules, dropped = _patches.apply(self.rules, patch)
+        game = MonsterMash(
+            rules,
+            gauntlet_seed=self.gauntlet_seed,
+            n_random=self.n_random,
+            n_seeds=self.n_seeds,
+            seed_offset=self.seed_offset,
+        )
+        return game, dropped
+
+    def settings(self) -> dict:
+        """Constructor arguments other than the rules, to rebuild an equivalent game."""
+        return {
+            "gauntlet_seed": self.gauntlet_seed,
+            "n_random": self.n_random,
+            "n_seeds": self.n_seeds,
+            "seed_offset": self.seed_offset,
+        }
 
     def describe(self, design: Design) -> str:
         cost = _design.cost(self.rules, design)

@@ -40,3 +40,16 @@ Running log of how Kiro was used, for the demo video, Devpost description and bl
 **Hooks in practice**: the post-task pytest hook got slow (90 s) once engine tests existed, so slow and live-LLM tests moved behind markers. The default run is about 40 s.
 
 **Baseline result, reported as it came out**: at equal battle budget, the engine ties hill-climbing-with-hall-of-fame (0.826 vs 0.838, within noise), and the LLM version scores 0.794. The real win over plain hill-climbing (0.629) comes from the hall of fame. Writing this requirement into the spec up front (R8.2: "report the result whichever method wins") is what stopped the project from being pitched on a claim that wasn't true. The pitch shifts to explanation: ranked, audited, human-readable rules.
+
+## 2026-10-30 · Measurements before Spec 3
+
+- **Correction of an earlier claim.** In Spec 1 we wrote that pumpkin_mage was "the real outlier". Measured properly (16 seeds, against the random competitive baseline), that is wrong: **witch** sits in 94% of top designs against a 32% baseline, stable across seed groups. pumpkin_mage is at 50% against 39% and noisy. The first claim came from a saturated score and 8 restarts. Lesson for the report design: always compare against a random baseline and show the spread across seeds.
+- **The fix loop works.** witch cost 2→3 drops witch's share from about 0.94 to 0.45, and flesh_golem becomes the most common unit (0.70). witch heal 12→8 only gets it to 0.80. Nerfing pumpkin_mage (cost, ATK or splash) does almost nothing. So the cheapest stat to change is not always the one that matters, and the report has to measure the candidate fixes, not guess them.
+- 16 engine runs (12 generations, no LLM) take 53 s in parallel on the 12-core M4 Pro, so verifying several candidate fixes takes minutes.
+
+## 2026-10-31 · Spec 3 implemented: balance report
+
+- **The fix needed two steps.** Every single witch change either left witch dominant or made flesh_golem dominant (witch cost 2→3: witch 0.93 → 0.40, flesh_golem 0.73). The spec gained a follow-up requirement (R4.5) mid-implementation: if the best change only moves the problem, fix the next unit on top of it. The report found `witch.cost 2→3 + flesh_golem.atk 10→8`, which leaves no unit dominant. It is borderline: witch is still the most common unit at 0.67, just under the 0.7 threshold, and the report says so.
+- **Wrong conclusions caught by measuring.** Twice now a 4-seed result was incomplete: "pumpkin_mage is the outlier" (Spec 1) and "witch cost 2→3 fixes it" (pre-Spec-3 probe). The report uses 8 seeds and shows the range.
+- **LLM summaries get two checks.** Qwen's first summary used only real numbers but claimed the effective fix "maintains witch as the dominant part" and called the witch cost change ineffective. A number check alone would have let it through. Added a second check, that the summary must state each step of the recommended change. With a clearer prompt, 5/5 Qwen summaries passed. Both failure modes are regression tests.
+- **Runtime.** Batching all patch verifications into one process pool brought the default report to about 2 minutes on 12 cores (limit 5).

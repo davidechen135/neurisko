@@ -65,6 +65,7 @@ The test suite should check that these effects exist (for example, an armor wall
 - The mechanics work as designed: the armor wall beats a bat/skeleton team 10/10 seeds, the ghost team beats the armor wall 10/10, and the necromancer summons exactly 3 skeletons.
 - The planted imbalances are **not** what dominates. Archetype scores: undead_swarm 0.15, armor_wall 0.40, arcane_backline 0.92.
 - The real outlier is **pumpkin_mage**: it appears in 7 of 8 hill-climb optima. Ranged + 20 ATK + splash for 3 gold is under-costed. This is a better demo story than the planted one: the designer's intended exploit is not the broken one, and Neurisko finds the one that is.
+- **Correction (2026-10-30, Spec 3 measurements):** the pumpkin_mage finding above does not hold up. It came from 8 hill-climb restarts against a saturated score. Under the engine's hall-of-fame-weighted score over 16 seeds, the robust outlier is **witch**: it is in 94% of top-5 designs, against 32% of random competitive designs, and every group of 4 seeds gives 0.90–1.00. pumpkin_mage is at 50% against a 39% baseline and swings between 0.25 and 0.70 across seed groups. Raising witch's cost from 2 to 3 drops its share to 45%. No pumpkin_mage nerf changed the picture.
 - **Score saturation**: 8 of 8 optima reach 1.000 against the fixed gauntlet, so the score cannot rank strong designs. Spec 2 (engine) must handle this, for example by adding discovered champions to the gauntlet (hall of fame / co-evolution).
 
 ## Architecture

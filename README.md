@@ -71,7 +71,7 @@ Eurisko 引擎（与具体游戏无关）
 | Steering | `.kiro/steering/`：产品定位与历史背景、技术栈、安全与成本约束 |
 | Spec | 每个里程碑一个 Spec（requirements → design → tasks） |
 | Hooks | 保存时跑 ruff 和相关测试；任务完成后跑全量测试 |
-| MCP | 待定，候选：查阅论文和档案资料、管理运行记录 |
+| MCP | Neurisko 本身作为 MCP server：设计师在 Kiro 里改规则文件时，Kiro 调用它打分、检测过强单位、验证修改（Spec 5） |
 | Vibe | 原型探索、UI 调整 |
 
 开发中会随时记录"Kiro 解决了什么难题"，用于视频、Devpost 描述和博文。
@@ -82,8 +82,8 @@ Eurisko 引擎（与具体游戏无关）
 |---|---|---|---|
 | 1 ✅ | 10/30 – 11/05 | 项目骨架、Steering；Spec 1：自走棋模拟器 | 两支阵容可以按种子确定性地对战；有测试（10/30 完成：49 个测试，约 1.5 万场/秒） |
 | 2 ✅ | 11/06 – 11/12 | Spec 2：Eurisko 引擎 + 审计员（[spec](.kiro/specs/eurisko-engine/)） | 20 代运行分数上升；关掉审计员能复现 H59 寄生规则，打开能抓到；运行有记录可回放；和普通爬山算法对比的结果如实记录（10/30 完成：H59 在 8/8 个种子上复现并被抓到；对比结果见 [docs/BASELINE.md](docs/BASELINE.md)） |
-| 3 | 11/13 – 11/19 | 平衡性报告；Spec 3：Web UI（实时 + 回放） | 能在浏览器里看到进化过程和报告；部署线上回放版 |
-| 4 | 11/20 – 11/26 | Spec 4：TCS-lite；UI 打磨；冻结功能 | 同一套引擎在两个游戏上都能跑 |
+| 3 | 11/13 – 11/19 | Spec 3 ✅：平衡性报告（[spec](.kiro/specs/balance-report/)，[示例](reports/demo/default/report.md)）；Spec 4：Web UI（[spec](.kiro/specs/web-ui/)） | 默认规则下报告标出 witch 并找到经过验证的有效修改（10/31 完成：witch 费用 2→3 + flesh_golem 攻击 10→8）；GitHub Pages 上能打开回放版 |
+| 4 | 11/20 – 11/26 | Spec 5：MCP server（[spec](.kiro/specs/mcp-server/)）；Spec 6：TCS-lite；UI 打磨；冻结功能 | 在 Kiro 里改规则文件、问"平衡吗"能得到实测回答和验证过的修改建议；同一套引擎在两个游戏上都能跑 |
 | 5 | 11/27 – 12/04 | 视频、Devpost 描述、英文 README、博文、社媒 | **12/03 前提交** |
 
 ## 7. 安全边界
@@ -113,6 +113,12 @@ uv run neurisko evolve --no-llm                # 只用种子规则和代码元�
 uv run neurisko evolve --no-llm --no-auditor   # 关掉审计员，看 M5 Clone 变成 H59 式寄生规则
 uv run neurisko evolve --replay runs/demo/qwen-s0   # 用记录的 LLM 回复重放，检查结果一致
 
+# 平衡性报告：8 个种子检测过强/没人用的单位，逐个实测候选修改（约 2 分钟，写到 reports/<id>/）
+uv run neurisko report
+uv run neurisko report --explain                     # 加一段 LLM 摘要（数字会和实测结果核对）
+uv run neurisko report --ruleset my_rules.toml       # 检查自己的规则文件
+# 示例报告：reports/demo/default/report.md
+
 uv run pytest                                  # 测试（跳过慢测试和需要 LLM 的测试）
 uv run pytest -m slow                          # 慢测试：20 代性能预算、更多 H59 种子
 uv run pytest -m llm                           # 连接 .env 里的 LLM 做实测
@@ -125,7 +131,7 @@ uv run python scripts/compare_baseline.py      # 和爬山算法对比，写入 
 ## 9. 待定事项
 
 - ~~自走棋的具体规则~~：已定，游戏名 Monster Mash，见 [.kiro/specs/autobattler-simulator/design.md](.kiro/specs/autobattler-simulator/design.md)
-- MCP 用在哪里
+- ~~MCP 用在哪里~~：已定，见 Spec 5
 - 线上回放版部署在哪里
 
 ## License

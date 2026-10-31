@@ -1,0 +1,1994 @@
+{
+  "schema_version": 1,
+  "game": "monster-mash",
+  "ruleset_hash": "f22da09334d3",
+  "ruleset_source": null,
+  "config": {
+    "seeds": 8,
+    "verify_seeds": 6,
+    "generations": 12,
+    "fix_parts": 2,
+    "follow_up": true,
+    "top_k": 5,
+    "baseline_n": 3000,
+    "thresholds": {
+      "dominant_share": 0.7,
+      "dominant_lift": 1.8,
+      "underused_share": 0.05,
+      "underused_baseline": 0.2
+    },
+    "engine": {}
+  },
+  "engine_config": {
+    "generations": 12,
+    "max_generations": 50,
+    "seed": 0,
+    "population": 20,
+    "immigrants": 4,
+    "design_apps": 40,
+    "meta_apps": 3,
+    "hof_cap": 12,
+    "hof_weight": 0.5,
+    "audit_every": 3,
+    "auditor": true,
+    "retire_below": 100,
+    "dormant_limit": 5,
+    "min_design_heuristics": 8,
+    "max_design_heuristics": 60,
+    "per_heuristic_cap": 6,
+    "ucb_c": 0.3,
+    "invent_k": 3,
+    "max_llm_calls_per_generation": 2,
+    "recent_keep": 8,
+    "credit": {
+      "alpha": 0.2,
+      "lam": 0.5,
+      "scale": 0.05
+    },
+    "audit": {
+      "replication_min_worth": 600,
+      "replication_min_apps": 5,
+      "replication_pairs": 5,
+      "demote_non_replicating_to": 400,
+      "parasite_ratio": 0.5,
+      "parasite_min_contributions": 3,
+      "demote_parasite_to": 300,
+      "probes": 32
+    }
+  },
+  "seeds": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7
+  ],
+  "seconds": 123.9,
+  "baseline_n": 3000,
+  "parts": [
+    {
+      "part": "witch",
+      "evolved": 0.95,
+      "lo": 0.6,
+      "hi": 1.0,
+      "baseline": 0.3123,
+      "lift": 3.042,
+      "champion_runs": 7,
+      "runs": 8,
+      "flags": [
+        "dominant"
+      ]
+    },
+    {
+      "part": "werewolf",
+      "evolved": 0.675,
+      "lo": 0.2,
+      "hi": 1.0,
+      "baseline": 0.3217,
+      "lift": 2.098,
+      "champion_runs": 6,
+      "runs": 8,
+      "flags": []
+    },
+    {
+      "part": "flesh_golem",
+      "evolved": 0.525,
+      "lo": 0.0,
+      "hi": 1.0,
+      "baseline": 0.4017,
+      "lift": 1.307,
+      "champion_runs": 4,
+      "runs": 8,
+      "flags": []
+    },
+    {
+      "part": "ghost",
+      "evolved": 0.425,
+      "lo": 0.0,
+      "hi": 1.0,
+      "baseline": 0.3133,
+      "lift": 1.356,
+      "champion_runs": 4,
+      "runs": 8,
+      "flags": []
+    },
+    {
+      "part": "pumpkin_mage",
+      "evolved": 0.35,
+      "lo": 0.0,
+      "hi": 1.0,
+      "baseline": 0.4013,
+      "lift": 0.872,
+      "champion_runs": 4,
+      "runs": 8,
+      "flags": []
+    },
+    {
+      "part": "gargoyle",
+      "evolved": 0.3,
+      "lo": 0.0,
+      "hi": 0.8,
+      "baseline": 0.3273,
+      "lift": 0.916,
+      "champion_runs": 2,
+      "runs": 8,
+      "flags": []
+    },
+    {
+      "part": "hellhound",
+      "evolved": 0.175,
+      "lo": 0.0,
+      "hi": 1.0,
+      "baseline": 0.3953,
+      "lift": 0.443,
+      "champion_runs": 1,
+      "runs": 8,
+      "flags": []
+    },
+    {
+      "part": "scarecrow",
+      "evolved": 0.175,
+      "lo": 0.0,
+      "hi": 0.8,
+      "baseline": 0.2677,
+      "lift": 0.654,
+      "champion_runs": 1,
+      "runs": 8,
+      "flags": []
+    },
+    {
+      "part": "zombie",
+      "evolved": 0.1,
+      "lo": 0.0,
+      "hi": 0.4,
+      "baseline": 0.2757,
+      "lift": 0.363,
+      "champion_runs": 0,
+      "runs": 8,
+      "flags": []
+    },
+    {
+      "part": "bat_swarm",
+      "evolved": 0.1,
+      "lo": 0.0,
+      "hi": 0.6,
+      "baseline": 0.2663,
+      "lift": 0.375,
+      "champion_runs": 0,
+      "runs": 8,
+      "flags": []
+    },
+    {
+      "part": "skeleton",
+      "evolved": 0.025,
+      "lo": 0.0,
+      "hi": 0.2,
+      "baseline": 0.284,
+      "lift": 0.088,
+      "champion_runs": 0,
+      "runs": 8,
+      "flags": [
+        "underused"
+      ]
+    },
+    {
+      "part": "necromancer",
+      "evolved": 0.0,
+      "lo": 0.0,
+      "hi": 0.0,
+      "baseline": 0.3933,
+      "lift": 0.0,
+      "champion_runs": 0,
+      "runs": 8,
+      "flags": [
+        "underused"
+      ]
+    }
+  ],
+  "dominant": [
+    {
+      "part": "witch",
+      "dependence": {
+        "mean": 0.2128,
+        "per_champion": [
+          {
+            "seed": 0,
+            "champion": [
+              "flesh_golem",
+              "werewolf",
+              "pumpkin_mage",
+              "witch"
+            ],
+            "score": 0.875,
+            "best_alternative": "ghost",
+            "alt_score": 0.625,
+            "drop": 0.25
+          },
+          {
+            "seed": 2,
+            "champion": [
+              "werewolf",
+              "werewolf",
+              "ghost",
+              "witch",
+              "witch"
+            ],
+            "score": 0.75,
+            "best_alternative": "skeleton",
+            "alt_score": 0.5,
+            "drop": 0.25
+          },
+          {
+            "seed": 3,
+            "champion": [
+              "gargoyle",
+              "scarecrow",
+              "witch",
+              "pumpkin_mage",
+              "witch"
+            ],
+            "score": 0.9583,
+            "best_alternative": "ghost",
+            "alt_score": 0.6667,
+            "drop": 0.2917
+          },
+          {
+            "seed": 4,
+            "champion": [
+              "flesh_golem",
+              "werewolf",
+              "pumpkin_mage",
+              "witch"
+            ],
+            "score": 0.875,
+            "best_alternative": "ghost",
+            "alt_score": 0.625,
+            "drop": 0.25
+          },
+          {
+            "seed": 5,
+            "champion": [
+              "werewolf",
+              "werewolf",
+              "witch",
+              "ghost",
+              "witch"
+            ],
+            "score": 0.75,
+            "best_alternative": "skeleton",
+            "alt_score": 0.5,
+            "drop": 0.25
+          },
+          {
+            "seed": 6,
+            "champion": [
+              "flesh_golem",
+              "hellhound",
+              "werewolf",
+              "witch"
+            ],
+            "score": 0.5312,
+            "best_alternative": "ghost",
+            "alt_score": 0.5833,
+            "drop": -0.0521
+          },
+          {
+            "seed": 7,
+            "champion": [
+              "werewolf",
+              "werewolf",
+              "ghost",
+              "witch",
+              "witch"
+            ],
+            "score": 0.75,
+            "best_alternative": "skeleton",
+            "alt_score": 0.5,
+            "drop": 0.25
+          }
+        ]
+      },
+      "evidence": [
+        {
+          "text": "IF winrate_vs_beast_rush<0.5 THEN replace_unit(old=@cheapest, new=witch)",
+          "worth": 843.8,
+          "applications": 39,
+          "improvements": 33,
+          "runs": 2
+        },
+        {
+          "text": "IF n_ranged==0 THEN replace_unit(old=@cheapest, new=witch)",
+          "worth": 773.0,
+          "applications": 109,
+          "improvements": 73,
+          "runs": 8
+        },
+        {
+          "text": "IF always THEN replace_unit(old=@cheapest, new=witch)",
+          "worth": 723.5,
+          "applications": 81,
+          "improvements": 52,
+          "runs": 3
+        },
+        {
+          "text": "IF n_ranged==0 THEN replace_unit(old=zombie, new=witch)",
+          "worth": 600.0,
+          "applications": 1,
+          "improvements": 1,
+          "runs": 1
+        },
+        {
+          "text": "IF n_ranged==0 AND front_armor<=0 THEN replace_unit(old=@cheapest, new=witch)",
+          "worth": 600.0,
+          "applications": 3,
+          "improvements": 1,
+          "runs": 1
+        }
+      ],
+      "matchups": null,
+      "matchups_note": "skipped: 5 distinct champions with witch, 1 without (need 2 of each)",
+      "patches": [
+        {
+          "patch": {
+            "target": "flesh_golem",
+            "field": "atk",
+            "old": 10.0,
+            "new": 8.0,
+            "label": ""
+          },
+          "base_patches": [
+            {
+              "target": "witch",
+              "field": "cost",
+              "old": 2.0,
+              "new": 3.0,
+              "label": ""
+            }
+          ],
+          "before": [
+            {
+              "part": "flesh_golem",
+              "evolved": 0.7333,
+              "lo": 0.0,
+              "hi": 1.0,
+              "baseline": 0.369,
+              "lift": 1.987,
+              "champion_runs": 5,
+              "runs": 6,
+              "flags": [
+                "dominant"
+              ]
+            },
+            {
+              "part": "pumpkin_mage",
+              "evolved": 0.6,
+              "lo": 0.2,
+              "hi": 1.0,
+              "baseline": 0.371,
+              "lift": 1.617,
+              "champion_runs": 4,
+              "runs": 6,
+              "flags": []
+            },
+            {
+              "part": "ghost",
+              "evolved": 0.5333,
+              "lo": 0.0,
+              "hi": 1.0,
+              "baseline": 0.297,
+              "lift": 1.796,
+              "champion_runs": 4,
+              "runs": 6,
+              "flags": []
+            },
+            {
+              "part": "werewolf",
+              "evolved": 0.4667,
+              "lo": 0.0,
+              "hi": 1.0,
+              "baseline": 0.314,
+              "lift": 1.486,
+              "champion_runs": 3,
+              "runs": 6,
+              "flags": []
+            },
+            {
+              "part": "witch",
+              "evolved": 0.4,
+              "lo": 0.0,
+              "hi": 1.0,
+              "baseline": 0.3617,
+              "lift": 1.106,
+              "champion_runs": 3,
+              "runs": 6,
+              "flags": []
+            },
+            {
+              "part": "zombie",
+              "evolved": 0.2667,
+              "lo": 0.0,
+              "hi": 0.6,
+              "baseline": 0.2807,
+              "lift": 0.95,
+              "champion_runs": 1,
+              "runs": 6,
+              "flags": []
+            },
+            {
+              "part": "skeleton",
+              "evolved": 0.2333,
+              "lo": 0.0,
+              "hi": 0.6,
+              "baseline": 0.295,
+              "lift": 0.791,
+              "champion_runs": 0,
+              "runs": 6,
+              "flags": []
+            },
+            {
+              "part": "bat_swarm",
+              "evolved": 0.2333,
+              "lo": 0.0,
+              "hi": 0.8,
+              "baseline": 0.2887,
+              "lift": 0.808,
+              "champion_runs": 1,
+              "runs": 6,
+              "flags": []
+            },
+            {
+              "part": "gargoyle",
+              "evolved": 0.2333,
+              "lo": 0.0,
+              "hi": 0.6,
+              "baseline": 0.313,
+              "lift": 0.745,
+              "champion_runs": 1,
+              "runs": 6,
+              "flags": []
+            },
+            {
+              "part": "hellhound",
+              "evolved": 0.1667,
+              "lo": 0.0,
+              "hi": 0.4,
+              "baseline": 0.3677,
+              "lift": 0.453,
+              "champion_runs": 1,
+              "runs": 6,
+              "flags": []
+            },
+            {
+              "part": "scarecrow",
+              "evolved": 0.1,
+              "lo": 0.0,
+              "hi": 0.4,
+              "baseline": 0.274,
+              "lift": 0.365,
+              "champion_runs": 0,
+              "runs": 6,
+              "flags": []
+            },
+            {
+              "part": "necromancer",
+              "evolved": 0.0,
+              "lo": 0.0,
+              "hi": 0.0,
+              "baseline": 0.3617,
+              "lift": 0.0,
+              "champion_runs": 0,
+              "runs": 6,
+              "flags": [
+                "underused"
+              ]
+            }
+          ],
+          "after": [
+            {
+              "part": "witch",
+              "evolved": 0.6667,
+              "lo": 0.2,
+              "hi": 1.0,
+              "baseline": 0.3617,
+              "lift": 1.843,
+              "champion_runs": 4,
+              "runs": 6,
+              "flags": []
+            },
+            {
+              "part": "werewolf",
+              "evolved": 0.5333,
+              "lo": 0.2,
+              "hi": 1.0,
+              "baseline": 0.314,
+              "lift": 1.699,
+              "champion_runs": 5,
+              "runs": 6,
+              "flags": []
+            },
+            {
+              "part": "hellhound",
+              "evolved": 0.4667,
+              "lo": 0.0,
+              "hi": 1.0,
+              "baseline": 0.3677,
+              "lift": 1.269,
+              "champion_runs": 4,
+              "runs": 6,
+              "flags": []
+            },
+            {
+              "part": "pumpkin_mage",
+              "evolved": 0.4333,
+              "lo": 0.0,
+              "hi": 0.8,
+              "baseline": 0.371,
+              "lift": 1.168,
+              "champion_runs": 3,
+              "runs": 6,
+              "flags": []
+            },
+            {
+              "part": "ghost",
+              "evolved": 0.3667,
+              "lo": 0.0,
+              "hi": 0.8,
+              "baseline": 0.297,
+              "lift": 1.235,
+              "champion_runs": 3,
+              "runs": 6,
+              "flags": []
+            },
+            {
+              "part": "flesh_golem",
+              "evolved": 0.3667,
+              "lo": 0.0,
+              "hi": 0.6,
+              "baseline": 0.369,
+              "lift": 0.994,
+              "champion_runs": 2,
+              "runs": 6,
+              "flags": []
+            },
+            {
+              "part": "gargoyle",
+              "evolved": 0.2667,
+              "lo": 0.0,
+              "hi": 0.6,
+              "baseline": 0.313,
+              "lift": 0.852,
+              "champion_runs": 0,
+              "runs": 6,
+              "flags": []
+            },
+            {
+              "part": "skeleton",
+              "evolved": 0.2333,
+              "lo": 0.0,
+              "hi": 0.6,
+              "baseline": 0.295,
+              "lift": 0.791,
+              "champion_runs": 1,
+              "runs": 6,
+              "flags": []
+            },
+            {
+              "part": "zombie",
+              "evolved": 0.2333,
+              "lo": 0.0,
+              "hi": 0.6,
+              "baseline": 0.2807,
+              "lift": 0.831,
+              "champion_runs": 2,
+              "runs": 6,
+              "flags": []
+            },
+            {
+              "part": "bat_swarm",
+              "evolved": 0.1333,
+              "lo": 0.0,
+              "hi": 0.4,
+              "baseline": 0.2887,
+              "lift": 0.462,
+              "champion_runs": 0,
+              "runs": 6,
+              "flags": []
+            },
+            {
+              "part": "scarecrow",
+              "evolved": 0.0667,
+              "lo": 0.0,
+              "hi": 0.4,
+              "baseline": 0.274,
+              "lift": 0.243,
+              "champion_runs": 0,
+              "runs": 6,
+              "flags": []
+            },
+            {
+              "part": "necromancer",
+              "evolved": 0.0,
+              "lo": 0.0,
+              "hi": 0.0,
+              "baseline": 0.3617,
+              "lift": 0.0,
+              "champion_runs": 0,
+              "runs": 6,
+              "flags": [
+                "underused"
+              ]
+            }
+          ],
+          "target_before": 0.7333,
+          "target_after": 0.3667,
+          "target_lift_after": 0.994,
+          "top_after": "witch",
+          "top_after_share": 0.6667,
+          "new_dominant": [],
+          "champion_held_out": 0.9879,
+          "effective": true,
+          "failed": [],
+          "dropped_opponents": [
+            "arcane_backline"
+          ],
+          "seconds": 32.6
+        },
+        {
+          "patch": {
+            "target": "witch",
+            "field": "cost",
+            "old": 2.0,
+            "new": 3.0,
+            "label": ""
+          },
+          "base_patches": [],
+          "before": [
+            {
+              "part": "witch",
+              "evolved": 0.9333,
+              "lo": 0.6,
+              "hi": 1.0,
+              "baseline": 0.3123,
+              "lift": 2.988,
+              "champion_runs": 5,
+              "runs": 6,
+              "flags": [
+                "dominant"
+              ]
+            },
+            {
+              "part": "werewolf",
+              "evolved": 0.6333,
+              "lo": 0.2,
+              "hi": 1.0,
+              "baseline": 0.3217,
+              "lift": 1.969,
+              "champion_runs": 4,
+              "runs": 6,
+              "flags": []
+            },
+            {
+              "part": "flesh_golem",
+              "evolved": 0.5,
+              "lo": 0.0,
+              "hi": 1.0,
+              "baseline": 0.4017,
+              "lift": 1.245,
+              "champion_runs": 3,
+              "runs": 6,
+              "flags": []
+            },
+            {
+              "part": "pumpkin_mage",
+              "evolved": 0.4667,
+              "lo": 0.0,
+              "hi": 1.0,
+              "baseline": 0.4013,
+              "lift": 1.163,
+              "champion_runs": 4,
+              "runs": 6,
+              "flags": []
+            },
+            {
+              "part": "ghost",
+              "evolved": 0.4333,
+              "lo": 0.0,
+              "hi": 1.0,
+              "baseline": 0.3133,
+              "lift": 1.383,
+              "champion_runs": 3,
+              "runs": 6,
+              "flags": []
+            },
+            {
+              "part": "gargoyle",
+              "evolved": 0.4,
+              "lo": 0.0,
+              "hi": 0.8,
+              "baseline": 0.3273,
+              "lift": 1.222,
+              "champion_runs": 2,
+              "runs": 6,
+              "flags": []
+            },
+            {
+              "part": "scarecrow",
+              "evolved": 0.2,
+              "lo": 0.0,
+              "hi": 0.8,
+              "baseline": 0.2677,
+              "lift": 0.747,
+              "champion_runs": 1,
+              "runs": 6,
+              "flags": []
+            },
+            {
+              "part": "zombie",
+              "evolved": 0.1,
+              "lo": 0.0,
+              "hi": 0.4,
+              "baseline": 0.2757,
+              "lift": 0.363,
+              "champion_runs": 0,
+              "runs": 6,
+              "flags": []
+            },
+            {
+              "part": "bat_swarm",
+              "evolved": 0.1,
+              "lo": 0.0,
+              "hi": 0.6,
+              "baseline": 0.2663,
+              "lift": 0.375,
+              "champion_runs": 0,
+              "runs": 6,
+              "flags": []
+            },
+            {
+              "part": "hellhound",
+              "evolved": 0.0333,
+              "lo": 0.0,
+              "hi": 0.2,
+              "baseline": 0.3953,
+              "lift": 0.084,
+              "champion_runs": 0,
+              "runs": 6,
+              "flags": [
+                "underused"
+              ]
+            },
+            {
+              "part": "skeleton",
+              "evolved": 0.0,
+              "lo": 0.0,
+              "hi": 0.0,
+              "baseline": 0.284,
+              "lift": 0.0,
+              "champion_runs": 0,
+              "runs": 6,
+              "flags": [
+                "underused"
+              ]
+            },
+            {
+              "part": "necromancer",
+              "evolved": 0.0,
+              "lo": 0.0,
+              "hi": 0.0,
+              "baseline": 0.3933,
+              "lift": 0.0,
+              "champion_runs": 0,
+              "runs": 6,
+              "flags": [
+                "underused"
+              ]
+            }
+          ],
+          "after": [
+            {
+              "part": "flesh_golem",
+              "evolved": 0.7333,
+              "lo": 0.0,
+              "hi": 1.0,
+              "baseline": 0.369,
+              "lift": 1.987,
+              "champion_runs": 5,
+              "runs": 6,
+              "flags": [
+                "dominant"
+              ]
+            },
+            {
+              "part": "pumpkin_mage",
+              "evolved": 0.6,
+              "lo": 0.2,
+              "hi": 1.0,
+              "baseline": 0.371,
+              "lift": 1.617,
+              "champion_runs": 4,
+              "runs": 6,
+              "flags": []
+            },
+            {
+              "part": "ghost",
+              "evolved": 0.5333,
+              "lo": 0.0,
+              "hi": 1.0,
+              "baseline": 0.297,
+              "lift": 1.796,
+              "champion_runs": 4,
+              "runs": 6,
+              "flags": []
+            },
+            {
+              "part": "werewolf",
+              "evolved": 0.4667,
+              "lo": 0.0,
+              "hi": 1.0,
+              "baseline": 0.314,
+              "lift": 1.486,
+              "champion_runs": 3,
+              "runs": 6,
+              "flags": []
+            },
+            {
+              "part": "witch",
+              "evolved": 0.4,
+              "lo": 0.0,
+              "hi": 1.0,
+              "baseline": 0.3617,
+              "lift": 1.106,
+              "champion_runs": 3,
+              "runs": 6,
+              "flags": []
+            },
+            {
+              "part": "zombie",
+              "evolved": 0.2667,
+              "lo": 0.0,
+              "hi": 0.6,
+              "baseline": 0.2807,
+              "lift": 0.95,
+              "champion_runs": 1,
+              "runs": 6,
+              "flags": []
+            },
+            {
+              "part": "skeleton",
+              "evolved": 0.2333,
+              "lo": 0.0,
+              "hi": 0.6,
+              "baseline": 0.295,
+              "lift": 0.791,
+              "champion_runs": 0,
+              "runs": 6,
+              "flags": []
+            },
+            {
+              "part": "bat_swarm",
+              "evolved": 0.2333,
+              "lo": 0.0,
+              "hi": 0.8,
+              "baseline": 0.2887,
+              "lift": 0.808,
+              "champion_runs": 1,
+              "runs": 6,
+              "flags": []
+            },
+            {
+              "part": "gargoyle",
+              "evolved": 0.2333,
+              "lo": 0.0,
+              "hi": 0.6,
+              "baseline": 0.313,
+              "lift": 0.745,
+              "champion_runs": 1,
+              "runs": 6,
+              "flags": []
+            },
+            {
+              "part": "hellhound",
+              "evolved": 0.1667,
+              "lo": 0.0,
+              "hi": 0.4,
+              "baseline": 0.3677,
+              "lift": 0.453,
+              "champion_runs": 1,
+              "runs": 6,
+              "flags": []
+            },
+            {
+              "part": "scarecrow",
+              "evolved": 0.1,
+              "lo": 0.0,
+              "hi": 0.4,
+              "baseline": 0.274,
+              "lift": 0.365,
+              "champion_runs": 0,
+              "runs": 6,
+              "flags": []
+            },
+            {
+              "part": "necromancer",
+              "evolved": 0.0,
+              "lo": 0.0,
+              "hi": 0.0,
+              "baseline": 0.3617,
+              "lift": 0.0,
+              "champion_runs": 0,
+              "runs": 6,
+              "flags": [
+                "underused"
+              ]
+            }
+          ],
+          "target_before": 0.9333,
+          "target_after": 0.4,
+          "target_lift_after": 1.106,
+          "top_after": "flesh_golem",
+          "top_after_share": 0.7333,
+          "new_dominant": [
+            "flesh_golem"
+          ],
+          "champion_held_out": 0.9903,
+          "effective": false,
+          "failed": [
+            "new dominant: flesh_golem"
+          ],
+          "dropped_opponents": [
+            "arcane_backline"
+          ],
+          "seconds": 55.6
+        },
+        {
+          "patch": {
+            "target": "flesh_golem",
+            "field": "cost",
+            "old": 3.0,
+            "new": 4.0,
+            "label": ""
+          },
+          "base_patches": [
+            {
+              "target": "witch",
+              "field": "cost",
+              "old": 2.0,
+              "new": 3.0,
+              "label": ""
+            }
+          ],
+          "before": [
+            {
+              "part": "flesh_golem",
+              "evolved": 0.7333,
+              "lo": 0.0,
+              "hi": 1.0,
+              "baseline": 0.369,
+              "lift": 1.987,
+              "champion_runs": 5,
+              "runs": 6,
+              "flags": [
+                "dominant"
+              ]
+            },
+            {
+              "part": "pumpkin_mage",
+              "evolved": 0.6,
+              "lo": 0.2,
+              "hi": 1.0,
+              "baseline": 0.371,
+              "lift": 1.617,
+              "champion_runs": 4,
+              "runs": 6,
+              "flags": []
+            },
+            {
+              "part": "ghost",
+              "evolved": 0.5333,
+              "lo": 0.0,
+              "hi": 1.0,
+              "baseline": 0.297,
+              "lift": 1.796,
+              "champion_runs": 4,
+              "runs": 6,
+              "flags": []
+            },
+            {
+              "part": "werewolf",
+              "evolved": 0.4667,
+              "lo": 0.0,
+              "hi": 1.0,
+              "baseline": 0.314,
+              "lift": 1.486,
+              "champion_runs": 3,
+              "runs": 6,
+              "flags": []
+            },
+            {
+              "part": "witch",
+              "evolved": 0.4,
+              "lo": 0.0,
+              "hi": 1.0,
+              "baseline": 0.3617,
+              "lift": 1.106,
+              "champion_runs": 3,
+              "runs": 6,
+              "flags": []
+            },
+            {
+              "part": "zombie",
+              "evolved": 0.2667,
+              "lo": 0.0,
+              "hi": 0.6,
+              "baseline": 0.2807,
+              "lift": 0.95,
+              "champion_runs": 1,
+              "runs": 6,
+              "flags": []
+            },
+            {
+              "part": "skeleton",
+              "evolved": 0.2333,
+              "lo": 0.0,
+              "hi": 0.6,
+              "baseline": 0.295,
+              "lift": 0.791,
+              "champion_runs": 0,
+              "runs": 6,
+              "flags": []
+            },
+            {
+              "part": "bat_swarm",
+              "evolved": 0.2333,
+              "lo": 0.0,
+              "hi": 0.8,
+              "baseline": 0.2887,
+              "lift": 0.808,
+              "champion_runs": 1,
+              "runs": 6,
+              "flags": []
+            },
+            {
+              "part": "gargoyle",
+              "evolved": 0.2333,
+              "lo": 0.0,
+              "hi": 0.6,
+              "baseline": 0.313,
+              "lift": 0.745,
+              "champion_runs": 1,
+              "runs": 6,
+              "flags": []
+            },
+            {
+              "part": "hellhound",
+              "evolved": 0.1667,
+              "lo": 0.0,
+              "hi": 0.4,
+              "baseline": 0.3677,
+              "lift": 0.453,
+              "champion_runs": 1,
+              "runs": 6,
+              "flags": []
+            },
+            {
+              "part": "scarecrow",
+              "evolved": 0.1,
+              "lo": 0.0,
+              "hi": 0.4,
+              "baseline": 0.274,
+              "lift": 0.365,
+              "champion_runs": 0,
+              "runs": 6,
+              "flags": []
+            },
+            {
+              "part": "necromancer",
+              "evolved": 0.0,
+              "lo": 0.0,
+              "hi": 0.0,
+              "baseline": 0.3617,
+              "lift": 0.0,
+              "champion_runs": 0,
+              "runs": 6,
+              "flags": [
+                "underused"
+              ]
+            }
+          ],
+          "after": [
+            {
+              "part": "werewolf",
+              "evolved": 0.8,
+              "lo": 0.4,
+              "hi": 1.0,
+              "baseline": 0.302,
+              "lift": 2.649,
+              "champion_runs": 5,
+              "runs": 6,
+              "flags": [
+                "dominant"
+              ]
+            },
+            {
+              "part": "pumpkin_mage",
+              "evolved": 0.6333,
+              "lo": 0.4,
+              "hi": 1.0,
+              "baseline": 0.344,
+              "lift": 1.841,
+              "champion_runs": 3,
+              "runs": 6,
+              "flags": []
+            },
+            {
+              "part": "witch",
+              "evolved": 0.4667,
+              "lo": 0.2,
+              "hi": 0.8,
+              "baseline": 0.3367,
+              "lift": 1.386,
+              "champion_runs": 3,
+              "runs": 6,
+              "flags": []
+            },
+            {
+              "part": "ghost",
+              "evolved": 0.4,
+              "lo": 0.0,
+              "hi": 0.6,
+              "baseline": 0.2867,
+              "lift": 1.395,
+              "champion_runs": 4,
+              "runs": 6,
+              "flags": []
+            },
+            {
+              "part": "gargoyle",
+              "evolved": 0.3,
+              "lo": 0.2,
+              "hi": 0.6,
+              "baseline": 0.3177,
+              "lift": 0.944,
+              "champion_runs": 0,
+              "runs": 6,
+              "flags": []
+            },
+            {
+              "part": "skeleton",
+              "evolved": 0.2667,
+              "lo": 0.0,
+              "hi": 1.0,
+              "baseline": 0.2953,
+              "lift": 0.903,
+              "champion_runs": 1,
+              "runs": 6,
+              "flags": []
+            },
+            {
+              "part": "bat_swarm",
+              "evolved": 0.2667,
+              "lo": 0.0,
+              "hi": 0.6,
+              "baseline": 0.2827,
+              "lift": 0.943,
+              "champion_runs": 4,
+              "runs": 6,
+              "flags": []
+            },
+            {
+              "part": "hellhound",
+              "evolved": 0.2667,
+              "lo": 0.0,
+              "hi": 0.4,
+              "baseline": 0.3377,
+              "lift": 0.79,
+              "champion_runs": 3,
+              "runs": 6,
+              "flags": []
+            },
+            {
+              "part": "scarecrow",
+              "evolved": 0.2,
+              "lo": 0.0,
+              "hi": 0.8,
+              "baseline": 0.28,
+              "lift": 0.714,
+              "champion_runs": 2,
+              "runs": 6,
+              "flags": []
+            },
+            {
+              "part": "zombie",
+              "evolved": 0.1,
+              "lo": 0.0,
+              "hi": 0.2,
+              "baseline": 0.2837,
+              "lift": 0.353,
+              "champion_runs": 0,
+              "runs": 6,
+              "flags": []
+            },
+            {
+              "part": "flesh_golem",
+              "evolved": 0.1,
+              "lo": 0.0,
+              "hi": 0.6,
+              "baseline": 0.3927,
+              "lift": 0.255,
+              "champion_runs": 1,
+              "runs": 6,
+              "flags": []
+            },
+            {
+              "part": "necromancer",
+              "evolved": 0.0,
+              "lo": 0.0,
+              "hi": 0.0,
+              "baseline": 0.338,
+              "lift": 0.0,
+              "champion_runs": 0,
+              "runs": 6,
+              "flags": [
+                "underused"
+              ]
+            }
+          ],
+          "target_before": 0.7333,
+          "target_after": 0.1,
+          "target_lift_after": 0.255,
+          "top_after": "werewolf",
+          "top_after_share": 0.8,
+          "new_dominant": [
+            "werewolf"
+          ],
+          "champion_held_out": 0.9903,
+          "effective": false,
+          "failed": [
+            "new dominant: werewolf"
+          ],
+          "dropped_opponents": [
+            "arcane_backline"
+          ],
+          "seconds": 32.6
+        },
+        {
+          "patch": {
+            "target": "witch",
+            "field": "ability.amount",
+            "old": 12.0,
+            "new": 8.0,
+            "label": ""
+          },
+          "base_patches": [],
+          "before": [
+            {
+              "part": "witch",
+              "evolved": 0.9333,
+              "lo": 0.6,
+              "hi": 1.0,
+              "baseline": 0.3123,
+              "lift": 2.988,
+              "champion_runs": 5,
+              "runs": 6,
+              "flags": [
+                "dominant"
+              ]
+            },
+            {
+              "part": "werewolf",
+              "evolved": 0.6333,
+              "lo": 0.2,
+              "hi": 1.0,
+              "baseline": 0.3217,
+              "lift": 1.969,
+              "champion_runs": 4,
+              "runs": 6,
+              "flags": []
+            },
+            {
+              "part": "flesh_golem",
+              "evolved": 0.5,
+              "lo": 0.0,
+              "hi": 1.0,
+              "baseline": 0.4017,
+              "lift": 1.245,
+              "champion_runs": 3,
+              "runs": 6,
+              "flags": []
+            },
+            {
+              "part": "pumpkin_mage",
+              "evolved": 0.4667,
+              "lo": 0.0,
+              "hi": 1.0,
+              "baseline": 0.4013,
+              "lift": 1.163,
+              "champion_runs": 4,
+              "runs": 6,
+              "flags": []
+            },
+            {
+              "part": "ghost",
+              "evolved": 0.4333,
+              "lo": 0.0,
+              "hi": 1.0,
+              "baseline": 0.3133,
+              "lift": 1.383,
+              "champion_runs": 3,
+              "runs": 6,
+              "flags": []
+            },
+            {
+              "part": "gargoyle",
+              "evolved": 0.4,
+              "lo": 0.0,
+              "hi": 0.8,
+              "baseline": 0.3273,
+              "lift": 1.222,
+              "champion_runs": 2,
+              "runs": 6,
+              "flags": []
+            },
+            {
+              "part": "scarecrow",
+              "evolved": 0.2,
+              "lo": 0.0,
+              "hi": 0.8,
+              "baseline": 0.2677,
+              "lift": 0.747,
+              "champion_runs": 1,
+              "runs": 6,
+              "flags": []
+            },
+            {
+              "part": "zombie",
+              "evolved": 0.1,
+              "lo": 0.0,
+              "hi": 0.4,
+              "baseline": 0.2757,
+              "lift": 0.363,
+              "champion_runs": 0,
+              "runs": 6,
+              "flags": []
+            },
+            {
+              "part": "bat_swarm",
+              "evolved": 0.1,
+              "lo": 0.0,
+              "hi": 0.6,
+              "baseline": 0.2663,
+              "lift": 0.375,
+              "champion_runs": 0,
+              "runs": 6,
+              "flags": []
+            },
+            {
+              "part": "hellhound",
+              "evolved": 0.0333,
+              "lo": 0.0,
+              "hi": 0.2,
+              "baseline": 0.3953,
+              "lift": 0.084,
+              "champion_runs": 0,
+              "runs": 6,
+              "flags": [
+                "underused"
+              ]
+            },
+            {
+              "part": "skeleton",
+              "evolved": 0.0,
+              "lo": 0.0,
+              "hi": 0.0,
+              "baseline": 0.284,
+              "lift": 0.0,
+              "champion_runs": 0,
+              "runs": 6,
+              "flags": [
+                "underused"
+              ]
+            },
+            {
+              "part": "necromancer",
+              "evolved": 0.0,
+              "lo": 0.0,
+              "hi": 0.0,
+              "baseline": 0.3933,
+              "lift": 0.0,
+              "champion_runs": 0,
+              "runs": 6,
+              "flags": [
+                "underused"
+              ]
+            }
+          ],
+          "after": [
+            {
+              "part": "witch",
+              "evolved": 0.7667,
+              "lo": 0.4,
+              "hi": 1.0,
+              "baseline": 0.3123,
+              "lift": 2.455,
+              "champion_runs": 4,
+              "runs": 6,
+              "flags": [
+                "dominant"
+              ]
+            },
+            {
+              "part": "pumpkin_mage",
+              "evolved": 0.6667,
+              "lo": 0.4,
+              "hi": 1.0,
+              "baseline": 0.4013,
+              "lift": 1.661,
+              "champion_runs": 4,
+              "runs": 6,
+              "flags": []
+            },
+            {
+              "part": "flesh_golem",
+              "evolved": 0.6333,
+              "lo": 0.0,
+              "hi": 1.0,
+              "baseline": 0.4017,
+              "lift": 1.577,
+              "champion_runs": 5,
+              "runs": 6,
+              "flags": []
+            },
+            {
+              "part": "werewolf",
+              "evolved": 0.4,
+              "lo": 0.0,
+              "hi": 1.0,
+              "baseline": 0.3217,
+              "lift": 1.244,
+              "champion_runs": 3,
+              "runs": 6,
+              "flags": []
+            },
+            {
+              "part": "hellhound",
+              "evolved": 0.3,
+              "lo": 0.0,
+              "hi": 1.0,
+              "baseline": 0.3953,
+              "lift": 0.759,
+              "champion_runs": 3,
+              "runs": 6,
+              "flags": []
+            },
+            {
+              "part": "ghost",
+              "evolved": 0.2667,
+              "lo": 0.0,
+              "hi": 0.8,
+              "baseline": 0.3133,
+              "lift": 0.851,
+              "champion_runs": 3,
+              "runs": 6,
+              "flags": []
+            },
+            {
+              "part": "gargoyle",
+              "evolved": 0.2667,
+              "lo": 0.0,
+              "hi": 0.6,
+              "baseline": 0.3273,
+              "lift": 0.815,
+              "champion_runs": 1,
+              "runs": 6,
+              "flags": []
+            },
+            {
+              "part": "scarecrow",
+              "evolved": 0.2333,
+              "lo": 0.0,
+              "hi": 0.6,
+              "baseline": 0.2677,
+              "lift": 0.872,
+              "champion_runs": 0,
+              "runs": 6,
+              "flags": []
+            },
+            {
+              "part": "bat_swarm",
+              "evolved": 0.1667,
+              "lo": 0.0,
+              "hi": 0.6,
+              "baseline": 0.2663,
+              "lift": 0.626,
+              "champion_runs": 0,
+              "runs": 6,
+              "flags": []
+            },
+            {
+              "part": "zombie",
+              "evolved": 0.1333,
+              "lo": 0.0,
+              "hi": 0.4,
+              "baseline": 0.2757,
+              "lift": 0.484,
+              "champion_runs": 0,
+              "runs": 6,
+              "flags": []
+            },
+            {
+              "part": "skeleton",
+              "evolved": 0.0667,
+              "lo": 0.0,
+              "hi": 0.4,
+              "baseline": 0.284,
+              "lift": 0.235,
+              "champion_runs": 0,
+              "runs": 6,
+              "flags": []
+            },
+            {
+              "part": "necromancer",
+              "evolved": 0.0,
+              "lo": 0.0,
+              "hi": 0.0,
+              "baseline": 0.3933,
+              "lift": 0.0,
+              "champion_runs": 0,
+              "runs": 6,
+              "flags": [
+                "underused"
+              ]
+            }
+          ],
+          "target_before": 0.9333,
+          "target_after": 0.7667,
+          "target_lift_after": 2.455,
+          "top_after": "witch",
+          "top_after_share": 0.7667,
+          "new_dominant": [],
+          "champion_held_out": 1.0,
+          "effective": false,
+          "failed": [
+            "witch is still dominant (share 0.77, lift 2.5)"
+          ],
+          "dropped_opponents": [],
+          "seconds": 55.6
+        },
+        {
+          "patch": {
+            "target": "witch",
+            "field": "hp",
+            "old": 45.0,
+            "new": 36.0,
+            "label": ""
+          },
+          "base_patches": [],
+          "before": [
+            {
+              "part": "witch",
+              "evolved": 0.9333,
+              "lo": 0.6,
+              "hi": 1.0,
+              "baseline": 0.3123,
+              "lift": 2.988,
+              "champion_runs": 5,
+              "runs": 6,
+              "flags": [
+                "dominant"
+              ]
+            },
+            {
+              "part": "werewolf",
+              "evolved": 0.6333,
+              "lo": 0.2,
+              "hi": 1.0,
+              "baseline": 0.3217,
+              "lift": 1.969,
+              "champion_runs": 4,
+              "runs": 6,
+              "flags": []
+            },
+            {
+              "part": "flesh_golem",
+              "evolved": 0.5,
+              "lo": 0.0,
+              "hi": 1.0,
+              "baseline": 0.4017,
+              "lift": 1.245,
+              "champion_runs": 3,
+              "runs": 6,
+              "flags": []
+            },
+            {
+              "part": "pumpkin_mage",
+              "evolved": 0.4667,
+              "lo": 0.0,
+              "hi": 1.0,
+              "baseline": 0.4013,
+              "lift": 1.163,
+              "champion_runs": 4,
+              "runs": 6,
+              "flags": []
+            },
+            {
+              "part": "ghost",
+              "evolved": 0.4333,
+              "lo": 0.0,
+              "hi": 1.0,
+              "baseline": 0.3133,
+              "lift": 1.383,
+              "champion_runs": 3,
+              "runs": 6,
+              "flags": []
+            },
+            {
+              "part": "gargoyle",
+              "evolved": 0.4,
+              "lo": 0.0,
+              "hi": 0.8,
+              "baseline": 0.3273,
+              "lift": 1.222,
+              "champion_runs": 2,
+              "runs": 6,
+              "flags": []
+            },
+            {
+              "part": "scarecrow",
+              "evolved": 0.2,
+              "lo": 0.0,
+              "hi": 0.8,
+              "baseline": 0.2677,
+              "lift": 0.747,
+              "champion_runs": 1,
+              "runs": 6,
+              "flags": []
+            },
+            {
+              "part": "zombie",
+              "evolved": 0.1,
+              "lo": 0.0,
+              "hi": 0.4,
+              "baseline": 0.2757,
+              "lift": 0.363,
+              "champion_runs": 0,
+              "runs": 6,
+              "flags": []
+            },
+            {
+              "part": "bat_swarm",
+              "evolved": 0.1,
+              "lo": 0.0,
+              "hi": 0.6,
+              "baseline": 0.2663,
+              "lift": 0.375,
+              "champion_runs": 0,
+              "runs": 6,
+              "flags": []
+            },
+            {
+              "part": "hellhound",
+              "evolved": 0.0333,
+              "lo": 0.0,
+              "hi": 0.2,
+              "baseline": 0.3953,
+              "lift": 0.084,
+              "champion_runs": 0,
+              "runs": 6,
+              "flags": [
+                "underused"
+              ]
+            },
+            {
+              "part": "skeleton",
+              "evolved": 0.0,
+              "lo": 0.0,
+              "hi": 0.0,
+              "baseline": 0.284,
+              "lift": 0.0,
+              "champion_runs": 0,
+              "runs": 6,
+              "flags": [
+                "underused"
+              ]
+            },
+            {
+              "part": "necromancer",
+              "evolved": 0.0,
+              "lo": 0.0,
+              "hi": 0.0,
+              "baseline": 0.3933,
+              "lift": 0.0,
+              "champion_runs": 0,
+              "runs": 6,
+              "flags": [
+                "underused"
+              ]
+            }
+          ],
+          "after": [
+            {
+              "part": "witch",
+              "evolved": 0.8667,
+              "lo": 0.2,
+              "hi": 1.0,
+              "baseline": 0.3123,
+              "lift": 2.775,
+              "champion_runs": 5,
+              "runs": 6,
+              "flags": [
+                "dominant"
+              ]
+            },
+            {
+              "part": "flesh_golem",
+              "evolved": 0.8,
+              "lo": 0.0,
+              "hi": 1.0,
+              "baseline": 0.4017,
+              "lift": 1.992,
+              "champion_runs": 5,
+              "runs": 6,
+              "flags": [
+                "dominant"
+              ]
+            },
+            {
+              "part": "pumpkin_mage",
+              "evolved": 0.7667,
+              "lo": 0.0,
+              "hi": 1.0,
+              "baseline": 0.4013,
+              "lift": 1.91,
+              "champion_runs": 4,
+              "runs": 6,
+              "flags": [
+                "dominant"
+              ]
+            },
+            {
+              "part": "werewolf",
+              "evolved": 0.3333,
+              "lo": 0.0,
+              "hi": 0.6,
+              "baseline": 0.3217,
+              "lift": 1.036,
+              "champion_runs": 2,
+              "runs": 6,
+              "flags": []
+            },
+            {
+              "part": "scarecrow",
+              "evolved": 0.2333,
+              "lo": 0.0,
+              "hi": 0.8,
+              "baseline": 0.2677,
+              "lift": 0.872,
+              "champion_runs": 1,
+              "runs": 6,
+              "flags": []
+            },
+            {
+              "part": "ghost",
+              "evolved": 0.2,
+              "lo": 0.0,
+              "hi": 0.8,
+              "baseline": 0.3133,
+              "lift": 0.638,
+              "champion_runs": 1,
+              "runs": 6,
+              "flags": []
+            },
+            {
+              "part": "gargoyle",
+              "evolved": 0.2,
+              "lo": 0.0,
+              "hi": 0.4,
+              "baseline": 0.3273,
+              "lift": 0.611,
+              "champion_runs": 2,
+              "runs": 6,
+              "flags": []
+            },
+            {
+              "part": "hellhound",
+              "evolved": 0.1667,
+              "lo": 0.0,
+              "hi": 1.0,
+              "baseline": 0.3953,
+              "lift": 0.422,
+              "champion_runs": 1,
+              "runs": 6,
+              "flags": []
+            },
+            {
+              "part": "zombie",
+              "evolved": 0.1,
+              "lo": 0.0,
+              "hi": 0.6,
+              "baseline": 0.2757,
+              "lift": 0.363,
+              "champion_runs": 1,
+              "runs": 6,
+              "flags": []
+            },
+            {
+              "part": "skeleton",
+              "evolved": 0.0,
+              "lo": 0.0,
+              "hi": 0.0,
+              "baseline": 0.284,
+              "lift": 0.0,
+              "champion_runs": 0,
+              "runs": 6,
+              "flags": [
+                "underused"
+              ]
+            },
+            {
+              "part": "necromancer",
+              "evolved": 0.0,
+              "lo": 0.0,
+              "hi": 0.0,
+              "baseline": 0.3933,
+              "lift": 0.0,
+              "champion_runs": 0,
+              "runs": 6,
+              "flags": [
+                "underused"
+              ]
+            },
+            {
+              "part": "bat_swarm",
+              "evolved": 0.0,
+              "lo": 0.0,
+              "hi": 0.0,
+              "baseline": 0.2663,
+              "lift": 0.0,
+              "champion_runs": 0,
+              "runs": 6,
+              "flags": [
+                "underused"
+              ]
+            }
+          ],
+          "target_before": 0.9333,
+          "target_after": 0.8667,
+          "target_lift_after": 2.775,
+          "top_after": "witch",
+          "top_after_share": 0.8667,
+          "new_dominant": [
+            "flesh_golem",
+            "pumpkin_mage"
+          ],
+          "champion_held_out": 0.9965,
+          "effective": false,
+          "failed": [
+            "witch is still dominant (share 0.87, lift 2.8)",
+            "new dominant: flesh_golem, pumpkin_mage"
+          ],
+          "dropped_opponents": [],
+          "seconds": 55.6
+        }
+      ]
+    }
+  ],
+  "underused": [
+    "skeleton",
+    "necromancer"
+  ],
+  "champions": [
+    {
+      "seed": 0,
+      "design": [
+        "flesh_golem",
+        "werewolf",
+        "pumpkin_mage",
+        "witch"
+      ],
+      "held_out": 1.0
+    },
+    {
+      "seed": 1,
+      "design": [
+        "flesh_golem",
+        "gargoyle",
+        "pumpkin_mage",
+        "ghost"
+      ],
+      "held_out": 1.0
+    },
+    {
+      "seed": 2,
+      "design": [
+        "werewolf",
+        "werewolf",
+        "ghost",
+        "witch",
+        "witch"
+      ],
+      "held_out": 1.0
+    },
+    {
+      "seed": 3,
+      "design": [
+        "gargoyle",
+        "scarecrow",
+        "witch",
+        "pumpkin_mage",
+        "witch"
+      ],
+      "held_out": 1.0
+    },
+    {
+      "seed": 4,
+      "design": [
+        "flesh_golem",
+        "werewolf",
+        "pumpkin_mage",
+        "witch"
+      ],
+      "held_out": 1.0
+    },
+    {
+      "seed": 5,
+      "design": [
+        "werewolf",
+        "werewolf",
+        "witch",
+        "ghost",
+        "witch"
+      ],
+      "held_out": 1.0
+    },
+    {
+      "seed": 6,
+      "design": [
+        "flesh_golem",
+        "hellhound",
+        "werewolf",
+        "witch"
+      ],
+      "held_out": 0.9792
+    },
+    {
+      "seed": 7,
+      "design": [
+        "werewolf",
+        "werewolf",
+        "ghost",
+        "witch",
+        "witch"
+      ],
+      "held_out": 1.0
+    }
+  ],
+  "summary": {
+    "template": "witch is dominant: in 95% of top designs (range 60%-100% over 8 runs) against 31% of random designs, and in 7/8 champions. Champions lose 0.21 without it. Effective fix: witch.cost 2->3 + flesh_golem.atk 10->8 (no unit is dominant afterwards; most common unit is witch at 67%).\n\nRarely used by strong designs: skeleton, necromancer.",
+    "llm": "Recommended changes: Increase witch cost from 2 to 3 and reduce flesh_golem attack from 10 to 8. This change makes no unit dominant, with witch at 67%. Other tested changes were not effective: witch alone did not address dominance, and increasing flesh_golem cost to 4 created a dominant werewolf. Reducing witch's ability amount or health was also ineffective as witch remained dominant. Underused units include skeleton and necromancer.",
+    "llm_model": "qwen2.5:14b",
+    "llm_rejected": null
+  }
+}
