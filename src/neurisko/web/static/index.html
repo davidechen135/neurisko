@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>NEURISKO · Eurisko (1981) resurrected</title>
+    <meta
+      name="description"
+      content="Eurisko's self-improving heuristics, resurrected with LLMs, finding balance exploits in a Halloween auto-battler."
+    />
+    <link rel="stylesheet" href="style.css" />
+    <script type="module" src="js/app.js"></script>
+  </head>
+  <body>
+    <a class="skip" href="#main">Skip to content</a>
+    <div class="screen">
+      <header class="top">
+        <h1>
+          <span class="logo">NEURISKO</span>
+          <span class="dim">— EURISKO (LENAT, 1981) RESURRECTED WITH LLMs</span>
+        </h1>
+        <p id="run-info" class="small" aria-live="polite"></p>
+        <button id="btn-crt" type="button" class="crt-toggle" aria-pressed="true">CRT effect</button>
+      </header>
+
+      <div id="live-controls" class="live small" hidden>
+        <label>recorded run <select id="run-select"></select></label>
+        <form id="live-form" aria-label="Start a live run">
+          <span class="amber">NEW RUN</span>
+          <label>seed <input name="seed" type="number" min="0" max="999999" value="0" required /></label>
+          <label>generations <input name="generations" type="number" min="1" max="50" value="20" required /></label>
+          <label><input name="llm" type="checkbox" checked /> LLM</label>
+          <label><input name="auditor" type="checkbox" checked /> auditor</label>
+          <button type="submit">▶ EVOLVE</button>
+          <output id="live-status" aria-live="polite"></output>
+        </form>
+      </div>
+
+      <nav class="toolbar">
+        <div id="tabs" role="tablist" aria-label="Views">
+          <button id="tab-run" role="tab" aria-controls="panel-run" type="button">RUN</button>
+          <button id="tab-report" role="tab" aria-controls="panel-report" type="button">REPORT</button>
+          <button id="tab-h59" role="tab" aria-controls="panel-h59" type="button">H59</button>
+          <button id="tab-llm" role="tab" aria-controls="panel-llm" type="button">LLM</button>
+        </div>
+        <div class="scrubber" role="group" aria-label="Generation">
+          <button id="btn-prev" type="button" aria-label="Previous generation">◀</button>
+          <input id="gen-range" type="range" min="1" max="1" value="1" aria-label="Generation" />
+          <button id="btn-next" type="button" aria-label="Next generation">▶</button>
+          <button id="btn-play" type="button">▶ play</button>
+          <span id="gen-label" class="small" aria-hidden="true"></span>
+        </div>
+        <label class="small"><input id="chk-audits" type="checkbox" /> show passed audits</label>
+      </nav>
+
+      <main id="main">
+        <div id="panel-run" role="tabpanel" aria-labelledby="tab-run" tabindex="0"><p>LOADING…</p></div>
+        <div id="panel-report" role="tabpanel" aria-labelledby="tab-report" tabindex="0" hidden></div>
+        <div id="panel-h59" role="tabpanel" aria-labelledby="tab-h59" tabindex="0" hidden></div>
+        <div id="panel-llm" role="tabpanel" aria-labelledby="tab-llm" tabindex="0" hidden></div>
+      </main>
+
+      <footer class="small dim">
+        <p>
+          Sources: D. B. Lenat, “EURISKO: A Program That Learns New Heuristics and Domain Concepts”,
+          <i>Artificial Intelligence</i> 21 (1983) · H59 and reward hacking:
+          <a href="https://en.wikipedia.org/wiki/Reward_hacking">Wikipedia, “Reward hacking”</a> · 1981
+          source recovered from SAILDART:
+          <a href="https://github.com/white-flame/eurisko">github.com/white-flame/eurisko</a> ·
+          <a href="https://github.com/davidechen135/neurisko">Neurisko source (MIT)</a> · built with Kiro for
+          Kiroween 2026.
+        </p>
+      </footer>
+    </div>
+    <dialog id="battle-dialog" class="panel"></dialog>
+  </body>
+</html>

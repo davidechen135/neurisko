@@ -242,6 +242,39 @@ def cmd_report(args: argparse.Namespace) -> int:
     return 0
 
 
+def cmd_export(args: argparse.Namespace) -> int:
+    from pathlib import Path
+
+    from neurisko.web.export import export_site
+
+    h59 = (Path(args.h59[0]), Path(args.h59[1])) if args.h59 else None
+    sizes = export_site(
+        Path(args.run),
+        Path(args.out),
+        report_dir=Path(args.report) if args.report else None,
+        h59_dirs=h59,
+    )
+    for name, n in sizes.items():
+        print(f"  data/{name:<12} {n / 1000:7.1f} kB")
+    print(f"== site written to {args.out} ==  preview: python3 -m http.server -d {args.out}")
+    return 0
+
+
+def cmd_serve(args: argparse.Namespace) -> int:
+    import uvicorn
+
+    from neurisko.web.app import create_app
+
+    if args.host not in ("127.0.0.1", "localhost", "::1"):
+        print(
+            f"WARNING: listening on {args.host}. Anyone who can reach it can start runs that "
+            "use this machine's CPU and LLM budget.",
+            file=sys.stderr,
+        )
+    uvicorn.run(create_app(), host=args.host, port=args.port, log_level="warning")
+    return 0
+
+
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(prog="neurisko", description=__doc__)
     sub = parser.add_subparsers(dest="command", required=True)
@@ -282,6 +315,18 @@ def build_parser() -> argparse.ArgumentParser:
     p.add_argument("--report-id", default=None)
     p.add_argument("--reports-dir", default="reports")
     p.set_defaults(func=cmd_report)
+
+    p = sub.add_parser("export", help="export a recorded run as a static site")
+    p.add_argument("run", help="run directory, e.g. runs/demo/qwen-s0")
+    p.add_argument("--report", default=None, help="report directory to include")
+    p.add_argument("--h59", nargs=2, metavar=("OFF_RUN", "ON_RUN"), default=None)
+    p.add_argument("--out", default="site")
+    p.set_defaults(func=cmd_export)
+
+    p = sub.add_parser("serve", help="local web console with live runs")
+    p.add_argument("--host", default="127.0.0.1")
+    p.add_argument("--port", type=int, default=8000)
+    p.set_defaults(func=cmd_serve)
     return parser
 
 

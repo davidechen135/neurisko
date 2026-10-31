@@ -8,6 +8,7 @@ from __future__ import annotations
 
 import dataclasses
 import json
+from collections.abc import Callable
 from pathlib import Path
 from typing import Any
 
@@ -25,8 +26,14 @@ def _default(o: Any) -> Any:
 
 
 class Recorder:
-    def __init__(self, run_dir: Path | None = None, redact: list[str] | None = None) -> None:
+    def __init__(
+        self,
+        run_dir: Path | None = None,
+        redact: list[str] | None = None,
+        listeners: list[Callable[[dict], None]] | None = None,
+    ) -> None:
         self.run_dir = run_dir
+        self.listeners = list(listeners or [])  # called with each event after it is written
         self.redact = [r for r in (redact or []) if r]
         self.events: list[dict] = []
         self._seq = 0
@@ -49,6 +56,8 @@ class Recorder:
         if self._file is not None:
             self._file.write(line + "\n")
             self._file.flush()
+        for listener in self.listeners:
+            listener(event)
         return event
 
     def write_meta(self, meta: dict) -> None:

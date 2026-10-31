@@ -1,0 +1,226 @@
+{
+  "run_dir": "runs/demo/h59-on",
+  "game": "monster-mash",
+  "ruleset": null,
+  "ruleset_hash": "f22da09334d3",
+  "game_settings": {
+    "gauntlet_seed": 1981,
+    "n_random": 6,
+    "n_seeds": 2,
+    "seed_offset": 0
+  },
+  "config": {
+    "generations": 9,
+    "max_generations": 50,
+    "seed": 0,
+    "population": 12,
+    "immigrants": 2,
+    "design_apps": 24,
+    "meta_apps": 3,
+    "hof_cap": 12,
+    "hof_weight": 0.5,
+    "audit_every": 3,
+    "auditor": true,
+    "retire_below": 100,
+    "dormant_limit": 5,
+    "min_design_heuristics": 8,
+    "max_design_heuristics": 60,
+    "per_heuristic_cap": 6,
+    "ucb_c": 0.3,
+    "invent_k": 3,
+    "max_llm_calls_per_generation": 2,
+    "recent_keep": 8,
+    "credit": {
+      "alpha": 0.2,
+      "lam": 0.5,
+      "scale": 0.05
+    },
+    "audit": {
+      "replication_min_worth": 600,
+      "replication_min_apps": 5,
+      "replication_pairs": 5,
+      "demote_non_replicating_to": 400,
+      "parasite_ratio": 0.5,
+      "parasite_min_contributions": 3,
+      "demote_parasite_to": 300,
+      "probes": 32
+    }
+  },
+  "seed_rules": [
+    {
+      "name": "Spend leftover gold",
+      "rationale": "Unspent gold is wasted strength.",
+      "if": [
+        {
+          "feature": "unspent",
+          "op": ">=",
+          "value": 1.0
+        }
+      ],
+      "then": {
+        "kind": "add_unit",
+        "unit": "skeleton",
+        "position": "back"
+      }
+    },
+    {
+      "name": "Bigger front line",
+      "rationale": "A team with spare gold and few units should add a tank in front.",
+      "if": [
+        {
+          "feature": "unspent",
+          "op": ">=",
+          "value": 1.0
+        },
+        {
+          "feature": "n_units",
+          "op": "<=",
+          "value": 3.0
+        }
+      ],
+      "then": {
+        "kind": "add_unit",
+        "unit": "zombie",
+        "position": "front"
+      }
+    },
+    {
+      "name": "Answer the armor wall",
+      "rationale": "Ghosts ignore armor.",
+      "if": [
+        {
+          "feature": "winrate_vs_armor_wall",
+          "op": "<",
+          "value": 0.5
+        }
+      ],
+      "then": {
+        "kind": "replace_unit",
+        "old": "@cheapest",
+        "new": "ghost"
+      }
+    },
+    {
+      "name": "Add healing",
+      "rationale": "Teams with no ranged support lose long fights.",
+      "if": [
+        {
+          "feature": "n_ranged",
+          "op": "==",
+          "value": 0.0
+        }
+      ],
+      "then": {
+        "kind": "replace_unit",
+        "old": "@cheapest",
+        "new": "witch"
+      }
+    },
+    {
+      "name": "Tank to the front",
+      "rationale": "The golem should take the hits.",
+      "if": [
+        {
+          "feature": "count_flesh_golem",
+          "op": ">=",
+          "value": 1.0
+        }
+      ],
+      "then": {
+        "kind": "move_unit",
+        "unit": "flesh_golem",
+        "to": "front"
+      }
+    },
+    {
+      "name": "Pair the beasts",
+      "rationale": "Two beasts turn on the beast attack bonus.",
+      "if": [
+        {
+          "feature": "count_beast",
+          "op": "==",
+          "value": 1.0
+        }
+      ],
+      "then": {
+        "kind": "replace_unit",
+        "old": "@cheapest",
+        "new": "werewolf"
+      }
+    },
+    {
+      "name": "Drop the most expensive",
+      "rationale": "Freeing gold lets the team field more units.",
+      "if": [
+        {
+          "feature": "n_units",
+          "op": "<=",
+          "value": 3.0
+        }
+      ],
+      "then": {
+        "kind": "remove_unit",
+        "unit": "@most_expensive"
+      }
+    },
+    {
+      "name": "Raise the dead",
+      "rationale": "A necromancer refills the front line with skeletons.",
+      "if": [
+        {
+          "feature": "count_undead",
+          "op": ">=",
+          "value": 2.0
+        },
+        {
+          "feature": "count_necromancer",
+          "op": "==",
+          "value": 0.0
+        }
+      ],
+      "then": {
+        "kind": "replace_unit",
+        "old": "@cheapest",
+        "new": "necromancer"
+      }
+    },
+    {
+      "name": "Answer the beast rush",
+      "rationale": "Armored units blunt fast attackers.",
+      "if": [
+        {
+          "feature": "winrate_vs_beast_rush",
+          "op": "<",
+          "value": 0.5
+        }
+      ],
+      "then": {
+        "kind": "replace_unit",
+        "old": "@cheapest",
+        "new": "gargoyle"
+      }
+    },
+    {
+      "name": "Backline the casters",
+      "rationale": "Ranged units are safest at the back.",
+      "if": [
+        {
+          "feature": "count_witch",
+          "op": ">=",
+          "value": 1.0
+        }
+      ],
+      "then": {
+        "kind": "move_unit",
+        "unit": "witch",
+        "to": "back"
+      }
+    }
+  ],
+  "llm_model": null,
+  "git_commit": "0c60737",
+  "started": "2026-10-31T19:52:59",
+  "finished": "2026-10-31T19:53:04",
+  "battles": 18816,
+  "llm_calls": 0
+}

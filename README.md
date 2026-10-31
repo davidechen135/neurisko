@@ -82,7 +82,7 @@ Eurisko 引擎（与具体游戏无关）
 |---|---|---|---|
 | 1 ✅ | 10/30 – 11/05 | 项目骨架、Steering；Spec 1：自走棋模拟器 | 两支阵容可以按种子确定性地对战；有测试（10/30 完成：49 个测试，约 1.5 万场/秒） |
 | 2 ✅ | 11/06 – 11/12 | Spec 2：Eurisko 引擎 + 审计员（[spec](.kiro/specs/eurisko-engine/)） | 20 代运行分数上升；关掉审计员能复现 H59 寄生规则，打开能抓到；运行有记录可回放；和普通爬山算法对比的结果如实记录（10/30 完成：H59 在 8/8 个种子上复现并被抓到；对比结果见 [docs/BASELINE.md](docs/BASELINE.md)） |
-| 3 | 11/13 – 11/19 | Spec 3 ✅：平衡性报告（[spec](.kiro/specs/balance-report/)，[示例](reports/demo/default/report.md)）；Spec 4：Web UI（[spec](.kiro/specs/web-ui/)） | 默认规则下报告标出 witch 并找到经过验证的有效修改（10/31 完成：witch 费用 2→3 + flesh_golem 攻击 10→8）；GitHub Pages 上能打开回放版 |
+| 3 | 11/13 – 11/19 | Spec 3 ✅：平衡性报告（[spec](.kiro/specs/balance-report/)，[示例](reports/demo/default/report.md)）；Spec 4 ✅（待开 Pages）：Web UI（[spec](.kiro/specs/web-ui/)） | 默认规则下报告标出 witch 并找到经过验证的有效修改（10/31 完成：witch 费用 2→3 + flesh_golem 攻击 10→8）；GitHub Pages 上能打开回放版 |
 | 4 | 11/20 – 11/26 | Spec 5：MCP server（[spec](.kiro/specs/mcp-server/)）；Spec 6：TCS-lite；UI 打磨；冻结功能 | 在 Kiro 里改规则文件、问"平衡吗"能得到实测回答和验证过的修改建议；同一套引擎在两个游戏上都能跑 |
 | 5 | 11/27 – 12/04 | 视频、Devpost 描述、英文 README、博文、社媒 | **12/03 前提交** |
 
@@ -113,6 +113,12 @@ uv run neurisko evolve --no-llm                # 只用种子规则和代码元�
 uv run neurisko evolve --no-llm --no-auditor   # 关掉审计员，看 M5 Clone 变成 H59 式寄生规则
 uv run neurisko evolve --replay runs/demo/qwen-s0   # 用记录的 LLM 回复重放，检查结果一致
 
+# Web 控制台
+uv run neurisko serve                          # http://127.0.0.1:8000 ：回放记录、实时启动运行
+uv run neurisko export runs/demo/qwen-s0 --report reports/demo/default \
+  --h59 runs/demo/h59-off runs/demo/h59-on --out site   # 导出静态回放站点（GitHub Pages 用）
+uv run python scripts/record_h59_demo.py      # 重新录制 H59 对比用的两次运行
+
 # 平衡性报告：8 个种子检测过强/没人用的单位，逐个实测候选修改（约 2 分钟，写到 reports/<id>/）
 uv run neurisko report
 uv run neurisko report --explain                     # 加一段 LLM 摘要（数字会和实测结果核对）
@@ -127,6 +133,9 @@ uv run python scripts/compare_baseline.py      # 和爬山算法对比，写入 
 ```
 
 开发记录（视频和博文素材）见 [docs/KIRO_NOTES.md](docs/KIRO_NOTES.md)。
+
+![Neurisko 控制台：分数曲线、启发式规则 worth 表、审计日志、冠军阵容](docs/img/console-run.png)
+![H59 对比：关掉审计员时 M5 Clone 的 worth 最高，打开后被标记为寄生](docs/img/console-h59.png)
 
 ## 9. 待定事项
 

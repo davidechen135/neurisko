@@ -46,15 +46,18 @@ def start_run(
     ruleset: str | None = None,
     redact: list[str] | None = None,
     on_generation=None,
+    listeners=None,
+    game_settings: dict | None = None,
 ) -> tuple[Evolution, RunResult]:
-    game = MonsterMash.from_file(ruleset)
+    game = MonsterMash.from_file(ruleset, **(game_settings or {}))
     seeds = default_seed_rules(game)
-    rec = Recorder(run_dir, redact=redact)
+    rec = Recorder(run_dir, redact=redact, listeners=listeners)
     meta = {
         "run_dir": str(run_dir) if run_dir else None,
         "game": game.name,
         "ruleset": ruleset,
         "ruleset_hash": game.ruleset_hash,
+        "game_settings": game.settings(),
         "config": cfg.to_dict(),
         "seed_rules": [s.model_dump(by_alias=True) for s in seeds],
         "llm_model": llm.model if llm else None,
@@ -91,7 +94,7 @@ def replay_run(run_dir: Path, on_generation=None) -> tuple[Evolution, list[str]]
     meta = load_meta(run_dir)
     events = load_events(run_dir)
     cfg = config_from_meta(meta)
-    game = MonsterMash.from_file(meta.get("ruleset"))
+    game = MonsterMash.from_file(meta.get("ruleset"), **meta.get("game_settings", {}))
     if game.ruleset_hash != meta["ruleset_hash"]:
         return None, [f"ruleset hash {game.ruleset_hash} != recorded {meta['ruleset_hash']}"]
     seeds = [RuleSpec.model_validate(s) for s in meta["seed_rules"]]

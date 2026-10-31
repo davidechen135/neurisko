@@ -79,3 +79,13 @@ On push to `main`: set up uv, `uv sync`, `uv run neurisko export runs/demo/qwen-
 - `tests/web/test_export.py`: export of a tiny recorded run; file list; size; Python port of the reducer's final-state fields (best design, worth table) matches the recorder's final `generation` event.
 - `tests/web/test_palette.py`: parse `style.css` variables, compute WCAG contrast, assert ≥ 4.5 (≥ 7 for `--fg`).
 - Manual checklist (recorded in tasks): keyboard-only walkthrough, reduced-motion on, 390 px width, 1280×720 screenshot.
+
+## Implementation notes (2026-10-31)
+1. **Manifest.** Both modes start from `data/manifest.json`: a static file in the export, a route in the live server. It holds relative URLs for the run, report and H59 data, and in live mode the id of a run in progress, so a reloaded page re-attaches to it.
+2. **Scrubbing without snapshots.** `reducer.js: at(state, g)` derives every view from events with `gen <= g`; runs are small enough (about 1,600 compact events) that no snapshot cache is needed.
+3. **Parasite flags can clear.** The worth table first showed `PARASITE` on M2 at generation 20 although later audits found its credit clean again (worth back to 839). The flag now reflects the latest parasite audit: `PARASITE` if still demoted, otherwise `PARASITE G03, CLEARED`.
+4. **H59 tab data.** `scripts/record_h59_demo.py` records `runs/demo/h59-off` and `h59-on` with the H59 test configuration (seed 0, 9 generations): M5 ends at worth 887 and rank 1 without the auditor, and at 300 with the auditor, flagged at G03, G06 and G09. The chart shows M5 against the best of M1–M4, because five overlapping series were unreadable.
+5. **Bugs found with headless Chrome screenshots**, not by tests: the nav class `.bar` collided with the worth-bar class; `[hidden]` was overridden by `display: flex`; `Element.append(array)` printed `[object HTMLOptionElement]`. A `fill()` helper now flattens children everywhere.
+6. **SSE.** FastAPI's `EventSourceResponse` with an async generator; the event id is the index into the run's compact-event buffer, so `Last-Event-ID` resumes exactly. The run lookup is a dependency so an unknown id still gets a 404 before streaming starts. `app.py` cannot use `from __future__ import annotations`, because FastAPI must resolve the closure dependency.
+7. **Data size.** The demo export is 182 kB (run) + 50 kB (report) + 4 kB (H59).
+8. **Contrast.** `--line` (#1d5c33) is only used for decorative borders and is excluded from the text-contrast test; every text colour is ≥ 4.5:1 on both backgrounds, and `--fg` / `--dim` are ≥ 7:1.

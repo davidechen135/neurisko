@@ -53,3 +53,10 @@ Running log of how Kiro was used, for the demo video, Devpost description and bl
 - **Wrong conclusions caught by measuring.** Twice now a 4-seed result was incomplete: "pumpkin_mage is the outlier" (Spec 1) and "witch cost 2→3 fixes it" (pre-Spec-3 probe). The report uses 8 seeds and shows the range.
 - **LLM summaries get two checks.** Qwen's first summary used only real numbers but claimed the effective fix "maintains witch as the dominant part" and called the witch cost change ineffective. A number check alone would have let it through. Added a second check, that the summary must state each step of the recommended change. With a clearer prompt, 5/5 Qwen summaries passed. Both failure modes are regression tests.
 - **Runtime.** Batching all patch verifications into one process pool brought the default report to about 2 minutes on 12 cores (limit 5).
+
+## 2026-10-31 · Spec 4 implemented: web UI
+
+- **One frontend, two modes.** The same vanilla-JS page renders a static export (for GitHub Pages) and the live server (SSE). One Python function decides what the UI sees in both.
+- **Seeing the UI found the bugs tests didn't.** Headless Chrome screenshots at 1280×720 and 390 px caught a CSS class collision, an overridden `hidden` attribute, and arrays printed as `[object HTMLOptionElement]`. All 131 tests were green at the time.
+- **A misleading flag.** The worth table showed M2 as PARASITE at generation 20, although later audits had cleared it. The flag now shows the latest verdict.
+- **The JS reducer is tested for real**: pytest runs it under Node and compares its final state with the Python run record.

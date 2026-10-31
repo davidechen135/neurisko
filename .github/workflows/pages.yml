@@ -1,0 +1,43 @@
+# Builds the static replay site from the committed demo run and report, and deploys it to
+# GitHub Pages. Requires Pages to be enabled with "GitHub Actions" as the source.
+# Manual for now; add `push: branches: [main]` once Pages is enabled.
+name: Pages
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: astral-sh/setup-uv@v10
+      - run: uv sync --frozen --no-dev
+      - name: Export site
+        run: >
+          uv run neurisko export runs/demo/qwen-s0
+          --report reports/demo/default
+          --h59 runs/demo/h59-off runs/demo/h59-on
+          --out site
+      - uses: actions/upload-pages-artifact@v5
+        with:
+          path: site
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v5
