@@ -22,13 +22,13 @@ Depends on the balance-report spec (`run_batch`, `Patch`, `with_patch`, `build_r
   - `balance_review` prompt; SDK in-memory client tests.
   - _Requirements: R5.2, R6.1, R6.2_
 
-- [ ] 6. Kiro configuration
+- [x] 6. Kiro configuration
   - [x] `rulesets/monster-mash.toml`, `.kiro/steering/balance.md`, `balance-on-save` hook, `docs/kiro-mcp.json`.
-  - [ ] `.kiro/settings/mcp.json` (protected path: the user copies `docs/kiro-mcp.json`); `.kiro/steering/balance.md`; `balance-on-save` hook via `createHook`; check tool-name form for `autoApprove` in the MCP panel.
+  - [x] `.kiro/settings/mcp.json` (protected path: created by the user from `docs/kiro-mcp.json`); `.kiro/steering/balance.md`; `balance-on-save` hook via `createHook`; check tool-name form for `autoApprove` in the MCP panel.
   - _Requirements: R1.2, R5.1, R5.3–R5.5_
 
-- [ ] 7. End-to-end check in Kiro (needs the user: MCP servers load in a new Kiro session)
+- [x] 7. End-to-end check in Kiro (2026-11-01; see docs/KIRO_NOTES.md: works, and exposed a quick-check false positive)
   - Run the 5-step demo from the design in a Kiro chat; record timings and any tool-call timeouts in `docs/KIRO_NOTES.md`; adjust quick seed/generation counts if needed.
 
-- [ ] 8. Checkpoint (after 6 and 7)
+- [x] 8. Checkpoint
   - Tests and ruff pass; README section on using Neurisko from Kiro.

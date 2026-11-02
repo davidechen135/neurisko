@@ -382,7 +382,9 @@ def verify_patch(path: str, unit: str, field: Field, new_value: float) -> PatchC
         note=(
             "Effective = the unit is no longer dominant, still used (share >= 0.1), and no other "
             f"unit became dominant. Same {QUICK_SEEDS} seeds before and after. The file was not "
-            "changed."
+            "changed. QUICK result: an effective change here is a candidate; confirm it with "
+            "start_report on the patched rules before recommending it (quick checks can give "
+            "false positives)."
         ),
     )
 

@@ -1,0 +1,10 @@
+{
+  "mcpServers": {
+    "neurisko": {
+      "command": "uv",
+      "args": ["run", "neurisko-mcp"],
+      "disabled": false,
+      "autoApprove": ["check_ruleset", "simulate_battle", "score_team", "report_status"]
+    }
+  }
+}

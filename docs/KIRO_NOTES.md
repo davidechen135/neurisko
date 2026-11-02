@@ -67,3 +67,10 @@ Running log of how Kiro was used, for the demo video, Devpost description and bl
 - **Checked Kiro's docs before designing.** The `introspect` agent answered from kiro.dev: 120 s default tool timeout, no documented progress notifications, servers start in the workspace root. So the 2-minute report became a background job with a status tool, and the quick tools were sized to finish in about 15 s.
 - **Three Kiro features around one MCP server**: a `fileMatch` steering file that activates only when a ruleset is open ("measure, don't guess; verify before recommending"), a `PostFileSave` hook on `rulesets/*.toml` that re-checks balance, and an MCP prompt (`balance_review`) in the `#` menu.
 - **A protected path.** Kiro's permission rules block agents from writing `.kiro/settings/`, so `mcp.json` is the one file the user creates by hand (`docs/kiro-mcp.json`).
+
+## 2026-11-01 · End-to-end check in Kiro (Spec 5, task 7)
+
+- In a new Kiro session with `rulesets/monster-mash.toml` open, Kiro loaded the neurisko tools, ran `check_ruleset`, `quick_balance` and two `verify_patch` calls, and answered in Chinese. It followed the steering: it quoted shares with the random baseline and seed count, said 4 seeds are noisy, recommended only the change marked effective, suggested `start_report` before applying it, and did not edit the file.
+- Its answer: witch dominant (0.90 vs baseline 0.31, lift 2.89); `witch.cost 2→3` failed (flesh_golem became dominant); `witch.ability.amount 12→7` effective (witch 0.90 → 0.60).
+- **Checking that answer with the full-report settings** (6 seeds × 12 generations): `witch.ability.amount 12→7` is **not** effective. witch drops 0.93 → 0.67, but flesh_golem becomes dominant (0.77). 12→6 gives the same result (flesh_golem 0.83). The quick check gave a false positive.
+- Fix: the `verify_patch` note and the steering now call a quick "effective" a candidate that must be confirmed with a full report before it is recommended. This is the third time in this project that a small sample gave a wrong answer, after the pumpkin_mage claim and "witch cost 2→3 fixes it".
