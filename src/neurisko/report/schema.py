@@ -82,7 +82,8 @@ class Summary(BaseModel):
 
 class Champion(BaseModel):
     seed: int
-    design: list[str]
+    design: Any  # the game's JSON form
+    text: str = ""
     held_out: float
 
 

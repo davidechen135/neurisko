@@ -1,7 +1,8 @@
 // Battle player: plays a battle log as teletype text in a modal dialog.
 import { fill, el, pad, reducedMotion } from "../dom.js";
 
-function line([tick, kind, actor, target, amount]) {
+// Monster Mash logs: [kind, text]; text already formatted by the game.
+function legacyLine([tick, kind, actor, target, amount]) {
   const t = `t${String(tick).padStart(4, " ")}  `;
   switch (kind) {
     case "attack":
@@ -31,6 +32,7 @@ export function openBattle(dialog, b) {
   let speed = 0; // index into SPEEDS
   const log = el("ol", { class: "teletype battle-log" });
   const result = el("p", { class: "result", role: "status" });
+  const items = b.lines || (b.events || []).map((e) => [e[1], legacyLine(e).join("")]);
 
   const stop = () => {
     if (timer) clearTimeout(timer);
@@ -38,21 +40,22 @@ export function openBattle(dialog, b) {
   };
   const finish = () => {
     stop();
-    while (i < b.events.length) step(false);
+    while (i < items.length) step(false);
     showResult();
   };
   const showResult = () => {
     const banner = b.winner === "draw" ? "DRAW" : `TEAM ${b.winner} WINS`;
-    result.textContent = `== ${banner} after ${b.ticks} ticks ==`;
+    const unit = b.time_unit || "tick";
+    result.textContent = `== ${banner} after ${b.ticks} ${unit}${b.ticks === 1 ? "" : "s"} ==`;
   };
   const step = (scroll = true) => {
-    const e = b.events[i++];
-    const li = el("li", { class: `ev ev-${e[1]}` }, line(e));
+    const e = items[i++];
+    const li = el("li", { class: `ev ev-${e[0]}` }, e[1]);
     log.append(li);
     if (scroll) li.scrollIntoView({ block: "nearest" });
   };
   const tick = () => {
-    if (i >= b.events.length) return showResult();
+    if (i >= items.length) return showResult();
     step();
     timer = setTimeout(tick, SPEEDS[speed][1]);
   };
@@ -66,7 +69,7 @@ export function openBattle(dialog, b) {
         onclick: (ev) => {
           speed = k;
           speedBtns.forEach((btn, j) => btn.setAttribute("aria-pressed", String(j === k)));
-          if (!timer && i < b.events.length) tick();
+          if (!timer && i < items.length) tick();
           ev.currentTarget.focus();
         },
       },
@@ -78,8 +81,8 @@ export function openBattle(dialog, b) {
       "div",
       { class: "dialog-body" },
       el("h2", { id: "battle-title" }, "BATTLE REPLAY ", el("span", { class: "dim" }, `seed ${b.seed}`)),
-      el("p", {}, el("span", { class: "fg" }, "A  "), b.a.join(" > ")),
-      el("p", {}, el("span", { class: "amber" }, "B  "), b.b.join(" > ")),
+      el("p", {}, el("span", { class: "fg" }, "A  "), b.a_text || b.a.join(" > ")),
+      el("p", {}, el("span", { class: "amber" }, "B  "), b.b_text || b.b.join(" > ")),
       el(
         "div",
         { class: "controls" },

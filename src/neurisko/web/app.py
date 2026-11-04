@@ -27,7 +27,7 @@ from neurisko.runs import load_events, load_meta
 from neurisko.runs.session import new_run_id, start_run
 from neurisko.settings import Settings
 from neurisko.web.export import game_for, static_dir
-from neurisko.web.view import battle_view, compact_event, h59_view, run_view
+from neurisko.web.view import battle_view, compact_event, h59_view, run_view, tcs_view
 
 ID = re.compile(r"^[A-Za-z0-9][A-Za-z0-9._-]{0,99}$")
 MAX_SEED = 2**31 - 1
@@ -130,11 +130,15 @@ def create_app(
         has_report = (reports_dir / "demo" / "default" / "report.json").is_file()
         report = "api/reports/default" if has_report else None
         h59 = all((runs_dir / "demo" / n / "meta.json").is_file() for n in ("h59-off", "h59-on"))
+        tcs = all(
+            (runs_dir / "demo" / f"tcs-{e}" / "meta.json").is_file() for e in ("1981", "1982")
+        )
         return {
             "mode": "live",
             "run_url": f"api/runs/{demo['id']}" if demo else None,
             "report_url": report,
             "h59_url": "api/h59" if h59 else None,
+            "tcs_url": "api/tcs" if tcs else None,
             "max_generations": settings.max_generations,
             "live_id": current[0].id if current[0] is not None and not current[0].done else None,
         }
@@ -160,6 +164,18 @@ def create_app(
         off, on = ((load_meta(d), load_events(d)) for d in dirs)
         return h59_view(off, on)
 
+    @app.get("/api/tcs")
+    def tcs() -> dict:
+        runs = {}
+        reports = {}
+        for era in ("1981", "1982"):
+            d = _resolve(runs_dir, f"tcs-{era}")
+            runs[era] = (d.name, load_meta(d), load_events(d))
+            rp = reports_dir / "demo" / f"tcs-{era}" / "report.json"
+            if rp.is_file():
+                reports[era] = json.loads(rp.read_text())
+        return tcs_view(runs, reports or None)
+
     @app.get("/api/battle")
     def battle(
         a: str = Query(...), b: str = Query(...), seed: int = Query(0, ge=0, le=MAX_SEED)
@@ -168,7 +184,7 @@ def create_app(
         errors = {k: game.validate(d) for k, d in (("a", da), ("b", db)) if game.validate(d)}
         if errors:
             raise HTTPException(422, {"message": "invalid design", "errors": errors})
-        return battle_view(game, list(da), list(db), seed)
+        return battle_view(game, da, db, seed)
 
     @app.post("/api/live")
     def start_live(req: LiveRequest) -> dict:

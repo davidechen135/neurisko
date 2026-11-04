@@ -1,0 +1,186 @@
+{
+  "run_dir": "runs/demo/tcs-1981",
+  "game": "tcs-lite",
+  "ruleset": null,
+  "era": "1981",
+  "ruleset_hash": "7db68d5b37df",
+  "game_settings": {
+    "gauntlet_seed": 1981,
+    "n_random": 12,
+    "n_seeds": 3,
+    "seed_offset": 0
+  },
+  "config": {
+    "generations": 20,
+    "max_generations": 50,
+    "seed": 4,
+    "population": 20,
+    "immigrants": 4,
+    "design_apps": 40,
+    "meta_apps": 3,
+    "hof_cap": 12,
+    "hof_weight": 0.5,
+    "audit_every": 3,
+    "auditor": true,
+    "retire_below": 100,
+    "dormant_limit": 5,
+    "min_design_heuristics": 8,
+    "max_design_heuristics": 60,
+    "per_heuristic_cap": 6,
+    "ucb_c": 0.3,
+    "invent_k": 3,
+    "max_llm_calls_per_generation": 10,
+    "recent_keep": 8,
+    "credit": {
+      "alpha": 0.2,
+      "lam": 0.5,
+      "scale": 0.05
+    },
+    "audit": {
+      "replication_min_worth": 600,
+      "replication_min_apps": 5,
+      "replication_pairs": 5,
+      "demote_non_replicating_to": 400,
+      "parasite_ratio": 0.5,
+      "parasite_min_contributions": 3,
+      "demote_parasite_to": 300,
+      "probes": 32
+    }
+  },
+  "seed_rules": [
+    {
+      "name": "Spend the budget",
+      "rationale": "Unspent credits are wasted.",
+      "if": [
+        {
+          "feature": "unspent",
+          "op": ">=",
+          "value": 5.0
+        }
+      ],
+      "then": {
+        "kind": "set_count",
+        "class": "@largest",
+        "change": "max"
+      }
+    },
+    {
+      "name": "Armour against the elite",
+      "rationale": "Big guns need armour to answer.",
+      "if": [
+        {
+          "feature": "winrate_vs_elite",
+          "op": "<",
+          "value": 0.5
+        }
+      ],
+      "then": {
+        "kind": "upgrade",
+        "class": "@most_expensive",
+        "component": "armour"
+      }
+    },
+    {
+      "name": "More firepower",
+      "rationale": "A fleet that cannot shoot cannot win.",
+      "if": [
+        {
+          "feature": "total_shots",
+          "op": "<",
+          "value": 40.0
+        }
+      ],
+      "then": {
+        "kind": "upgrade",
+        "class": "@largest",
+        "component": "guns"
+      }
+    },
+    {
+      "name": "Bigger hulls",
+      "rationale": "Real warships are big.",
+      "if": [
+        {
+          "feature": "max_hull",
+          "op": "<",
+          "value": 2.0
+        }
+      ],
+      "then": {
+        "kind": "upgrade",
+        "class": "@most_expensive",
+        "component": "hull"
+      }
+    },
+    {
+      "name": "A flagship",
+      "rationale": "Every fleet needs a capital ship.",
+      "if": [
+        {
+          "feature": "n_classes",
+          "op": "==",
+          "value": 1.0
+        }
+      ],
+      "then": {
+        "kind": "add_class",
+        "template": "capital",
+        "count": "1"
+      }
+    },
+    {
+      "name": "Speed against the line",
+      "rationale": "Fast ships are harder to hit.",
+      "if": [
+        {
+          "feature": "winrate_vs_line",
+          "op": "<",
+          "value": 0.5
+        }
+      ],
+      "then": {
+        "kind": "upgrade",
+        "class": "@largest",
+        "component": "drive"
+      }
+    },
+    {
+      "name": "Trim to fit",
+      "rationale": "Free credits for upgrades.",
+      "if": [
+        {
+          "feature": "unspent",
+          "op": "<",
+          "value": 2.0
+        }
+      ],
+      "then": {
+        "kind": "set_count",
+        "class": "@most_expensive",
+        "change": "-1"
+      }
+    },
+    {
+      "name": "Gunboat escort",
+      "rationale": "Cheap gunboats screen the fleet.",
+      "if": [
+        {
+          "feature": "winrate_vs_fast",
+          "op": "<",
+          "value": 0.5
+        }
+      ],
+      "then": {
+        "kind": "add_class",
+        "template": "gunboat",
+        "count": "5"
+      }
+    }
+  ],
+  "llm_model": null,
+  "git_commit": "79f4f38",
+  "started": "2026-11-04T15:54:52",
+  "finished": "2026-11-04T15:55:01",
+  "battles": 99882,
+  "llm_calls": 0
+}

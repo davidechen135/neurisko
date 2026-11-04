@@ -68,12 +68,17 @@ def build_report(
     underused = [p.part for p in parts if "underused" in p.flags]
 
     held = game.held_out()
-    champions = [
-        Champion(
-            seed=o.seed, design=o.champion, held_out=round(held.score(tuple(o.champion)).score, 4)
+    champions = []
+    for o in outcomes:
+        d = game.from_json(o.champion)
+        champions.append(
+            Champion(
+                seed=o.seed,
+                design=o.champion,
+                text=game.describe(d),
+                held_out=round(held.score(d).score, 4),
+            )
         )
-        for o in outcomes
-    ]
 
     dominant: list[DominantEntry] = []
     verify_seeds = seeds[: cfg.verify_seeds]
@@ -81,7 +86,7 @@ def build_report(
         part = row.part
         say(f"explain {part}")
         dep = explain.dependence(game, part, outcomes)
-        ev = explain.evidence(part, outcomes)
+        ev = explain.evidence(game, part, outcomes)
         gains, note = explain.matchup_gains(game, part, outcomes)
 
         def verify(g, patches, before, base=()):
@@ -192,9 +197,9 @@ def render_markdown(r: Report) -> str:
     elif r.summary.llm_rejected:
         out += [f"_The LLM summary was discarded: {r.summary.llm_rejected['reason']}._", ""]
     out += [
-        "## Unit shares",
+        "## Part shares (units, or fleet traits)",
         "",
-        "| unit | in top designs | range | in random designs | lift | champions | flags |",
+        "| part | in top designs | range | in random designs | lift | champions | flags |",
         "|---|---|---|---|---|---|---|",
     ]
     for p in r.parts:
@@ -250,7 +255,8 @@ def render_markdown(r: Report) -> str:
         out += ["", "## Rarely used", "", ", ".join(r.underused)]
     out += ["", "## Champions", ""]
     for ch in r.champions:
-        out.append(f"- seed {ch.seed}: `{' > '.join(ch.design)}` (held-out {ch.held_out:.3f})")
+        text = ch.text or " > ".join(ch.design)
+        out.append(f"- seed {ch.seed}: `{text}` (held-out {ch.held_out:.3f})")
     out.append("")
     return "\n".join(out)
 

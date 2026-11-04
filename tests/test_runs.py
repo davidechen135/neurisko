@@ -74,6 +74,37 @@ def test_replay_detects_mismatch(tmp_path):
     assert problems == ["generation 2 differs in ['best_pool']"]
 
 
+def test_cli_tcs_battle_score_evolve_replay(tmp_path, capsys):
+    assert main(["battle", "--game", "tcs-lite", "--era", "1982", "99x0000", "4x3332"]) == 0
+    out = capsys.readouterr().out
+    assert "WITHDRAWS" in out
+    assert main(["score", "--game", "tcs-lite", "50x0000,2x3332"]) == 0
+    assert "== SCORE" in capsys.readouterr().out
+    with pytest.raises(SystemExit) as exc:  # scuttling is not allowed in 1981
+        main(["battle", "--game", "tcs-lite", "--era", "1981", "9x0000,scuttle_disabled", "4x3332"])
+    assert exc.value.code == 2
+    assert "not allowed in the 1981 era" in capsys.readouterr().err
+    args = [
+        "evolve",
+        "--game",
+        "tcs-lite",
+        "--era",
+        "1982",
+        "--no-llm",
+        "--generations",
+        "1",
+        "--runs-dir",
+        str(tmp_path),
+        "--run-id",
+        "t",
+    ]
+    assert main(args) == 0
+    assert load_meta(tmp_path / "t")["game"] == "tcs-lite"
+    assert load_meta(tmp_path / "t")["era"] == "1982"
+    assert main(["evolve", "--replay", str(tmp_path / "t")]) == 0
+    assert "replay identical" in capsys.readouterr().out
+
+
 def test_cli_evolve_and_replay(tmp_path, capsys):
     args = ["evolve", "--no-llm", "--generations", "2", "--runs-dir", str(tmp_path)]
     assert main([*args, "--run-id", "a"]) == 0

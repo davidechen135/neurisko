@@ -36,7 +36,9 @@ class Event:
     """One entry of the optional battle log."""
 
     tick: int
-    kind: Literal["attack", "dodge", "heal", "summon", "death", "synergy_on", "synergy_off"]
+    # Monster Mash: attack dodge heal summon death synergy_on synergy_off
+    # TCS-lite: attack (amount = hits landed by a fleet) disabled death scuttle withdraw
+    kind: str
     actor: str
     target: str = ""
     amount: int = 0
@@ -200,4 +202,34 @@ class Game(Protocol[D]):
 
     def with_patch(self, patch: Patch) -> tuple[Game[D], list[str]]:
         """The patched game, plus the names of fixed opponents dropped as no longer valid."""
+        ...
+
+    # --- generality: everything the shared code needs without knowing the game --------------
+
+    def from_json(self, obj: Any) -> D:
+        """Inverse of `to_json`."""
+        ...
+
+    def parse_design(self, text: str) -> D:
+        """A design from its command-line form (raises ValueError if malformed)."""
+        ...
+
+    def seed_rules(self) -> list[Any]:
+        """The game's hand-written seed heuristics (`RuleSpec`s)."""
+        ...
+
+    def featured_opponents(self, design: D, n: int = 3) -> list[D]:
+        """Fixed opponents worth showing a battle against (e.g. the weakest matchups)."""
+        ...
+
+    def describe_event(self, event: Event) -> str:
+        """One battle-log line."""
+        ...
+
+    def without_part(self, design: D, part: str) -> list[D]:
+        """Valid nearby designs that do not have `part` (for the report's dependence check)."""
+        ...
+
+    def adds_part(self, action: Action, part: str) -> bool:
+        """Whether a heuristic action pushes a design toward having `part` (report evidence)."""
         ...

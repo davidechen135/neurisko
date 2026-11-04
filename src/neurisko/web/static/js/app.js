@@ -8,9 +8,10 @@ import { renderH59 } from "./views/h59.js";
 import { renderLLM } from "./views/llm.js";
 import { renderReport } from "./views/report.js";
 import { renderRun } from "./views/run.js";
+import { renderTCS } from "./views/tcs.js";
 
 const $ = (id) => document.getElementById(id);
-const TABS = ["run", "report", "h59", "llm"];
+const TABS = ["run", "report", "h59", "tcs", "llm"];
 
 const app = {
   manifest: null,
@@ -18,6 +19,7 @@ const app = {
   state: emptyState(),
   report: null,
   h59: null,
+  tcs: null,
   g: 0,
   follow: true,
   playing: null,
@@ -59,6 +61,7 @@ function render() {
     });
   if (tab === "report") renderReport($("panel-report"), app.report);
   if (tab === "h59") renderH59($("panel-h59"), app.h59);
+  if (tab === "tcs") renderTCS($("panel-tcs"), app.tcs, playBattle);
   if (tab === "llm") renderLLM($("panel-llm"), v, app.state, app.run?.system_prompt);
 }
 
@@ -233,11 +236,13 @@ async function main() {
   try {
     app.manifest = await getJSON("data/manifest.json");
     const m = app.manifest;
-    const [, report, h59] = await Promise.all([
+    const [, report, h59, tcs] = await Promise.all([
       m.run_url ? loadRun(m.run_url) : null,
       m.report_url ? getJSON(m.report_url).catch(() => null) : null,
       m.h59_url ? getJSON(m.h59_url).catch(() => null) : null,
+      m.tcs_url ? getJSON(m.tcs_url).catch(() => null) : null,
     ]);
+    app.tcs = tcs;
     app.report = report;
     app.h59 = h59;
     if (m.mode === "live") {

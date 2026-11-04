@@ -1,0 +1,1708 @@
+{
+  "schema_version": 1,
+  "game": "tcs-lite",
+  "ruleset_hash": "65b60296e58d",
+  "ruleset_source": null,
+  "config": {
+    "seeds": 8,
+    "verify_seeds": 6,
+    "generations": 12,
+    "fix_parts": 2,
+    "follow_up": true,
+    "top_k": 5,
+    "baseline_n": 3000,
+    "thresholds": {
+      "dominant_share": 0.7,
+      "dominant_lift": 1.8,
+      "underused_share": 0.05,
+      "underused_baseline": 0.2
+    },
+    "engine": {}
+  },
+  "engine_config": {
+    "generations": 12,
+    "max_generations": 50,
+    "seed": 0,
+    "population": 20,
+    "immigrants": 4,
+    "design_apps": 40,
+    "meta_apps": 3,
+    "hof_cap": 12,
+    "hof_weight": 0.5,
+    "audit_every": 3,
+    "auditor": true,
+    "retire_below": 100,
+    "dormant_limit": 5,
+    "min_design_heuristics": 8,
+    "max_design_heuristics": 60,
+    "per_heuristic_cap": 6,
+    "ucb_c": 0.3,
+    "invent_k": 3,
+    "max_llm_calls_per_generation": 2,
+    "recent_keep": 8,
+    "credit": {
+      "alpha": 0.2,
+      "lam": 0.5,
+      "scale": 0.05
+    },
+    "audit": {
+      "replication_min_worth": 600,
+      "replication_min_apps": 5,
+      "replication_pairs": 5,
+      "demote_non_replicating_to": 400,
+      "parasite_ratio": 0.5,
+      "parasite_min_contributions": 3,
+      "demote_parasite_to": 300,
+      "probes": 32
+    }
+  },
+  "seeds": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7
+  ],
+  "seconds": 24.8,
+  "baseline_n": 3000,
+  "parts": [
+    {
+      "part": "scuttle",
+      "evolved": 0.975,
+      "lo": 0.8,
+      "hi": 1.0,
+      "baseline": 0.299,
+      "lift": 3.261,
+      "champion_runs": 8,
+      "runs": 8,
+      "flags": [
+        "dominant"
+      ]
+    },
+    {
+      "part": "guns_max",
+      "evolved": 0.625,
+      "lo": 0.0,
+      "hi": 1.0,
+      "baseline": 0.4987,
+      "lift": 1.253,
+      "champion_runs": 6,
+      "runs": 8,
+      "flags": []
+    },
+    {
+      "part": "swarm",
+      "evolved": 0.6,
+      "lo": 0.0,
+      "hi": 1.0,
+      "baseline": 0.0907,
+      "lift": 6.618,
+      "champion_runs": 5,
+      "runs": 8,
+      "flags": []
+    },
+    {
+      "part": "armour_none",
+      "evolved": 0.3,
+      "lo": 0.0,
+      "hi": 1.0,
+      "baseline": 0.1413,
+      "lift": 2.123,
+      "champion_runs": 2,
+      "runs": 8,
+      "flags": []
+    },
+    {
+      "part": "armour_max",
+      "evolved": 0.275,
+      "lo": 0.0,
+      "hi": 0.8,
+      "baseline": 0.4883,
+      "lift": 0.563,
+      "champion_runs": 2,
+      "runs": 8,
+      "flags": []
+    },
+    {
+      "part": "drive_none",
+      "evolved": 0.225,
+      "lo": 0.0,
+      "hi": 1.0,
+      "baseline": 0.1497,
+      "lift": 1.503,
+      "champion_runs": 1,
+      "runs": 8,
+      "flags": []
+    },
+    {
+      "part": "drive_max",
+      "evolved": 0.075,
+      "lo": 0.0,
+      "hi": 0.4,
+      "baseline": 0.1657,
+      "lift": 0.453,
+      "champion_runs": 2,
+      "runs": 8,
+      "flags": []
+    },
+    {
+      "part": "elite",
+      "evolved": 0.0,
+      "lo": 0.0,
+      "hi": 0.0,
+      "baseline": 0.0023,
+      "lift": 0.0,
+      "champion_runs": 0,
+      "runs": 8,
+      "flags": []
+    }
+  ],
+  "dominant": [
+    {
+      "part": "scuttle",
+      "dependence": {
+        "mean": 0.4055,
+        "per_champion": [
+          {
+            "seed": 0,
+            "champion": {
+              "classes": [
+                [
+                  [
+                    0,
+                    0,
+                    0,
+                    0
+                  ],
+                  45
+                ],
+                [
+                  [
+                    3,
+                    1,
+                    3,
+                    1
+                  ],
+                  4
+                ]
+              ],
+              "doctrine": [
+                "scuttle_disabled"
+              ]
+            },
+            "champion_text": "45x[h0 a0 g0 d0] + 4x[h3 a1 g3 d1] · scuttle_disabled · 49 ships, cost 200/200",
+            "score": 0.7749,
+            "best_alternative": "45x[h0 a0 g0 d0] + 4x[h3 a1 g3 d1] · 49 ships, cost 200/200",
+            "alt_score": 0.1618,
+            "drop": 0.6131
+          },
+          {
+            "seed": 1,
+            "champion": {
+              "classes": [
+                [
+                  [
+                    0,
+                    0,
+                    0,
+                    0
+                  ],
+                  97
+                ],
+                [
+                  [
+                    3,
+                    0,
+                    3,
+                    1
+                  ],
+                  1
+                ]
+              ],
+              "doctrine": [
+                "scuttle_disabled"
+              ]
+            },
+            "champion_text": "97x[h0 a0 g0 d0] + 1x[h3 a0 g3 d1] · scuttle_disabled · 98 ships, cost 199.6/200",
+            "score": 0.8929,
+            "best_alternative": "97x[h0 a0 g0 d0] + 1x[h3 a0 g3 d1] · 98 ships, cost 199.6/200",
+            "alt_score": 0.3015,
+            "drop": 0.5914
+          },
+          {
+            "seed": 2,
+            "champion": {
+              "classes": [
+                [
+                  [
+                    3,
+                    2,
+                    3,
+                    3
+                  ],
+                  5
+                ]
+              ],
+              "doctrine": [
+                "scuttle_disabled"
+              ]
+            },
+            "champion_text": "5x[h3 a2 g3 d3] · scuttle_disabled · 5 ships, cost 195/200",
+            "score": 0.6464,
+            "best_alternative": "5x[h3 a2 g3 d3] · 5 ships, cost 195/200",
+            "alt_score": 0.5046,
+            "drop": 0.1418
+          },
+          {
+            "seed": 3,
+            "champion": {
+              "classes": [
+                [
+                  [
+                    0,
+                    0,
+                    1,
+                    0
+                  ],
+                  60
+                ]
+              ],
+              "doctrine": [
+                "scuttle_disabled"
+              ]
+            },
+            "champion_text": "60x[h0 a0 g1 d0] · scuttle_disabled · 60 ships, cost 198.8/200",
+            "score": 0.6866,
+            "best_alternative": "60x[h0 a0 g1 d0] · 60 ships, cost 198.8/200",
+            "alt_score": 0.2216,
+            "drop": 0.465
+          },
+          {
+            "seed": 4,
+            "champion": {
+              "classes": [
+                [
+                  [
+                    0,
+                    0,
+                    0,
+                    0
+                  ],
+                  66
+                ],
+                [
+                  [
+                    1,
+                    0,
+                    2,
+                    0
+                  ],
+                  5
+                ],
+                [
+                  [
+                    3,
+                    3,
+                    2,
+                    1
+                  ],
+                  1
+                ]
+              ],
+              "doctrine": [
+                "scuttle_disabled"
+              ]
+            },
+            "champion_text": "66x[h0 a0 g0 d0] + 5x[h1 a0 g2 d0] + 1x[h3 a3 g2 d1] · scuttle_disabled · 72 ships, cost 199.8/200",
+            "score": 0.7262,
+            "best_alternative": "66x[h0 a0 g0 d0] + 5x[h1 a0 g2 d0] + 1x[h3 a3 g2 d1] · 72 ships, cost 199.8/200",
+            "alt_score": 0.2451,
+            "drop": 0.4811
+          },
+          {
+            "seed": 5,
+            "champion": {
+              "classes": [
+                [
+                  [
+                    3,
+                    2,
+                    3,
+                    3
+                  ],
+                  5
+                ]
+              ],
+              "doctrine": [
+                "scuttle_disabled"
+              ]
+            },
+            "champion_text": "5x[h3 a2 g3 d3] · scuttle_disabled · 5 ships, cost 195/200",
+            "score": 0.6464,
+            "best_alternative": "5x[h3 a2 g3 d3] · 5 ships, cost 195/200",
+            "alt_score": 0.5046,
+            "drop": 0.1418
+          },
+          {
+            "seed": 6,
+            "champion": {
+              "classes": [
+                [
+                  [
+                    0,
+                    0,
+                    0,
+                    0
+                  ],
+                  59
+                ],
+                [
+                  [
+                    2,
+                    1,
+                    3,
+                    1
+                  ],
+                  5
+                ]
+              ],
+              "doctrine": [
+                "scuttle_disabled"
+              ]
+            },
+            "champion_text": "59x[h0 a0 g0 d0] + 5x[h2 a1 g3 d1] · scuttle_disabled · 64 ships, cost 199.2/200",
+            "score": 0.9226,
+            "best_alternative": "59x[h0 a0 g0 d0] + 5x[h2 a1 g3 d1] · 64 ships, cost 199.2/200",
+            "alt_score": 0.2598,
+            "drop": 0.6628
+          },
+          {
+            "seed": 7,
+            "champion": {
+              "classes": [
+                [
+                  [
+                    3,
+                    3,
+                    3,
+                    2
+                  ],
+                  5
+                ]
+              ],
+              "doctrine": [
+                "scuttle_disabled"
+              ]
+            },
+            "champion_text": "5x[h3 a3 g3 d2] · scuttle_disabled · 5 ships, cost 195/200",
+            "score": 0.6187,
+            "best_alternative": "5x[h3 a3 g3 d2] · 5 ships, cost 195/200",
+            "alt_score": 0.472,
+            "drop": 0.1467
+          }
+        ]
+      },
+      "evidence": [],
+      "matchups": null,
+      "matchups_note": "skipped: 7 distinct champions with scuttle, 0 without (need 2 of each)",
+      "patches": [
+        {
+          "patch": {
+            "target": "swarm",
+            "field": "components.hull.cost.0",
+            "old": 1.0,
+            "new": 2.0,
+            "label": "components.hull.cost.0 1->2"
+          },
+          "base_patches": [
+            {
+              "target": "scuttle",
+              "field": "era.max_disabled_fraction",
+              "old": 0.3,
+              "new": 0.6,
+              "label": "era.max_disabled_fraction 0.3->0.6"
+            }
+          ],
+          "before": [
+            {
+              "part": "swarm",
+              "evolved": 0.9333,
+              "lo": 0.8,
+              "hi": 1.0,
+              "baseline": 0.0907,
+              "lift": 10.294,
+              "champion_runs": 6,
+              "runs": 6,
+              "flags": [
+                "dominant"
+              ]
+            },
+            {
+              "part": "guns_max",
+              "evolved": 0.7333,
+              "lo": 0.2,
+              "hi": 1.0,
+              "baseline": 0.4987,
+              "lift": 1.471,
+              "champion_runs": 5,
+              "runs": 6,
+              "flags": []
+            },
+            {
+              "part": "armour_max",
+              "evolved": 0.3333,
+              "lo": 0.0,
+              "hi": 1.0,
+              "baseline": 0.4883,
+              "lift": 0.683,
+              "champion_runs": 2,
+              "runs": 6,
+              "flags": []
+            },
+            {
+              "part": "scuttle",
+              "evolved": 0.3333,
+              "lo": 0.0,
+              "hi": 0.8,
+              "baseline": 0.299,
+              "lift": 1.115,
+              "champion_runs": 1,
+              "runs": 6,
+              "flags": []
+            },
+            {
+              "part": "armour_none",
+              "evolved": 0.2667,
+              "lo": 0.0,
+              "hi": 0.6,
+              "baseline": 0.1413,
+              "lift": 1.887,
+              "champion_runs": 1,
+              "runs": 6,
+              "flags": []
+            },
+            {
+              "part": "drive_none",
+              "evolved": 0.2667,
+              "lo": 0.0,
+              "hi": 0.6,
+              "baseline": 0.1497,
+              "lift": 1.782,
+              "champion_runs": 1,
+              "runs": 6,
+              "flags": []
+            },
+            {
+              "part": "drive_max",
+              "evolved": 0.0333,
+              "lo": 0.0,
+              "hi": 0.2,
+              "baseline": 0.1657,
+              "lift": 0.201,
+              "champion_runs": 0,
+              "runs": 6,
+              "flags": []
+            },
+            {
+              "part": "elite",
+              "evolved": 0.0,
+              "lo": 0.0,
+              "hi": 0.0,
+              "baseline": 0.0023,
+              "lift": 0.0,
+              "champion_runs": 0,
+              "runs": 6,
+              "flags": []
+            }
+          ],
+          "after": [
+            {
+              "part": "guns_max",
+              "evolved": 0.7333,
+              "lo": 0.4,
+              "hi": 1.0,
+              "baseline": 0.4763,
+              "lift": 1.54,
+              "champion_runs": 3,
+              "runs": 6,
+              "flags": []
+            },
+            {
+              "part": "swarm",
+              "evolved": 0.4333,
+              "lo": 0.2,
+              "hi": 0.8,
+              "baseline": 0.113,
+              "lift": 3.835,
+              "champion_runs": 4,
+              "runs": 6,
+              "flags": []
+            },
+            {
+              "part": "armour_max",
+              "evolved": 0.4,
+              "lo": 0.0,
+              "hi": 0.8,
+              "baseline": 0.4717,
+              "lift": 0.848,
+              "champion_runs": 1,
+              "runs": 6,
+              "flags": []
+            },
+            {
+              "part": "scuttle",
+              "evolved": 0.4,
+              "lo": 0.0,
+              "hi": 0.8,
+              "baseline": 0.2937,
+              "lift": 1.362,
+              "champion_runs": 3,
+              "runs": 6,
+              "flags": []
+            },
+            {
+              "part": "armour_none",
+              "evolved": 0.2667,
+              "lo": 0.0,
+              "hi": 0.6,
+              "baseline": 0.182,
+              "lift": 1.465,
+              "champion_runs": 3,
+              "runs": 6,
+              "flags": []
+            },
+            {
+              "part": "drive_none",
+              "evolved": 0.2667,
+              "lo": 0.0,
+              "hi": 0.6,
+              "baseline": 0.1833,
+              "lift": 1.455,
+              "champion_runs": 3,
+              "runs": 6,
+              "flags": []
+            },
+            {
+              "part": "elite",
+              "evolved": 0.0,
+              "lo": 0.0,
+              "hi": 0.0,
+              "baseline": 0.001,
+              "lift": 0.0,
+              "champion_runs": 0,
+              "runs": 6,
+              "flags": []
+            },
+            {
+              "part": "drive_max",
+              "evolved": 0.0,
+              "lo": 0.0,
+              "hi": 0.0,
+              "baseline": 0.1633,
+              "lift": 0.0,
+              "champion_runs": 0,
+              "runs": 6,
+              "flags": []
+            }
+          ],
+          "target_before": 0.9333,
+          "target_after": 0.4333,
+          "target_lift_after": 3.835,
+          "top_after": "guns_max",
+          "top_after_share": 0.7333,
+          "new_dominant": [],
+          "champion_held_out": 0.9787,
+          "effective": true,
+          "failed": [],
+          "dropped_opponents": [
+            "mixed",
+            "swarm"
+          ],
+          "seconds": 10.5
+        },
+        {
+          "patch": {
+            "target": "scuttle",
+            "field": "era.max_disabled_fraction",
+            "old": 0.3,
+            "new": 0.6,
+            "label": "era.max_disabled_fraction 0.3->0.6"
+          },
+          "base_patches": [],
+          "before": [
+            {
+              "part": "scuttle",
+              "evolved": 1.0,
+              "lo": 1.0,
+              "hi": 1.0,
+              "baseline": 0.299,
+              "lift": 3.344,
+              "champion_runs": 6,
+              "runs": 6,
+              "flags": [
+                "dominant"
+              ]
+            },
+            {
+              "part": "swarm",
+              "evolved": 0.6333,
+              "lo": 0.0,
+              "hi": 1.0,
+              "baseline": 0.0907,
+              "lift": 6.985,
+              "champion_runs": 4,
+              "runs": 6,
+              "flags": []
+            },
+            {
+              "part": "guns_max",
+              "evolved": 0.5333,
+              "lo": 0.0,
+              "hi": 1.0,
+              "baseline": 0.4987,
+              "lift": 1.07,
+              "champion_runs": 4,
+              "runs": 6,
+              "flags": []
+            },
+            {
+              "part": "armour_none",
+              "evolved": 0.4,
+              "lo": 0.0,
+              "hi": 1.0,
+              "baseline": 0.1413,
+              "lift": 2.83,
+              "champion_runs": 2,
+              "runs": 6,
+              "flags": []
+            },
+            {
+              "part": "drive_none",
+              "evolved": 0.3,
+              "lo": 0.0,
+              "hi": 1.0,
+              "baseline": 0.1497,
+              "lift": 2.004,
+              "champion_runs": 1,
+              "runs": 6,
+              "flags": []
+            },
+            {
+              "part": "armour_max",
+              "evolved": 0.2333,
+              "lo": 0.0,
+              "hi": 0.4,
+              "baseline": 0.4883,
+              "lift": 0.478,
+              "champion_runs": 1,
+              "runs": 6,
+              "flags": []
+            },
+            {
+              "part": "drive_max",
+              "evolved": 0.1,
+              "lo": 0.0,
+              "hi": 0.4,
+              "baseline": 0.1657,
+              "lift": 0.604,
+              "champion_runs": 2,
+              "runs": 6,
+              "flags": []
+            },
+            {
+              "part": "elite",
+              "evolved": 0.0,
+              "lo": 0.0,
+              "hi": 0.0,
+              "baseline": 0.0023,
+              "lift": 0.0,
+              "champion_runs": 0,
+              "runs": 6,
+              "flags": []
+            }
+          ],
+          "after": [
+            {
+              "part": "swarm",
+              "evolved": 0.9333,
+              "lo": 0.8,
+              "hi": 1.0,
+              "baseline": 0.0907,
+              "lift": 10.294,
+              "champion_runs": 6,
+              "runs": 6,
+              "flags": [
+                "dominant"
+              ]
+            },
+            {
+              "part": "guns_max",
+              "evolved": 0.7333,
+              "lo": 0.2,
+              "hi": 1.0,
+              "baseline": 0.4987,
+              "lift": 1.471,
+              "champion_runs": 5,
+              "runs": 6,
+              "flags": []
+            },
+            {
+              "part": "armour_max",
+              "evolved": 0.3333,
+              "lo": 0.0,
+              "hi": 1.0,
+              "baseline": 0.4883,
+              "lift": 0.683,
+              "champion_runs": 2,
+              "runs": 6,
+              "flags": []
+            },
+            {
+              "part": "scuttle",
+              "evolved": 0.3333,
+              "lo": 0.0,
+              "hi": 0.8,
+              "baseline": 0.299,
+              "lift": 1.115,
+              "champion_runs": 1,
+              "runs": 6,
+              "flags": []
+            },
+            {
+              "part": "armour_none",
+              "evolved": 0.2667,
+              "lo": 0.0,
+              "hi": 0.6,
+              "baseline": 0.1413,
+              "lift": 1.887,
+              "champion_runs": 1,
+              "runs": 6,
+              "flags": []
+            },
+            {
+              "part": "drive_none",
+              "evolved": 0.2667,
+              "lo": 0.0,
+              "hi": 0.6,
+              "baseline": 0.1497,
+              "lift": 1.782,
+              "champion_runs": 1,
+              "runs": 6,
+              "flags": []
+            },
+            {
+              "part": "drive_max",
+              "evolved": 0.0333,
+              "lo": 0.0,
+              "hi": 0.2,
+              "baseline": 0.1657,
+              "lift": 0.201,
+              "champion_runs": 0,
+              "runs": 6,
+              "flags": []
+            },
+            {
+              "part": "elite",
+              "evolved": 0.0,
+              "lo": 0.0,
+              "hi": 0.0,
+              "baseline": 0.0023,
+              "lift": 0.0,
+              "champion_runs": 0,
+              "runs": 6,
+              "flags": []
+            }
+          ],
+          "target_before": 1.0,
+          "target_after": 0.3333,
+          "target_lift_after": 1.115,
+          "top_after": "swarm",
+          "top_after_share": 0.9333,
+          "new_dominant": [
+            "swarm"
+          ],
+          "champion_held_out": 0.9404,
+          "effective": false,
+          "failed": [
+            "new dominant: swarm"
+          ],
+          "dropped_opponents": [],
+          "seconds": 6.5
+        },
+        {
+          "patch": {
+            "target": "scuttle",
+            "field": "components.hull.cost.0",
+            "old": 1.0,
+            "new": 2.0,
+            "label": "components.hull.cost.0 1->2"
+          },
+          "base_patches": [],
+          "before": [
+            {
+              "part": "scuttle",
+              "evolved": 1.0,
+              "lo": 1.0,
+              "hi": 1.0,
+              "baseline": 0.299,
+              "lift": 3.344,
+              "champion_runs": 6,
+              "runs": 6,
+              "flags": [
+                "dominant"
+              ]
+            },
+            {
+              "part": "swarm",
+              "evolved": 0.6333,
+              "lo": 0.0,
+              "hi": 1.0,
+              "baseline": 0.0907,
+              "lift": 6.985,
+              "champion_runs": 4,
+              "runs": 6,
+              "flags": []
+            },
+            {
+              "part": "guns_max",
+              "evolved": 0.5333,
+              "lo": 0.0,
+              "hi": 1.0,
+              "baseline": 0.4987,
+              "lift": 1.07,
+              "champion_runs": 4,
+              "runs": 6,
+              "flags": []
+            },
+            {
+              "part": "armour_none",
+              "evolved": 0.4,
+              "lo": 0.0,
+              "hi": 1.0,
+              "baseline": 0.1413,
+              "lift": 2.83,
+              "champion_runs": 2,
+              "runs": 6,
+              "flags": []
+            },
+            {
+              "part": "drive_none",
+              "evolved": 0.3,
+              "lo": 0.0,
+              "hi": 1.0,
+              "baseline": 0.1497,
+              "lift": 2.004,
+              "champion_runs": 1,
+              "runs": 6,
+              "flags": []
+            },
+            {
+              "part": "armour_max",
+              "evolved": 0.2333,
+              "lo": 0.0,
+              "hi": 0.4,
+              "baseline": 0.4883,
+              "lift": 0.478,
+              "champion_runs": 1,
+              "runs": 6,
+              "flags": []
+            },
+            {
+              "part": "drive_max",
+              "evolved": 0.1,
+              "lo": 0.0,
+              "hi": 0.4,
+              "baseline": 0.1657,
+              "lift": 0.604,
+              "champion_runs": 2,
+              "runs": 6,
+              "flags": []
+            },
+            {
+              "part": "elite",
+              "evolved": 0.0,
+              "lo": 0.0,
+              "hi": 0.0,
+              "baseline": 0.0023,
+              "lift": 0.0,
+              "champion_runs": 0,
+              "runs": 6,
+              "flags": []
+            }
+          ],
+          "after": [
+            {
+              "part": "scuttle",
+              "evolved": 1.0,
+              "lo": 1.0,
+              "hi": 1.0,
+              "baseline": 0.2937,
+              "lift": 3.405,
+              "champion_runs": 6,
+              "runs": 6,
+              "flags": [
+                "dominant"
+              ]
+            },
+            {
+              "part": "guns_max",
+              "evolved": 0.5667,
+              "lo": 0.0,
+              "hi": 1.0,
+              "baseline": 0.4763,
+              "lift": 1.19,
+              "champion_runs": 3,
+              "runs": 6,
+              "flags": []
+            },
+            {
+              "part": "armour_max",
+              "evolved": 0.5,
+              "lo": 0.0,
+              "hi": 1.0,
+              "baseline": 0.4717,
+              "lift": 1.06,
+              "champion_runs": 3,
+              "runs": 6,
+              "flags": []
+            },
+            {
+              "part": "drive_none",
+              "evolved": 0.4667,
+              "lo": 0.0,
+              "hi": 1.0,
+              "baseline": 0.1833,
+              "lift": 2.545,
+              "champion_runs": 3,
+              "runs": 6,
+              "flags": []
+            },
+            {
+              "part": "swarm",
+              "evolved": 0.3333,
+              "lo": 0.0,
+              "hi": 1.0,
+              "baseline": 0.113,
+              "lift": 2.95,
+              "champion_runs": 3,
+              "runs": 6,
+              "flags": []
+            },
+            {
+              "part": "armour_none",
+              "evolved": 0.3,
+              "lo": 0.0,
+              "hi": 1.0,
+              "baseline": 0.182,
+              "lift": 1.648,
+              "champion_runs": 3,
+              "runs": 6,
+              "flags": []
+            },
+            {
+              "part": "drive_max",
+              "evolved": 0.1,
+              "lo": 0.0,
+              "hi": 0.2,
+              "baseline": 0.1633,
+              "lift": 0.612,
+              "champion_runs": 0,
+              "runs": 6,
+              "flags": []
+            },
+            {
+              "part": "elite",
+              "evolved": 0.0,
+              "lo": 0.0,
+              "hi": 0.0,
+              "baseline": 0.001,
+              "lift": 0.0,
+              "champion_runs": 0,
+              "runs": 6,
+              "flags": []
+            }
+          ],
+          "target_before": 1.0,
+          "target_after": 1.0,
+          "target_lift_after": 3.405,
+          "top_after": "scuttle",
+          "top_after_share": 1.0,
+          "new_dominant": [],
+          "champion_held_out": 0.9907,
+          "effective": false,
+          "failed": [
+            "scuttle is still dominant (share 1.00, lift 3.4)"
+          ],
+          "dropped_opponents": [
+            "mixed",
+            "swarm"
+          ],
+          "seconds": 6.5
+        },
+        {
+          "patch": {
+            "target": "swarm",
+            "field": "limits.max_ships_per_class",
+            "old": 99.0,
+            "new": 40.0,
+            "label": "limits.max_ships_per_class 99->40"
+          },
+          "base_patches": [
+            {
+              "target": "scuttle",
+              "field": "era.max_disabled_fraction",
+              "old": 0.3,
+              "new": 0.6,
+              "label": "era.max_disabled_fraction 0.3->0.6"
+            }
+          ],
+          "before": [
+            {
+              "part": "swarm",
+              "evolved": 0.9333,
+              "lo": 0.8,
+              "hi": 1.0,
+              "baseline": 0.0907,
+              "lift": 10.294,
+              "champion_runs": 6,
+              "runs": 6,
+              "flags": [
+                "dominant"
+              ]
+            },
+            {
+              "part": "guns_max",
+              "evolved": 0.7333,
+              "lo": 0.2,
+              "hi": 1.0,
+              "baseline": 0.4987,
+              "lift": 1.471,
+              "champion_runs": 5,
+              "runs": 6,
+              "flags": []
+            },
+            {
+              "part": "armour_max",
+              "evolved": 0.3333,
+              "lo": 0.0,
+              "hi": 1.0,
+              "baseline": 0.4883,
+              "lift": 0.683,
+              "champion_runs": 2,
+              "runs": 6,
+              "flags": []
+            },
+            {
+              "part": "scuttle",
+              "evolved": 0.3333,
+              "lo": 0.0,
+              "hi": 0.8,
+              "baseline": 0.299,
+              "lift": 1.115,
+              "champion_runs": 1,
+              "runs": 6,
+              "flags": []
+            },
+            {
+              "part": "armour_none",
+              "evolved": 0.2667,
+              "lo": 0.0,
+              "hi": 0.6,
+              "baseline": 0.1413,
+              "lift": 1.887,
+              "champion_runs": 1,
+              "runs": 6,
+              "flags": []
+            },
+            {
+              "part": "drive_none",
+              "evolved": 0.2667,
+              "lo": 0.0,
+              "hi": 0.6,
+              "baseline": 0.1497,
+              "lift": 1.782,
+              "champion_runs": 1,
+              "runs": 6,
+              "flags": []
+            },
+            {
+              "part": "drive_max",
+              "evolved": 0.0333,
+              "lo": 0.0,
+              "hi": 0.2,
+              "baseline": 0.1657,
+              "lift": 0.201,
+              "champion_runs": 0,
+              "runs": 6,
+              "flags": []
+            },
+            {
+              "part": "elite",
+              "evolved": 0.0,
+              "lo": 0.0,
+              "hi": 0.0,
+              "baseline": 0.0023,
+              "lift": 0.0,
+              "champion_runs": 0,
+              "runs": 6,
+              "flags": []
+            }
+          ],
+          "after": [
+            {
+              "part": "guns_max",
+              "evolved": 1.0,
+              "lo": 1.0,
+              "hi": 1.0,
+              "baseline": 0.4913,
+              "lift": 2.035,
+              "champion_runs": 6,
+              "runs": 6,
+              "flags": [
+                "dominant"
+              ]
+            },
+            {
+              "part": "armour_max",
+              "evolved": 0.5,
+              "lo": 0.0,
+              "hi": 1.0,
+              "baseline": 0.4977,
+              "lift": 1.005,
+              "champion_runs": 2,
+              "runs": 6,
+              "flags": []
+            },
+            {
+              "part": "swarm",
+              "evolved": 0.4333,
+              "lo": 0.0,
+              "hi": 1.0,
+              "baseline": 0.0957,
+              "lift": 4.53,
+              "champion_runs": 4,
+              "runs": 6,
+              "flags": []
+            },
+            {
+              "part": "drive_none",
+              "evolved": 0.1,
+              "lo": 0.0,
+              "hi": 0.6,
+              "baseline": 0.156,
+              "lift": 0.641,
+              "champion_runs": 1,
+              "runs": 6,
+              "flags": []
+            },
+            {
+              "part": "drive_max",
+              "evolved": 0.0667,
+              "lo": 0.0,
+              "hi": 0.2,
+              "baseline": 0.1707,
+              "lift": 0.391,
+              "champion_runs": 1,
+              "runs": 6,
+              "flags": []
+            },
+            {
+              "part": "scuttle",
+              "evolved": 0.0333,
+              "lo": 0.0,
+              "hi": 0.2,
+              "baseline": 0.3077,
+              "lift": 0.108,
+              "champion_runs": 0,
+              "runs": 6,
+              "flags": [
+                "underused"
+              ]
+            },
+            {
+              "part": "elite",
+              "evolved": 0.0,
+              "lo": 0.0,
+              "hi": 0.0,
+              "baseline": 0.002,
+              "lift": 0.0,
+              "champion_runs": 0,
+              "runs": 6,
+              "flags": []
+            },
+            {
+              "part": "armour_none",
+              "evolved": 0.0,
+              "lo": 0.0,
+              "hi": 0.0,
+              "baseline": 0.135,
+              "lift": 0.0,
+              "champion_runs": 0,
+              "runs": 6,
+              "flags": []
+            }
+          ],
+          "target_before": 0.9333,
+          "target_after": 0.4333,
+          "target_lift_after": 4.53,
+          "top_after": "guns_max",
+          "top_after_share": 1.0,
+          "new_dominant": [
+            "guns_max"
+          ],
+          "champion_held_out": 0.9366,
+          "effective": false,
+          "failed": [
+            "new dominant: guns_max"
+          ],
+          "dropped_opponents": [
+            "swarm"
+          ],
+          "seconds": 10.5
+        },
+        {
+          "patch": {
+            "target": "swarm",
+            "field": "limits.repeat_discount",
+            "old": 0.8,
+            "new": 0.9500000000000001,
+            "label": "limits.repeat_discount 0.8->0.95"
+          },
+          "base_patches": [
+            {
+              "target": "scuttle",
+              "field": "era.max_disabled_fraction",
+              "old": 0.3,
+              "new": 0.6,
+              "label": "era.max_disabled_fraction 0.3->0.6"
+            }
+          ],
+          "before": [
+            {
+              "part": "swarm",
+              "evolved": 0.9333,
+              "lo": 0.8,
+              "hi": 1.0,
+              "baseline": 0.0907,
+              "lift": 10.294,
+              "champion_runs": 6,
+              "runs": 6,
+              "flags": [
+                "dominant"
+              ]
+            },
+            {
+              "part": "guns_max",
+              "evolved": 0.7333,
+              "lo": 0.2,
+              "hi": 1.0,
+              "baseline": 0.4987,
+              "lift": 1.471,
+              "champion_runs": 5,
+              "runs": 6,
+              "flags": []
+            },
+            {
+              "part": "armour_max",
+              "evolved": 0.3333,
+              "lo": 0.0,
+              "hi": 1.0,
+              "baseline": 0.4883,
+              "lift": 0.683,
+              "champion_runs": 2,
+              "runs": 6,
+              "flags": []
+            },
+            {
+              "part": "scuttle",
+              "evolved": 0.3333,
+              "lo": 0.0,
+              "hi": 0.8,
+              "baseline": 0.299,
+              "lift": 1.115,
+              "champion_runs": 1,
+              "runs": 6,
+              "flags": []
+            },
+            {
+              "part": "armour_none",
+              "evolved": 0.2667,
+              "lo": 0.0,
+              "hi": 0.6,
+              "baseline": 0.1413,
+              "lift": 1.887,
+              "champion_runs": 1,
+              "runs": 6,
+              "flags": []
+            },
+            {
+              "part": "drive_none",
+              "evolved": 0.2667,
+              "lo": 0.0,
+              "hi": 0.6,
+              "baseline": 0.1497,
+              "lift": 1.782,
+              "champion_runs": 1,
+              "runs": 6,
+              "flags": []
+            },
+            {
+              "part": "drive_max",
+              "evolved": 0.0333,
+              "lo": 0.0,
+              "hi": 0.2,
+              "baseline": 0.1657,
+              "lift": 0.201,
+              "champion_runs": 0,
+              "runs": 6,
+              "flags": []
+            },
+            {
+              "part": "elite",
+              "evolved": 0.0,
+              "lo": 0.0,
+              "hi": 0.0,
+              "baseline": 0.0023,
+              "lift": 0.0,
+              "champion_runs": 0,
+              "runs": 6,
+              "flags": []
+            }
+          ],
+          "after": [
+            {
+              "part": "swarm",
+              "evolved": 0.8333,
+              "lo": 0.6,
+              "hi": 1.0,
+              "baseline": 0.1137,
+              "lift": 7.331,
+              "champion_runs": 5,
+              "runs": 6,
+              "flags": [
+                "dominant"
+              ]
+            },
+            {
+              "part": "drive_none",
+              "evolved": 0.6333,
+              "lo": 0.0,
+              "hi": 1.0,
+              "baseline": 0.191,
+              "lift": 3.316,
+              "champion_runs": 4,
+              "runs": 6,
+              "flags": []
+            },
+            {
+              "part": "scuttle",
+              "evolved": 0.6333,
+              "lo": 0.2,
+              "hi": 1.0,
+              "baseline": 0.297,
+              "lift": 2.132,
+              "champion_runs": 3,
+              "runs": 6,
+              "flags": []
+            },
+            {
+              "part": "guns_max",
+              "evolved": 0.5333,
+              "lo": 0.2,
+              "hi": 1.0,
+              "baseline": 0.467,
+              "lift": 1.142,
+              "champion_runs": 4,
+              "runs": 6,
+              "flags": []
+            },
+            {
+              "part": "armour_none",
+              "evolved": 0.4667,
+              "lo": 0.2,
+              "hi": 1.0,
+              "baseline": 0.1907,
+              "lift": 2.448,
+              "champion_runs": 2,
+              "runs": 6,
+              "flags": []
+            },
+            {
+              "part": "armour_max",
+              "evolved": 0.2667,
+              "lo": 0.0,
+              "hi": 0.8,
+              "baseline": 0.4697,
+              "lift": 0.568,
+              "champion_runs": 1,
+              "runs": 6,
+              "flags": []
+            },
+            {
+              "part": "drive_max",
+              "evolved": 0.1667,
+              "lo": 0.0,
+              "hi": 1.0,
+              "baseline": 0.1683,
+              "lift": 0.99,
+              "champion_runs": 1,
+              "runs": 6,
+              "flags": []
+            },
+            {
+              "part": "elite",
+              "evolved": 0.0,
+              "lo": 0.0,
+              "hi": 0.0,
+              "baseline": 0.052,
+              "lift": 0.0,
+              "champion_runs": 0,
+              "runs": 6,
+              "flags": []
+            }
+          ],
+          "target_before": 0.9333,
+          "target_after": 0.8333,
+          "target_lift_after": 7.331,
+          "top_after": "swarm",
+          "top_after_share": 0.8333,
+          "new_dominant": [],
+          "champion_held_out": 0.9201,
+          "effective": false,
+          "failed": [
+            "swarm is still dominant (share 0.83, lift 7.3)"
+          ],
+          "dropped_opponents": [
+            "mixed"
+          ],
+          "seconds": 10.5
+        }
+      ]
+    }
+  ],
+  "underused": [],
+  "champions": [
+    {
+      "seed": 0,
+      "design": {
+        "classes": [
+          [
+            [
+              0,
+              0,
+              0,
+              0
+            ],
+            45
+          ],
+          [
+            [
+              3,
+              1,
+              3,
+              1
+            ],
+            4
+          ]
+        ],
+        "doctrine": [
+          "scuttle_disabled"
+        ]
+      },
+      "text": "45x[h0 a0 g0 d0] + 4x[h3 a1 g3 d1] · scuttle_disabled · 49 ships, cost 200/200",
+      "held_out": 0.9902
+    },
+    {
+      "seed": 1,
+      "design": {
+        "classes": [
+          [
+            [
+              0,
+              0,
+              0,
+              0
+            ],
+            97
+          ],
+          [
+            [
+              3,
+              0,
+              3,
+              1
+            ],
+            1
+          ]
+        ],
+        "doctrine": [
+          "scuttle_disabled"
+        ]
+      },
+      "text": "97x[h0 a0 g0 d0] + 1x[h3 a0 g3 d1] · scuttle_disabled · 98 ships, cost 199.6/200",
+      "held_out": 1.0
+    },
+    {
+      "seed": 2,
+      "design": {
+        "classes": [
+          [
+            [
+              3,
+              2,
+              3,
+              3
+            ],
+            5
+          ]
+        ],
+        "doctrine": [
+          "scuttle_disabled"
+        ]
+      },
+      "text": "5x[h3 a2 g3 d3] · scuttle_disabled · 5 ships, cost 195/200",
+      "held_out": 0.9951
+    },
+    {
+      "seed": 3,
+      "design": {
+        "classes": [
+          [
+            [
+              0,
+              0,
+              1,
+              0
+            ],
+            60
+          ]
+        ],
+        "doctrine": [
+          "scuttle_disabled"
+        ]
+      },
+      "text": "60x[h0 a0 g1 d0] · scuttle_disabled · 60 ships, cost 198.8/200",
+      "held_out": 0.9804
+    },
+    {
+      "seed": 4,
+      "design": {
+        "classes": [
+          [
+            [
+              0,
+              0,
+              0,
+              0
+            ],
+            66
+          ],
+          [
+            [
+              1,
+              0,
+              2,
+              0
+            ],
+            5
+          ],
+          [
+            [
+              3,
+              3,
+              2,
+              1
+            ],
+            1
+          ]
+        ],
+        "doctrine": [
+          "scuttle_disabled"
+        ]
+      },
+      "text": "66x[h0 a0 g0 d0] + 5x[h1 a0 g2 d0] + 1x[h3 a3 g2 d1] · scuttle_disabled · 72 ships, cost 199.8/200",
+      "held_out": 1.0
+    },
+    {
+      "seed": 5,
+      "design": {
+        "classes": [
+          [
+            [
+              3,
+              2,
+              3,
+              3
+            ],
+            5
+          ]
+        ],
+        "doctrine": [
+          "scuttle_disabled"
+        ]
+      },
+      "text": "5x[h3 a2 g3 d3] · scuttle_disabled · 5 ships, cost 195/200",
+      "held_out": 0.9951
+    },
+    {
+      "seed": 6,
+      "design": {
+        "classes": [
+          [
+            [
+              0,
+              0,
+              0,
+              0
+            ],
+            59
+          ],
+          [
+            [
+              2,
+              1,
+              3,
+              1
+            ],
+            5
+          ]
+        ],
+        "doctrine": [
+          "scuttle_disabled"
+        ]
+      },
+      "text": "59x[h0 a0 g0 d0] + 5x[h2 a1 g3 d1] · scuttle_disabled · 64 ships, cost 199.2/200",
+      "held_out": 1.0
+    },
+    {
+      "seed": 7,
+      "design": {
+        "classes": [
+          [
+            [
+              3,
+              3,
+              3,
+              2
+            ],
+            5
+          ]
+        ],
+        "doctrine": [
+          "scuttle_disabled"
+        ]
+      },
+      "text": "5x[h3 a3 g3 d2] · scuttle_disabled · 5 ships, cost 195/200",
+      "held_out": 0.9755
+    }
+  ],
+  "summary": {
+    "template": "scuttle is dominant: in 97% of top designs (range 80%-100% over 8 runs) against 30% of random designs, and in 8/8 champions. Champions lose 0.41 without it. Effective fix: era.max_disabled_fraction 0.3->0.6 + components.hull.cost.0 1->2 (nothing is dominant afterwards; most common is guns_max at 73%).",
+    "llm": null,
+    "llm_model": null,
+    "llm_rejected": null
+  }
+}

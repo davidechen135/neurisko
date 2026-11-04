@@ -125,7 +125,9 @@ def share_table(
     rows: list[PartStat] = []
     for p in game.part_names():
         shares = [
-            sum(p in game.parts(tuple(d)) for d in o.top) / len(o.top) for o in outcomes if o.top
+            sum(p in game.parts(game.from_json(d)) for d in o.top) / len(o.top)
+            for o in outcomes
+            if o.top
         ]
         evolved = sum(shares) / len(shares) if shares else 0.0
         base = baseline.get(p, 0.0)
@@ -143,7 +145,7 @@ def share_table(
                 hi=round(max(shares), 4) if shares else 0.0,
                 baseline=round(base, 4),
                 lift=round(lift, 3),
-                champion_runs=sum(p in game.parts(tuple(o.champion)) for o in outcomes),
+                champion_runs=sum(p in game.parts(game.from_json(o.champion)) for o in outcomes),
                 runs=len(outcomes),
                 flags=flags,
             )

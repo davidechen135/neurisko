@@ -28,6 +28,8 @@ jobs:
           uv run neurisko export runs/demo/qwen-s0
           --report reports/demo/default
           --h59 runs/demo/h59-off runs/demo/h59-on
+          --tcs runs/demo/tcs-1981 runs/demo/tcs-1982
+          --tcs-reports reports/demo/tcs-1981 reports/demo/tcs-1982
           --out site
       - uses: actions/upload-pages-artifact@v5
         with:

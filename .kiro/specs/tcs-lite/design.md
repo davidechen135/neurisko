@@ -63,3 +63,29 @@ Fleets of ~120 ships × 30 rounds are heavier than Monster Mash. Ships are store
 - Protocol: the conformance test shared with Monster Mash (moved to `tests/engine/test_protocol.py` and parametrised over games).
 - Story (slow): R7.1 and R7.2 with the default engine config.
 - Web: export of a TCS run renders (node reducer test reused; manifest names the game).
+
+## Implementation notes and tuning record (2026-11-04)
+The code and `data/tcs-198x.toml` are the reference; this records how they got there (R7.3).
+
+**Rule changes from the v0 design above**
+1. Armour is a **chance to deflect** a hit (0 / 0.25 / 0.45 / 0.6) and drive a **chance an enemy shot misses** (0.2 / 0.35 / 0.5 / 0.65), instead of a flat damage reduction. Every hit does 1 damage. With flat reduction and 2 damage per hit, armour 2+ made ships immune, which made the game about armour thresholds instead of fleet shape.
+2. Hull hit points 2/4/8/16; a ship is disabled at half its hit points and destroyed at full. Slots: armour+guns+drive ≤ (hull+1)×2.
+3. The 1982 withdrawal rule counts disabled ships among the fleet's **remaining** (not destroyed) ships.
+
+**Tuning steps** (each measured with a 12-seed round robin of maxed-out single-class fleets; scripts in the session log)
+| step | change | result |
+|---|---|---|
+| 1 | guns shots 1/2/3/4, withdrawal at 0.5 | swarm wins 100% in 1981 *and* 1982; the 1982 rule did nothing, because a swarm loses ships so fast that its disabled share stays low |
+| 2 | grid over shots {1-4, 1-3-5-8, 1-3-6-10}, armour-3 deflect {0.6, 0.75}, withdrawal {0.5, 0.3} | chosen: **shots 1/3/6/10, deflect 0.6, withdrawal 0.3**: in 1981 the swarm beats every other maxed design (mean 0.98); in 1982 plain swarm falls to 0.47 against the elite fleet, and a scuttling swarm is back to 0.96-1.00 |
+| 3 | archetype `mixed` cost 202 > budget | 20 → 15 minimal ships |
+
+**Measured story** (8 seeds × 12 generations, no LLM, seed heuristics that only encode "quality ship" instincts):
+- 1981: `swarm` (≥ 30 ships) is **dominant**: 0.90 of top fleets vs 0.10 of random fleets, lift 9.4, in 7 of 8 champions. Champions look like `99× minimal + 1 escort` (cf. 96 ships, 75 of one class).
+- 1982: `scuttle` is **dominant**: 0.97 vs 0.29, in 8 of 8 champions. The engine finds the doctrine through random immigrants plus selection; no heuristic mentions it.
+- 1981 champions drop from 0.963 to 0.487 (held-out score) when the same fleets play under 1982 rules.
+- The balance report finds rule fixes: 1981 `components.hull.cost.0 1→2` (minimal ships cost 2) is effective; 1982 needs `era.max_disabled_fraction 0.3→0.6 + components.hull.cost.0 1→2` (follow-up step).
+- Speed: about 14,000-21,000 battles/s; a full TCS report takes 20-26 s.
+
+**Engine generality (R5)**: protocol gained `from_json`, `parse_design`, `seed_rules`, `featured_opponents`, `describe_event`, `without_part`, `adds_part`. Shared code builds games only through `games/registry.py`; run metadata records `game` and `era`. The conformance test (`tests/engine/test_protocol.py`) runs on both games. Recorded Monster Mash runs still replay identically (opponent seeds for string-tuple designs are unchanged). **Exception**: the MCP server stays Monster Mash only (its tools name units), as planned.
+
+**Rule patches** use `Patch.label` with a dotted ruleset path (e.g. `limits.repeat_discount`) and the dominant part as `target`, so the report's verification code needed no change.

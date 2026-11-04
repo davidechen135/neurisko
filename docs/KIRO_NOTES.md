@@ -74,3 +74,10 @@ Running log of how Kiro was used, for the demo video, Devpost description and bl
 - Its answer: witch dominant (0.90 vs baseline 0.31, lift 2.89); `witch.cost 2→3` failed (flesh_golem became dominant); `witch.ability.amount 12→7` effective (witch 0.90 → 0.60).
 - **Checking that answer with the full-report settings** (6 seeds × 12 generations): `witch.ability.amount 12→7` is **not** effective. witch drops 0.93 → 0.67, but flesh_golem becomes dominant (0.77). 12→6 gives the same result (flesh_golem 0.83). The quick check gave a false positive.
 - Fix: the `verify_patch` note and the steering now call a quick "effective" a candidate that must be confirmed with a full report before it is recommended. This is the third time in this project that a small sample gave a wrong answer, after the pumpkin_mage claim and "witch cost 2→3 fixes it".
+
+## 2026-11-04 · Spec 6 implemented: TCS-lite, and GitHub Pages
+
+- **Public replay site**: https://davidechen135.github.io/neurisko/ deployed by GitHub Actions on every push. One deploy failed first: `astral-sh/setup-uv` no longer publishes major-version tags after v7, so the workflow pins `v10.3.3`.
+- **History first, then rules.** Before designing TCS-lite we checked what the sources agree on (96 ships, 75 of one class, small ships with many small weapons; 1982 won by destroying its own ships) and wrote only that. The game's rules and numbers are our own.
+- **The story had to emerge, not be scripted.** The first numbers made the 1982 rule useless (swarm still won 100%). A small grid search fixed it, and every step is in the design notes. With seed heuristics that only encode "build good warships", the engine found the 99-ship swarm under 1981 rules (swarm dominant in 7/8 champions) and scuttling under 1982 rules (8/8), and nothing in its rules mentions either.
+- **Second game, same engine.** The protocol conformance test now runs on both games, and caught a parameter-name mismatch. Old Monster Mash runs still replay identically after the refactor.

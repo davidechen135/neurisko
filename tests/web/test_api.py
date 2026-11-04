@@ -86,7 +86,7 @@ def test_battle_endpoint(client):
     r = client.get("/api/battle", params={"a": "zombie,ghost", "b": "gargoyle", "seed": 3})
     assert r.status_code == 200
     b = r.json()
-    assert b["winner"] in ("A", "B", "draw") and b["events"]
+    assert b["winner"] in ("A", "B", "draw") and b["lines"] and b["a_text"].startswith("[zombie")
     bad = client.get("/api/battle", params={"a": "lich", "b": "gargoyle"})
     assert bad.status_code == 422 and "unknown units" in json.dumps(bad.json())
     assert (

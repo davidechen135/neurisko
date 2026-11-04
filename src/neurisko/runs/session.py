@@ -5,24 +5,22 @@ from __future__ import annotations
 import subprocess
 from dataclasses import replace
 from datetime import datetime
-from importlib import resources
 from pathlib import Path
 
 from neurisko.engine.evolve import Evolution, EvolveConfig, RunResult
-from neurisko.engine.heuristics import RuleSpec, load_seed_rules
-from neurisko.games.autobattler import MonsterMash
+from neurisko.engine.game import Game
+from neurisko.engine.heuristics import RuleSpec
+from neurisko.games.registry import DEFAULT_GAME, game_from_meta, load_game
 from neurisko.llm import LLMClient, ReplayClient
 from neurisko.runs.recorder import Recorder, load_events, load_meta
 
 RUNS_DIR = Path("runs")
-SEED_RULES = "seed_heuristics.toml"
 # Generation-summary keys that legitimately differ between a run and its replay.
 TIMING_KEYS = {"t", "elapsed_s"}
 
 
-def default_seed_rules(game: MonsterMash) -> list[RuleSpec]:
-    path = Path(str(resources.files("neurisko.games.autobattler").joinpath("data", SEED_RULES)))
-    return load_seed_rules(path, game.feature_names(), game.action_schema())
+def default_seed_rules(game: Game) -> list[RuleSpec]:
+    return game.seed_rules()
 
 
 def new_run_id(seed: int) -> str:
@@ -48,14 +46,17 @@ def start_run(
     on_generation=None,
     listeners=None,
     game_settings: dict | None = None,
+    game_name: str = DEFAULT_GAME,
+    era: str | None = None,
 ) -> tuple[Evolution, RunResult]:
-    game = MonsterMash.from_file(ruleset, **(game_settings or {}))
-    seeds = default_seed_rules(game)
+    game = load_game(game_name, ruleset, era=era, **(game_settings or {}))
+    seeds = game.seed_rules()
     rec = Recorder(run_dir, redact=redact, listeners=listeners)
     meta = {
         "run_dir": str(run_dir) if run_dir else None,
         "game": game.name,
         "ruleset": ruleset,
+        "era": era,
         "ruleset_hash": game.ruleset_hash,
         "game_settings": game.settings(),
         "config": cfg.to_dict(),
@@ -94,7 +95,7 @@ def replay_run(run_dir: Path, on_generation=None) -> tuple[Evolution, list[str]]
     meta = load_meta(run_dir)
     events = load_events(run_dir)
     cfg = config_from_meta(meta)
-    game = MonsterMash.from_file(meta.get("ruleset"), **meta.get("game_settings", {}))
+    game = game_from_meta(meta)
     if game.ruleset_hash != meta["ruleset_hash"]:
         return None, [f"ruleset hash {game.ruleset_hash} != recorded {meta['ruleset_hash']}"]
     seeds = [RuleSpec.model_validate(s) for s in meta["seed_rules"]]

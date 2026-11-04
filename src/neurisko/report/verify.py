@@ -87,7 +87,7 @@ def verify_patches(
         after = share_table(patched, mine, baseline_shares(patched, baseline_n), th)
         effective, failed, new_dom = judge(patch.target, after)
         held = patched.held_out()
-        champ = [held.score(tuple(o.champion)).score for o in mine]
+        champ = [held.score(patched.from_json(o.champion)).score for o in mine]
         target_after = _row(after, patch.target)
         results.append(
             PatchResult(

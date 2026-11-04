@@ -24,6 +24,7 @@ def test_export_writes_a_complete_site(recorded, tmp_path):
         "run_url": "data/run.json",
         "report_url": None,
         "h59_url": "data/h59.json",
+        "tcs_url": None,
     }
     assert sum(sizes.values()) < MAX_DATA_BYTES
     # Every URL in the frontend is relative, so the site works under a sub-path.
@@ -54,6 +55,37 @@ def test_demo_export_fits(tmp_path):
         h59_dirs=(demo / "h59-off", demo / "h59-on"),
     )
     assert sum(sizes.values()) < MAX_DATA_BYTES
+
+
+def test_tcs_export(tmp_path):
+    """A recorded TCS-lite pair exports into the TCS tab data with the rule diff."""
+    from neurisko.engine.evolve import EvolveConfig
+    from neurisko.runs.session import start_run
+
+    runs = {}
+    for era in ("1981", "1982"):
+        d = tmp_path / f"tcs-{era}"
+        cfg = EvolveConfig(generations=2, seed=0, population=6, design_apps=6, immigrants=1)
+        start_run(
+            cfg, None, d, game_name="tcs-lite", era=era, game_settings=dict(n_random=2, n_seeds=1)
+        )
+        runs[era] = d
+    mm = tmp_path / "mm"
+    cfg = EvolveConfig(generations=1, seed=0, population=6, design_apps=6, immigrants=1)
+    start_run(cfg, None, mm, game_settings=dict(n_random=2, n_seeds=1))
+    out = tmp_path / "site"
+    sizes = export_site(mm, out, tcs_dirs=(runs["1981"], runs["1982"]))
+    assert "tcs.json" in sizes
+    t = json.loads((out / "data" / "tcs.json").read_text())
+    fields = {d["field"] for d in t["rule_diff"]}
+    assert {"allow_scuttle", "max_disabled_fraction", "year"} == fields
+    assert set(t["eras"]) == {"1981", "1982"} and len(t["battles"]) == 3
+    assert all(b["lines"] and b["time_unit"] == "round" for b in t["battles"])
+    assert "not affiliated" in t["notice"]
+    # The TCS run itself also exports as a normal run (replay works for any game).
+    export_site(runs["1982"], tmp_path / "site2")
+    run = json.loads((tmp_path / "site2" / "data" / "run.json").read_text())
+    assert run["game"] == "tcs-lite" and run["battles"]
 
 
 @pytest.mark.skipif(NODE is None, reason="node not installed")

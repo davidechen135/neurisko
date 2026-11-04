@@ -1,0 +1,51 @@
+# Hand-written seed heuristics for TCS-lite. They encode the "naval officer" instincts the
+# 1981 human players reportedly had (quality ships, armour, guns), not the swarm exploit:
+# the engine has to find that on its own.
+
+[[heuristics]]
+name = "Spend the budget"
+rationale = "Unspent credits are wasted."
+if = [{ feature = "unspent", op = ">=", value = 5 }]
+then = { kind = "set_count", class = "@largest", change = "max" }
+
+[[heuristics]]
+name = "Armour against the elite"
+rationale = "Big guns need armour to answer."
+if = [{ feature = "winrate_vs_elite", op = "<", value = 0.5 }]
+then = { kind = "upgrade", class = "@most_expensive", component = "armour" }
+
+[[heuristics]]
+name = "More firepower"
+rationale = "A fleet that cannot shoot cannot win."
+if = [{ feature = "total_shots", op = "<", value = 40 }]
+then = { kind = "upgrade", class = "@largest", component = "guns" }
+
+[[heuristics]]
+name = "Bigger hulls"
+rationale = "Real warships are big."
+if = [{ feature = "max_hull", op = "<", value = 2 }]
+then = { kind = "upgrade", class = "@most_expensive", component = "hull" }
+
+[[heuristics]]
+name = "A flagship"
+rationale = "Every fleet needs a capital ship."
+if = [{ feature = "n_classes", op = "==", value = 1 }]
+then = { kind = "add_class", template = "capital", count = "1" }
+
+[[heuristics]]
+name = "Speed against the line"
+rationale = "Fast ships are harder to hit."
+if = [{ feature = "winrate_vs_line", op = "<", value = 0.5 }]
+then = { kind = "upgrade", class = "@largest", component = "drive" }
+
+[[heuristics]]
+name = "Trim to fit"
+rationale = "Free credits for upgrades."
+if = [{ feature = "unspent", op = "<", value = 2 }]
+then = { kind = "set_count", class = "@most_expensive", change = "-1" }
+
+[[heuristics]]
+name = "Gunboat escort"
+rationale = "Cheap gunboats screen the fleet."
+if = [{ feature = "winrate_vs_fast", op = "<", value = 0.5 }]
+then = { kind = "add_class", template = "gunboat", count = "5" }

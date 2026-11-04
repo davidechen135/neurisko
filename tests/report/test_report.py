@@ -136,7 +136,7 @@ def test_evidence_merges_across_runs():
         outcome(0, [["witch"]], heuristics=[h, other]),
         outcome(1, [["witch"]], heuristics=[{**h, "worth": 800}]),
     ]
-    [e] = evidence("witch", outs)
+    [e] = evidence(tiny_game(), "witch", outs)
     assert (e.worth, e.applications, e.runs) == (800, 8, 2)
 
 

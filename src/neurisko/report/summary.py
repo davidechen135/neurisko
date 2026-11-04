@@ -47,7 +47,7 @@ def facts(
         for r in d.patches:
             if r.effective:
                 result = (
-                    f"effective: no unit is dominant afterwards; most common unit is "
+                    f"effective: nothing is dominant afterwards; most common is "
                     f"{r.top_after} at {pct(r.top_after_share)}"
                 )
             else:

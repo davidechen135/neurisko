@@ -1,0 +1,105 @@
+# TCS-lite, 1982 era (v0). Identical to tcs-1981.toml except for [era].
+# An original simplified game inspired by Traveller: TCS; it is not
+# affiliated with or derived from its rules text. The numbers are ours and are tuned by
+# measurement (see .kiro/specs/tcs-lite/design.md).
+#
+# A ship class has four component levels (0-3): hull, armour, guns, drive.
+# Every hit does 1 damage unless armour deflects it. A ship that has taken half its hit points
+# can no longer fire (disabled); at full hit points it is destroyed. Shots go to a random
+# enemy ship that is not destroyed, so disabled ships still soak up fire.
+# The last fleet with a ship able to fire wins.
+
+name = "tcs-lite"
+version = "0"
+
+[era]
+year = "1982"
+max_disabled_fraction = 0.3   # a fleet with over 30% of its ships disabled withdraws and loses
+allow_scuttle = true          # ...but nothing stops a fleet removing its own disabled ships
+
+[limits]
+budget = 200
+max_classes = 4
+max_ships_per_class = 99
+max_rounds = 30
+design_fee = 6               # paid once per class
+repeat_discount = 0.8        # every ship after the first of a class costs 80%
+slots_per_hull_level = 2     # armour + guns + drive <= (hull + 1) * 2
+
+[components.hull]
+cost = [1, 3, 8, 20]
+hp = [2, 4, 8, 16]
+
+[components.armour]
+cost = [0, 2, 5, 10]
+deflect = [0.0, 0.25, 0.45, 0.6]
+
+[components.guns]
+cost = [1, 3, 6, 10]
+shots = [1, 3, 6, 10]
+
+[components.drive]
+cost = [0, 2, 5, 10]
+evade = [0.2, 0.35, 0.5, 0.65]
+
+# Building blocks for the add_class action.
+[[templates]]
+name = "minimal"
+hull = 0
+armour = 0
+guns = 0
+drive = 0
+
+[[templates]]
+name = "gunboat"
+hull = 1
+armour = 0
+guns = 3
+drive = 1
+
+[[templates]]
+name = "tank"
+hull = 2
+armour = 3
+guns = 2
+drive = 0
+
+[[templates]]
+name = "fast"
+hull = 1
+armour = 1
+guns = 1
+drive = 2
+
+[[templates]]
+name = "capital"
+hull = 3
+armour = 3
+guns = 3
+drive = 2
+
+# Fixed opponents.
+[[archetypes]]
+name = "elite"
+classes = [{ hull = 3, armour = 3, guns = 3, drive = 2, count = 4 }]
+
+[[archetypes]]
+name = "line"
+classes = [{ hull = 2, armour = 2, guns = 2, drive = 1, count = 9 }]
+
+[[archetypes]]
+name = "swarm"
+classes = [{ hull = 0, armour = 0, guns = 0, drive = 0, count = 99 }]
+
+[[archetypes]]
+name = "fast"
+classes = [{ hull = 1, armour = 1, guns = 1, drive = 2, count = 15 }]
+
+[[archetypes]]
+name = "mixed"
+classes = [
+  { hull = 3, armour = 3, guns = 3, drive = 2, count = 1 },
+  { hull = 2, armour = 2, guns = 2, drive = 1, count = 2 },
+  { hull = 1, armour = 0, guns = 3, drive = 1, count = 5 },
+  { hull = 0, armour = 0, guns = 0, drive = 0, count = 15 },
+]

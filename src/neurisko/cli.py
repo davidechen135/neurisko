@@ -5,49 +5,36 @@ from __future__ import annotations
 import argparse
 import sys
 
-from neurisko.engine.game import BattleResult, Event
-from neurisko.games.autobattler import MonsterMash, RulesetError
+from neurisko.engine.game import BattleResult
+from neurisko.games.autobattler import RulesetError
+from neurisko.games.registry import GAMES
 
 EXIT_USAGE = 2
 
 
-def _parse_design(text: str) -> tuple[str, ...]:
-    return tuple(p.strip() for p in text.split(",") if p.strip())
+def _load_game(args: argparse.Namespace):
+    from neurisko.games.registry import load_game
 
-
-def _load_game(args: argparse.Namespace) -> MonsterMash:
     try:
-        return MonsterMash.from_file(args.ruleset)
+        return load_game(args.game, args.ruleset, era=args.era)
     except RulesetError as err:
         print(f"error: {err}", file=sys.stderr)
         sys.exit(EXIT_USAGE)
 
 
-def _check(game: MonsterMash, label: str, design: tuple[str, ...]) -> None:
-    errors = game.validate(design)
+def _design(game, label: str, text: str):
+    try:
+        d = game.parse_design(text)
+    except ValueError as err:
+        print(f"error: {label}: {err}", file=sys.stderr)
+        sys.exit(EXIT_USAGE)
+    errors = game.validate(d)
     if errors:
         print(f"error: {label} is invalid:", file=sys.stderr)
         for e in errors:
             print(f"  - {e}", file=sys.stderr)
         sys.exit(EXIT_USAGE)
-
-
-def _format_event(e: Event) -> str:
-    t = f"t{e.tick:>4}"
-    match e.kind:
-        case "attack":
-            return f"{t}  {e.actor:<18} hits   {e.target:<18} {e.amount:>4}"
-        case "dodge":
-            return f"{t}  {e.actor:<18} dodges {e.target}"
-        case "heal":
-            return f"{t}  {e.actor:<18} heals  {e.target:<18} {e.amount:>4}"
-        case "summon":
-            return f"{t}  {e.actor:<18} raises {e.target}"
-        case "death":
-            return f"{t}  {e.actor:<18} DIES"
-        case _:
-            state = "ON " if e.kind == "synergy_on" else "OFF"
-            return f"{t}  synergy {state} {e.actor}"
+    return d
 
 
 def _print_result(r: BattleResult) -> None:
@@ -65,9 +52,7 @@ def _print_result(r: BattleResult) -> None:
 
 def cmd_battle(args: argparse.Namespace) -> int:
     game = _load_game(args)
-    a, b = _parse_design(args.a), _parse_design(args.b)
-    _check(game, "team A", a)
-    _check(game, "team B", b)
+    a, b = _design(game, "team A", args.a), _design(game, "team B", args.b)
     print(f"ruleset {game.ruleset_hash}  seed {args.seed}")
     print(f"A {game.describe(a)}")
     print(f"B {game.describe(b)}")
@@ -75,15 +60,14 @@ def cmd_battle(args: argparse.Namespace) -> int:
     if result.events:
         print()
         for e in result.events:
-            print(_format_event(e))
+            print(game.describe_event(e))
     _print_result(result)
     return 0
 
 
 def cmd_score(args: argparse.Namespace) -> int:
     game = _load_game(args)
-    d = _parse_design(args.design)
-    _check(game, "design", d)
+    d = _design(game, "design", args.design)
     report = game.score(d)
     print(f"ruleset {game.ruleset_hash}  {game.describe(d)}")
     print()
@@ -93,7 +77,7 @@ def cmd_score(args: argparse.Namespace) -> int:
         bar = "#" * round(m.score * 10)
         print(
             f"{m.opponent:<18} {m.wins:>3} {m.draws:>3} {m.losses:>3}  {m.score:.2f}  "
-            f"{bar:<10} {', '.join(by_name[m.opponent])}"
+            f"{bar:<10} {game.describe(by_name[m.opponent])}"
         )
     print()
     print(f"== SCORE {report.score:.3f} over {report.battles} battles ==")
@@ -166,20 +150,22 @@ def cmd_evolve(args: argparse.Namespace) -> int:
         f"llm {settings.llm_model if llm else 'off'}  auditor {'on' if cfg.auditor else 'OFF'}"
     )
     try:
-        _, result = start_run(
+        ev, result = start_run(
             cfg,
             llm,
             run_dir,
             ruleset=args.ruleset,
             redact=[settings.llm_api_key.get_secret_value()],
             on_generation=_print_generation,
+            game_name=args.game,
+            era=args.era,
         )
     except RulesetError as err:
         print(f"error: {err}", file=sys.stderr)
         return EXIT_USAGE
     print(
         f"\n== {result.reason.upper()} after {result.generations} generations; "
-        f"best {result.best_score:.3f} {list(result.best)} ==\nrecorded in {run_dir}"
+        f"best {result.best_score:.3f} ==\n  {ev.game.describe(result.best)}\nrecorded in {run_dir}"
     )
     return 130 if result.reason == "interrupted" else 0
 
@@ -189,7 +175,6 @@ def cmd_report(args: argparse.Namespace) -> int:
     from pathlib import Path
 
     from neurisko.report import ReportConfig, build_report, write_report
-    from neurisko.runs.session import default_seed_rules
 
     game = _load_game(args)
     out_dir = Path(args.reports_dir) / (args.report_id or f"{datetime.now():%Y%m%d-%H%M%S}")
@@ -218,7 +203,7 @@ def cmd_report(args: argparse.Namespace) -> int:
     )
     report = build_report(
         game,
-        default_seed_rules(game),
+        game.seed_rules(),
         cfg,
         llm=llm,
         ruleset_source=args.ruleset,
@@ -253,6 +238,10 @@ def cmd_export(args: argparse.Namespace) -> int:
         Path(args.out),
         report_dir=Path(args.report) if args.report else None,
         h59_dirs=h59,
+        tcs_dirs=(Path(args.tcs[0]), Path(args.tcs[1])) if args.tcs else None,
+        tcs_reports=(Path(args.tcs_reports[0]), Path(args.tcs_reports[1]))
+        if args.tcs_reports
+        else None,
     )
     for name, n in sizes.items():
         print(f"  data/{name:<12} {n / 1000:7.1f} kB")
@@ -280,11 +269,18 @@ def build_parser() -> argparse.ArgumentParser:
     sub = parser.add_subparsers(dest="command", required=True)
 
     common = argparse.ArgumentParser(add_help=False)
-    common.add_argument("--ruleset", default=None, help="ruleset TOML (default: packaged v0)")
+    common.add_argument("--ruleset", default=None, help="ruleset TOML (default: packaged one)")
+    common.add_argument("--game", choices=GAMES, default="monster-mash")
+    common.add_argument(
+        "--era",
+        choices=["1981", "1982"],
+        default=None,
+        help="tcs-lite: packaged ruleset of this era (default 1981)",
+    )
 
     p = sub.add_parser("battle", parents=[common], help="simulate one battle")
-    p.add_argument("a", help="team A, comma-separated unit ids, front first")
-    p.add_argument("b", help="team B, comma-separated unit ids, front first")
+    p.add_argument("a", help="team A: unit ids front first (tcs-lite: e.g. 99x0000,4x3332)")
+    p.add_argument("b", help="team B, same format")
     p.add_argument("--seed", type=int, default=0)
     p.add_argument("--quiet", action="store_true", help="hide the event log")
     p.set_defaults(func=cmd_battle)
@@ -320,6 +316,8 @@ def build_parser() -> argparse.ArgumentParser:
     p.add_argument("run", help="run directory, e.g. runs/demo/qwen-s0")
     p.add_argument("--report", default=None, help="report directory to include")
     p.add_argument("--h59", nargs=2, metavar=("OFF_RUN", "ON_RUN"), default=None)
+    p.add_argument("--tcs", nargs=2, metavar=("RUN_1981", "RUN_1982"), default=None)
+    p.add_argument("--tcs-reports", nargs=2, metavar=("REPORT_1981", "REPORT_1982"), default=None)
     p.add_argument("--out", default="site")
     p.set_defaults(func=cmd_export)
 

@@ -51,9 +51,17 @@ def build_gauntlet(rules: Ruleset, seed: int = 1981, n_random: int = 18) -> list
     return pool
 
 
-def opponent_seed(opponent: Design, seed_offset: int = 0) -> int:
-    """Battle seed base for an opponent; stable no matter where it sits in the pool."""
-    return zlib.crc32(",".join(opponent).encode()) * 16 + seed_offset * 1_000_003
+def opponent_seed(opponent, seed_offset: int = 0) -> int:
+    """Battle seed base for an opponent; stable no matter where it sits in the pool.
+
+    Works for any hashable design: string tuples (Monster Mash) keep their original key, so
+    recorded runs still replay; other designs use their repr.
+    """
+    if isinstance(opponent, tuple) and all(isinstance(x, str) for x in opponent):
+        key = ",".join(opponent)
+    else:
+        key = repr(opponent)
+    return zlib.crc32(key.encode()) * 16 + seed_offset * 1_000_003
 
 
 def score(

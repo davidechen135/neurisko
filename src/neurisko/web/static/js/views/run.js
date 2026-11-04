@@ -130,12 +130,16 @@ export function championPanel(v, battles, onPlay) {
   const s = v.summary;
   if (!s) return el("section", { class: "panel" }, el("h2", {}, "CHAMPION"), el("p", {}, "waiting…"));
   const champ = s.best;
-  const playable = Object.values(battles || {}).filter((b) => b.a.join() === champ.join());
+  const same = (x) => JSON.stringify(x) === JSON.stringify(champ);
+  const playable = Object.values(battles || {}).filter((b) => same(b.a));
+  const units = Array.isArray(champ) && champ.every((u) => typeof u === "string");
   return el(
     "section",
     { class: "panel", "aria-labelledby": "h-champ" },
     el("h2", { id: "h-champ" }, "CHAMPION"),
-    el("p", { class: "champion" }, champ.map((u, i) => [i ? el("span", { class: "dim" }, " > ") : "", el("span", { class: "unit" }, u)])),
+    units
+      ? el("p", { class: "champion" }, champ.map((u, i) => [i ? el("span", { class: "dim" }, " > ") : "", el("span", { class: "unit" }, u)]))
+      : el("p", { class: "champion unit" }, s.best_text),
     el("p", { class: "small" }, `held-out + hall of fame ${f3(s.best_held_out_pool)} · fixed gauntlet ${f3(s.best_gauntlet)}`),
     playable.length
       ? el(
@@ -143,7 +147,7 @@ export function championPanel(v, battles, onPlay) {
           { class: "battles" },
           el("p", { class: "dim small" }, "Replay a battle against:"),
           playable.map((b) =>
-            el("button", { type: "button", onclick: () => onPlay(b) }, `▶ ${b.b.join(" > ")}`),
+            el("button", { type: "button", onclick: () => onPlay(b) }, `▶ ${b.b_text || b.b.join(" > ")}`),
           ),
         )
       : el("p", { class: "dim small" }, v.final ? "" : "Battles are available at the final generation."),
@@ -151,7 +155,7 @@ export function championPanel(v, battles, onPlay) {
       "details",
       {},
       el("summary", {}, `Hall of fame (${s.hof.length})`),
-      el("ol", { class: "small" }, s.hof.map((d) => el("li", {}, d.join(" > ")))),
+      el("ol", { class: "small" }, s.hof.map((d, i) => el("li", {}, s.hof_text?.[i] ?? (Array.isArray(d) ? d.join(" > ") : JSON.stringify(d))))),
     ),
   );
 }

@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import random
 from collections.abc import Sequence
+from importlib import resources
 from pathlib import Path
 
 from neurisko.engine.game import Action, ActionSchema, BattleResult, Patch, ScoreReport
@@ -16,6 +17,8 @@ from neurisko.games.autobattler.design import Design
 from neurisko.games.autobattler.gauntlet import Opponent, build_gauntlet, is_competitive
 from neurisko.games.autobattler.gauntlet import score as _score
 from neurisko.games.autobattler.rules import Ruleset, load_ruleset
+
+SEEDS = "seed_heuristics.toml"
 
 
 class MonsterMash:
@@ -130,6 +133,58 @@ class MonsterMash:
             seed_offset=self.seed_offset,
         )
         return game, dropped
+
+    # --- generality ---------------------------------------------------------------------------
+
+    def from_json(self, obj) -> Design:
+        return tuple(obj)
+
+    def parse_design(self, text: str) -> Design:
+        return tuple(p.strip() for p in text.split(",") if p.strip())
+
+    def seed_rules(self) -> list:
+        from neurisko.engine.heuristics import load_seed_rules
+
+        path = Path(str(resources.files("neurisko.games.autobattler").joinpath("data", SEEDS)))
+        return load_seed_rules(path, self.feature_names(), self.action_schema())
+
+    def featured_opponents(self, design: Design, n: int = 3) -> list[Design]:
+        names = {o.name: o.design for o in self.gauntlet}
+        worst = sorted(self.score(tuple(design)).matchups, key=lambda m: m.score)[:n]
+        return [names[m.opponent] for m in worst if m.opponent in names]
+
+    def describe_event(self, event) -> str:
+        e = event
+        t = f"t{e.tick:>4}  "
+        match e.kind:
+            case "attack":
+                return f"{t}{e.actor:<18} hits   {e.target:<18} {e.amount:>4}"
+            case "dodge":
+                return f"{t}{e.actor:<18} dodges {e.target}"
+            case "heal":
+                return f"{t}{e.actor:<18} heals  {e.target:<18} {e.amount:>4}"
+            case "summon":
+                return f"{t}{e.actor:<18} raises {e.target}"
+            case "death":
+                return f"{t}{e.actor:<18} DIES"
+            case _:
+                return f"{t}synergy {'ON ' if e.kind == 'synergy_on' else 'OFF'} {e.actor}"
+
+    def without_part(self, design: Design, part: str) -> list[Design]:
+        """Replace one copy of the unit by every other unit, or remove it."""
+        design = tuple(design)
+        if part not in design:
+            return []
+        i = design.index(part)
+        out = [design[:i] + (u,) + design[i + 1 :] for u in self.part_names() if u != part]
+        out.append(design[:i] + design[i + 1 :])
+        return [d for d in out if d and not self.validate(d)]
+
+    def adds_part(self, action: Action, part: str) -> bool:
+        kind = action.get("kind")
+        return (kind == "add_unit" and action.get("unit") == part) or (
+            kind == "replace_unit" and action.get("new") == part
+        )
 
     def settings(self) -> dict:
         """Constructor arguments other than the rules, to rebuild an equivalent game."""

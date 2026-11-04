@@ -2,7 +2,7 @@
 
 > 用 LLM 复活 1981 年的 Eurisko：一个会自我改进启发式规则的系统，在游戏上线前替设计师找出统治性策略和数值漏洞。
 
-**Kiroween 2026 · Resurrection 赛道** · 截止 2026-12-04 14:00 PT · 比赛规则见 [docs/HACKATHON_RULES.md](docs/HACKATHON_RULES.md)
+**Kiroween 2026 · Resurrection 赛道** · 在线回放：https://davidechen135.github.io/neurisko/ · 截止 2026-12-04 14:00 PT · 比赛规则见 [docs/HACKATHON_RULES.md](docs/HACKATHON_RULES.md)
 
 > 本 README 是开发期计划，提交前改写为英文版。
 
@@ -83,7 +83,7 @@ Eurisko 引擎（与具体游戏无关）
 | 1 ✅ | 10/30 – 11/05 | 项目骨架、Steering；Spec 1：自走棋模拟器 | 两支阵容可以按种子确定性地对战；有测试（10/30 完成：49 个测试，约 1.5 万场/秒） |
 | 2 ✅ | 11/06 – 11/12 | Spec 2：Eurisko 引擎 + 审计员（[spec](.kiro/specs/eurisko-engine/)） | 20 代运行分数上升；关掉审计员能复现 H59 寄生规则，打开能抓到；运行有记录可回放；和普通爬山算法对比的结果如实记录（10/30 完成：H59 在 8/8 个种子上复现并被抓到；对比结果见 [docs/BASELINE.md](docs/BASELINE.md)） |
 | 3 | 11/13 – 11/19 | Spec 3 ✅：平衡性报告（[spec](.kiro/specs/balance-report/)，[示例](reports/demo/default/report.md)）；Spec 4 ✅（待开 Pages）：Web UI（[spec](.kiro/specs/web-ui/)） | 默认规则下报告标出 witch 并找到经过验证的有效修改（10/31 完成：witch 费用 2→3 + flesh_golem 攻击 10→8）；GitHub Pages 上能打开回放版 |
-| 4 | 11/20 – 11/26 | Spec 5 ✅：MCP server（[spec](.kiro/specs/mcp-server/)）；Spec 6：TCS-lite（[spec](.kiro/specs/tcs-lite/)）；UI 打磨；冻结功能 | 在 Kiro 里改规则文件、问"平衡吗"能得到实测回答和验证过的修改建议；同一套引擎在两个游戏上都能跑 |
+| 4 | 11/20 – 11/26 | Spec 5 ✅：MCP server（[spec](.kiro/specs/mcp-server/)）；Spec 6 ✅：TCS-lite（[spec](.kiro/specs/tcs-lite/)）；UI 打磨；冻结功能 | 在 Kiro 里改规则文件、问"平衡吗"能得到实测回答和验证过的修改建议；同一套引擎在两个游戏上都能跑 |
 | 5 | 11/27 – 12/04 | 视频、Devpost 描述、英文 README、博文、社媒 | **12/03 前提交** |
 
 ## 7. 安全边界
@@ -117,10 +117,16 @@ uv run neurisko evolve --replay runs/demo/qwen-s0   # 用记录的 LLM 回复重
 # 打开 rulesets/monster-mash.toml，问 Kiro "这套规则平衡吗？"
 uv run neurisko-mcp                            # MCP server（stdio，由 Kiro 启动，一般不用手动跑）
 
+# TCS-lite（致敬 1981 年 TCS 比赛的原创简化舰队游戏）：--game tcs-lite --era 1981|1982
+uv run neurisko battle --game tcs-lite --era 1982 99x0000 4x3332     # 99 艘最小船 vs 4 艘重型船
+uv run neurisko evolve --game tcs-lite --era 1981 --no-llm            # 引擎自己找出"大量廉价船"
+uv run neurisko report --game tcs-lite --era 1982                     # 1982 规则下：凿沉自己的船
+
 # Web 控制台
 uv run neurisko serve                          # http://127.0.0.1:8000 ：回放记录、实时启动运行
 uv run neurisko export runs/demo/qwen-s0 --report reports/demo/default \
-  --h59 runs/demo/h59-off runs/demo/h59-on --out site   # 导出静态回放站点（GitHub Pages 用）
+  --h59 runs/demo/h59-off runs/demo/h59-on --tcs runs/demo/tcs-1981 runs/demo/tcs-1982 \
+  --tcs-reports reports/demo/tcs-1981 reports/demo/tcs-1982 --out site   # 导出静态回放站点
 uv run python scripts/record_h59_demo.py      # 重新录制 H59 对比用的两次运行
 
 # 平衡性报告：8 个种子检测过强/没人用的单位，逐个实测候选修改（约 2 分钟，写到 reports/<id>/）

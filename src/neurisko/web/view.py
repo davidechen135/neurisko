@@ -6,6 +6,7 @@ export and by the live SSE stream, so both modes render identically.
 
 from __future__ import annotations
 
+import json
 from typing import Any
 
 from neurisko.engine.game import Game
@@ -109,19 +110,19 @@ def system_prompt_of(events: list[dict]) -> str | None:
     return None
 
 
-def battle_key(a: list[str], b: list[str], seed: int) -> str:
-    return f"{','.join(a)}|{','.join(b)}|{seed}"
-
-
-def battle_view(game: Game, a: list[str], b: list[str], seed: int) -> dict[str, Any]:
-    r = game.simulate(tuple(a), tuple(b), seed, log=True)
+def battle_view(game: Game, a: Any, b: Any, seed: int) -> dict[str, Any]:
+    """A battle between two designs (game objects, not JSON), ready for the player."""
+    r = game.simulate(a, b, seed, log=True)
     return {
-        "a": a,
-        "b": b,
+        "a": game.to_json(a),
+        "b": game.to_json(b),
+        "a_text": game.describe(a),
+        "b_text": game.describe(b),
         "seed": seed,
         "winner": r.winner,
         "ticks": r.ticks,
-        "events": [[ev.tick, ev.kind, ev.actor, ev.target, ev.amount] for ev in r.events or []],
+        "time_unit": "round" if game.name == "tcs-lite" else "tick",
+        "lines": [[ev.kind, game.describe_event(ev)] for ev in r.events or []],
         "stats": [
             [s.label, s.damage_dealt, s.damage_taken, s.kills, s.healing, s.summons, s.survived]
             for s in r.stats
@@ -130,24 +131,28 @@ def battle_view(game: Game, a: list[str], b: list[str], seed: int) -> dict[str, 
 
 
 def featured_battles(game: Game, events: list[dict], n_worst: int = 3) -> dict[str, dict]:
-    """Battles worth showing: the final champion against its weakest gauntlet matchups and
-    the strongest other hall-of-fame design."""
+    """Battles worth showing: the final champion against its weakest fixed matchups and the
+    strongest other hall-of-fame design."""
     gens = [e for e in events if e["type"] == "generation"]
     if not gens:
         return {}
     last = gens[-1]
-    champ = list(last["best"])
-    report = game.score(tuple(champ))
-    names = {o.name: list(o.design) for o in game.gauntlet}
-    worst = sorted(report.matchups, key=lambda m: m.score)[:n_worst]
-    opponents = [names[m.opponent] for m in worst if m.opponent in names]
-    others = [list(h) for h in last.get("hof", []) if list(h) != champ]
+    champ = game.from_json(last["best"])
+    opponents = game.featured_opponents(champ, n_worst)
+    others = [game.from_json(h) for h in last.get("hof", [])]
+    others = [h for h in others if h != champ]
     if others:
-        opponents.append(max(others, key=lambda h: game.score(tuple(h)).score))
-    out = {}
-    for opp in opponents:
-        key = battle_key(champ, opp, 0)
-        out[key] = battle_view(game, champ, opp, 0)
+        opponents.append(max(others, key=lambda h: game.score(h).score))
+    return {f"{i}": battle_view(game, champ, opp, 0) for i, opp in enumerate(opponents)}
+
+
+def _with_texts(game: Game, events: list[dict]) -> list[dict]:
+    """Add game-described texts for designs that the frontend shows (hall of fame)."""
+    out = []
+    for e in events:
+        if e["type"] == "generation" and "hof" in e:
+            e = {**e, "hof_text": [game.describe(game.from_json(h)) for h in e["hof"]]}
+        out.append(e)
     return out
 
 
@@ -169,9 +174,105 @@ def run_view(
         },
         "rules_text": game.describe_rules(),
         "system_prompt": system_prompt_of(events),
-        "events": compact_events(events),
+        "game": game.name,
+        "events": _with_texts(game, compact_events(events)),
         "battles": featured_battles(game, events) if battles else {},
     }
+
+
+def _era_diff(a: dict, b: dict, prefix: str = "") -> list[dict]:
+    out = []
+    for k in sorted(set(a) | set(b)):
+        x, y = a.get(k), b.get(k)
+        if isinstance(x, dict) and isinstance(y, dict):
+            out += _era_diff(x, y, f"{prefix}{k}.")
+        elif x != y:
+            out.append({"field": f"{prefix}{k}", "before": x, "after": y})
+    return out
+
+
+def tcs_view(
+    runs: dict[str, tuple[str, dict, list[dict]]], reports: dict[str, dict] | None = None
+) -> dict[str, Any]:
+    """The TCS tab: both eras' runs and reports, the rule diff, and story battles.
+
+    `runs` maps era ("1981"/"1982") to (run id, meta, events)."""
+    from neurisko.games.registry import game_from_meta
+    from neurisko.games.tcs_lite import NOTICE
+
+    games = {era: game_from_meta(meta) for era, (_, meta, _) in runs.items()}
+    eras: dict[str, Any] = {}
+    champs = {}
+    for era, (run_id, _meta, events) in runs.items():
+        g = games[era]
+        gens = [e for e in events if e["type"] == "generation"]
+        made = {e["heuristic"]["id"]: e for e in events if e["type"] == "heuristic_created"}
+        worth = gens[-1]["worth"]
+        top = sorted((h for h in worth if h.startswith("H")), key=lambda h: -worth[h])[:5]
+        champ = g.from_json(gens[-1]["best"])
+        champs[era] = champ
+        rep = (reports or {}).get(era)
+        eras[era] = {
+            "run_id": run_id,
+            "series": [[e["gen"], e["best_gauntlet"], e.get("best_held_out_pool")] for e in gens],
+            "champion": g.to_json(champ),
+            "champion_text": g.describe(champ),
+            "champion_parts": sorted(g.parts(champ)),
+            "heuristics": [
+                {
+                    "id": h,
+                    "worth": worth[h],
+                    "by": made[h]["heuristic"]["origin"]["by"],
+                    "text": made[h]["text"],
+                }
+                for h in top
+                if h in made
+            ],
+            "report": None
+            if rep is None
+            else {
+                "parts": rep["parts"],
+                "summary": rep["summary"]["template"],
+                "seeds": len(rep["seeds"]),
+                "patches": [
+                    {
+                        "change": " + ".join(
+                            p.get("label") or p["field"]
+                            for p in [*d_p.get("base_patches", []), d_p["patch"]]
+                        ),
+                        "effective": d_p["effective"],
+                        "failed": d_p["failed"],
+                    }
+                    for d in rep["dominant"]
+                    for d_p in d["patches"]
+                ],
+            },
+        }
+    out: dict[str, Any] = {"notice": NOTICE, "eras": eras, "battles": []}
+    if {"1981", "1982"} <= set(games):
+        g81, g82 = games["1981"], games["1982"]
+        out["rule_diff"] = _era_diff(
+            json.loads(g81.ruleset_json())["era"], json.loads(g82.ruleset_json())["era"]
+        )
+        c81, c82 = champs["1981"], champs["1982"]
+        out["crossover"] = {
+            "champion_1981_under_1981": round(g81.held_out().score(c81).score, 3),
+            "champion_1981_under_1982": round(g82.held_out().score(c81).score, 3),
+            "champion_1982_under_1982": round(g82.held_out().score(c82).score, 3),
+        }
+        elite = next(o.design for o in g81.gauntlet if o.name == "elite")
+        outcome = {"A": "{a} wins", "B": "{b} wins", "draw": "draw"}
+        for era, g, a, b, na, nb in (
+            ("1981", g81, c81, elite, "the 1981 swarm", "the elite fleet"),
+            ("1982", g82, c81, elite, "the 1981 swarm", "the elite fleet"),
+            ("1982", g82, c81, c82, "the 1981 swarm", "the 1982 scuttling fleet"),
+        ):
+            bv = battle_view(g, a, b, 0)
+            result = outcome[bv["winner"]].format(a=na, b=nb)
+            rounds = f"{bv['ticks']} round" + ("" if bv["ticks"] == 1 else "s")
+            title = f"{era} rules: {na} vs {nb}: {result} in {rounds}"
+            out["battles"].append({"title": title, "era": era, **bv})
+    return out
 
 
 def h59_view(off: tuple[dict, list[dict]], on: tuple[dict, list[dict]]) -> dict[str, Any]:

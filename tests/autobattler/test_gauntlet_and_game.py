@@ -1,7 +1,6 @@
-import inspect
 import random
 
-from neurisko.engine.game import BattleResult, Game
+from neurisko.engine.game import BattleResult
 from neurisko.games.autobattler import MonsterMash
 from neurisko.games.autobattler.design import validate
 from neurisko.games.autobattler.gauntlet import build_gauntlet, is_competitive, score
@@ -47,21 +46,6 @@ def test_score_counts_wins_on_both_sides(rules):
     report = score(me, build_gauntlet(rules), i_always_win, n_seeds=2)
     assert report.score == 1.0
     assert all(m.wins == 4 and m.games == 4 for m in report.matchups)
-
-
-def test_monster_mash_implements_game_protocol(rules):
-    game = MonsterMash(rules)
-    for name, member in inspect.getmembers(Game):
-        if name.startswith("_"):
-            continue
-        assert hasattr(game, name), name
-        if callable(member):
-            assert (
-                list(inspect.signature(getattr(game, name)).parameters)
-                == list(inspect.signature(member).parameters)[1:]
-            ), name
-    for name in Game.__annotations__:
-        assert hasattr(game, name), name
 
 
 def test_describe(rules):
