@@ -1,9 +1,10 @@
 # Builds the static replay site from the committed demo run and report, and deploys it to
 # GitHub Pages. Requires Pages to be enabled with "GitHub Actions" as the source.
-# Manual for now; add `push: branches: [main]` once Pages is enabled.
 name: Pages
 
 on:
+  push:
+    branches: [main]
   workflow_dispatch:
 
 permissions:
