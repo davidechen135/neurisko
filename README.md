@@ -5,7 +5,7 @@
 Kiroween 2026 · **Resurrection** category · built with [Kiro](https://kiro.dev)
 
 - **Live replay (no install):** https://davidechen135.github.io/neurisko/
-- **Demo video (3 min):** _YouTube link — TODO before submitting_
+- **Demo video (3 min):** https://youtu.be/UUuG0zIMSbE
 - **License:** [MIT](LICENSE)
 
 ![Monster Mash battle in the Neurisko console](docs/img/arena-monster.png)

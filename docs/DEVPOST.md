@@ -13,7 +13,7 @@ Paste-ready text for https://kiroween.devpost.com/. Every number is from this re
 **Links**
 - Code (MIT): https://github.com/davidechen135/neurisko
 - Live replay, no install: https://davidechen135.github.io/neurisko/
-- Demo video: _YouTube link_
+- Demo video: https://youtu.be/UUuG0zIMSbE
 
 **Built with:** python, fastapi, server-sent-events, javascript, ollama, qwen, mcp, kiro, playwright, ffmpeg, kokoro-tts, github-pages
 
@@ -85,7 +85,7 @@ Designers use it from a 1981-terminal web console, which has live runs, replays 
 - [x] Public repo with an MIT license and the `.kiro/` directory (specs, steering, hooks, settings)
 - [x] Working app: CLI, web console, MCP server, and the live replay site
 - [x] Demo video under 3 minutes (2:58), showing the problem, end-to-end flow and Kiro usage
-- [ ] Upload the video to YouTube (public or unlisted), then add the link here and in README.md
-- [ ] Push to `main` so GitHub Pages deploys the new battle arena
+- [x] Upload the video to YouTube (public or unlisted), then add the link here and in README.md
+- [x] Push to `main` so GitHub Pages deploys the new battle arena
 - [ ] Fill in the Devpost form with this text, choose **Resurrection**, and add your Kiro user ID
 - [ ] Optional: blog post (2,000 Kiro credits for the first 100) and a `#Kiroween26` social post
