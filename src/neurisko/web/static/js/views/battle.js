@@ -1,5 +1,6 @@
-// Battle player: plays a battle log as teletype text in a modal dialog.
+// Battle player: plays a battle as an animated arena plus a teletype log in a modal dialog.
 import { fill, el, pad, reducedMotion } from "../dom.js";
+import { makeArena } from "./arena.js";
 
 // Monster Mash logs: [kind, text]; text already formatted by the game.
 function legacyLine([tick, kind, actor, target, amount]) {
@@ -25,6 +26,12 @@ const SPEEDS = [
   ["4×", 30],
   ["16×", 8],
 ];
+// TCS-lite logs have a few lines per round; slower so each volley can be seen.
+const FLEET_SPEEDS = [
+  ["1×", 520],
+  ["4×", 130],
+  ["16×", 32],
+];
 
 export function openBattle(dialog, b) {
   let timer = null;
@@ -33,6 +40,8 @@ export function openBattle(dialog, b) {
   const log = el("ol", { class: "teletype battle-log" });
   const result = el("p", { class: "result", role: "status" });
   const items = b.lines || (b.events || []).map((e) => [e[1], legacyLine(e).join("")]);
+  const arena = makeArena(b);
+  const speeds = b.visual && b.visual.kind === "fleet" ? FLEET_SPEEDS : SPEEDS;
 
   const stop = () => {
     if (timer) clearTimeout(timer);
@@ -49,6 +58,7 @@ export function openBattle(dialog, b) {
     result.textContent = `== ${banner} after ${b.ticks} ${unit}${b.ticks === 1 ? "" : "s"} ==`;
   };
   const step = (scroll = true) => {
+    if (arena) arena.apply(i, scroll);
     const e = items[i++];
     const li = el("li", { class: `ev ev-${e[0]}` }, e[1]);
     log.append(li);
@@ -57,10 +67,10 @@ export function openBattle(dialog, b) {
   const tick = () => {
     if (i >= items.length) return showResult();
     step();
-    timer = setTimeout(tick, SPEEDS[speed][1]);
+    timer = setTimeout(tick, speeds[speed][1]);
   };
 
-  const speedBtns = SPEEDS.map(([label], k) =>
+  const speedBtns = speeds.map(([label], k) =>
     el(
       "button",
       {
@@ -91,6 +101,7 @@ export function openBattle(dialog, b) {
         el("button", { type: "button", onclick: finish }, "skip to end"),
         el("button", { type: "button", onclick: () => dialog.close() }, "close"),
       ),
+      arena && arena.node,
       log,
       result,
     ),

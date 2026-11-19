@@ -153,6 +153,77 @@ dialog::backdrop { background: rgba(0, 0, 0, 0.75); }
 .ev-dodge { color: var(--dim); }
 .result { font-weight: 700; margin-top: 6px; }
 
+/* --- battle arena (visual replay above the log) --------------------------------------- */
+.arena { position: relative; border: 1px solid var(--line); background: var(--panel); margin: 6px 0; padding: 10px 8px; overflow: hidden; }
+.arena ~ .battle-log { max-height: 24vh; }
+.arena-monster { display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: 6px; min-height: 150px; }
+.arena .vs { font-size: 18px; font-weight: 700; color: var(--dim); letter-spacing: 0.1em; }
+.wing { display: flex; flex-direction: column; gap: 6px; min-width: 0; }
+.side { display: flex; gap: 6px; align-items: flex-end; min-height: 112px; }
+.side-A { flex-direction: row-reverse; } /* A's front rank sits next to the centre */
+.syn { display: flex; gap: 4px; flex-wrap: wrap; min-height: 18px; }
+.wing:last-child .syn { justify-content: flex-start; }
+.wing:first-child .syn { justify-content: flex-end; }
+.chip { font-size: 11px; border: 1px solid var(--amber); color: var(--amber); padding: 0 5px; text-transform: uppercase; }
+.u { position: relative; flex: 0 1 76px; min-width: 46px; border: 1px solid var(--line); background: var(--bg);
+     padding: 4px 3px 3px; text-align: center; transition: opacity .4s, filter .4s, flex-basis .4s, min-width .4s; }
+.u-A { border-color: var(--dim); }
+.u-B { border-color: var(--amber); }
+.u.front { box-shadow: 0 0 0 1px var(--fg), 0 0 10px rgba(255, 255, 255, 0.12); }
+.u .ico { font-size: 30px; line-height: 1.1; }
+.u .nm { font-size: 10px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.u .hp { height: 5px; border: 1px solid var(--line); margin: 3px 0 1px; }
+.u .hp i { display: block; height: 100%; background: var(--fg); transition: width .2s; }
+.u-B .hp i { background: var(--amber); }
+.u .hp i.low { background: var(--red); }
+.u .hpn { font-size: 10px; color: var(--dim); }
+.u.dead { opacity: 0.18; filter: grayscale(1); flex-basis: 0; min-width: 0; padding: 0; border-width: 0; overflow: hidden; }
+.u.lunge.u-A { animation: lungeA .22s; } .u.lunge.u-B { animation: lungeB .22s; }
+@keyframes lungeA { 50% { transform: translateX(-10px) scale(1.05); } }
+@keyframes lungeB { 50% { transform: translateX(10px) scale(1.05); } }
+.u.cast { animation: cast .3s; }
+@keyframes cast { 50% { box-shadow: 0 0 14px var(--amber); } }
+.u.hit { animation: hit .25s; }
+@keyframes hit { 25% { transform: translateX(3px); background: rgba(255, 95, 95, 0.35); } 75% { transform: translateX(-3px); } }
+.u.healed { animation: healed .4s; }
+@keyframes healed { 50% { box-shadow: 0 0 14px var(--fg); } }
+.spawn { animation: spawn .35s ease-out; }
+@keyframes spawn { from { transform: scale(0.2); opacity: 0; } }
+.pop { position: absolute; left: 50%; top: 34%; transform: translateX(-50%); font-weight: 700; font-size: 14px;
+       pointer-events: none; animation: pop .9s ease-out forwards; text-shadow: 0 0 4px #000; }
+.pop.dmg { color: var(--red); } .pop.heal { color: var(--fg); } .pop.miss { color: var(--dim); }
+@keyframes pop { to { transform: translate(-50%, -26px); opacity: 0; } }
+
+.arena-fleet { display: grid; grid-template-columns: 1fr 1fr; gap: 26px; min-height: 160px; }
+.fleet { min-width: 0; transition: opacity .6s; }
+.fleet.out { opacity: 0.45; }
+.fleet-head { display: flex; justify-content: space-between; gap: 8px; font-size: 12px; margin-bottom: 4px; }
+.fleet-A .fleet-head b { color: var(--fg); } .fleet-B .fleet-head b { color: var(--amber); }
+.fleet .count { color: var(--dim); }
+.ships { display: flex; flex-wrap: wrap; gap: 1px 3px; align-content: flex-start; line-height: 1; }
+.fleet-B .ships { flex-direction: row-reverse; }
+.ship { display: inline-block; transition: color .3s, opacity .5s, transform .5s; }
+.fleet-A .ship { color: var(--fg); } .fleet-B .ship { color: var(--amber); }
+.ship.hull0 { font-size: 15px; } .ship.hull1 { font-size: 20px; } .ship.hull2 { font-size: 27px; } .ship.hull3 { font-size: 36px; }
+.fleet .ship.disabled { color: var(--red); opacity: 0.75; transform: rotate(25deg); }
+.fleet .ship.destroyed { color: var(--red); opacity: 0.12; }
+.fleet .ship.scuttled { opacity: 0.05; transform: translateY(6px) scale(0.6); }
+.ship.boom { animation: boom .45s; }
+@keyframes boom { 30% { transform: scale(1.8); text-shadow: 0 0 8px var(--red); } }
+.banner { margin-top: 6px; font-weight: 700; letter-spacing: 0.15em; color: var(--red); min-height: 1.2em; }
+.banner.flash { animation: flash .6s 2; }
+@keyframes flash { 50% { opacity: 0.2; } }
+.tracers { position: absolute; inset: 0; pointer-events: none; }
+.tracer { position: absolute; width: 22px; height: 2px; border-radius: 2px; opacity: 0; }
+.tracer.from-A { left: 30%; background: var(--fg); box-shadow: 0 0 6px var(--fg); animation: shotA .45s ease-in forwards; }
+.tracer.from-B { right: 30%; background: var(--amber); box-shadow: 0 0 6px var(--amber); animation: shotB .45s ease-in forwards; }
+@keyframes shotA { 10% { opacity: 1; } to { left: 78%; opacity: 0.2; } }
+@keyframes shotB { 10% { opacity: 1; } to { right: 78%; opacity: 0.2; } }
+@media (prefers-reduced-motion: reduce) {
+  .arena *, .arena { animation: none !important; transition: none !important; }
+  .tracers { display: none; }
+}
+
 footer { margin-top: 14px; border-top: 1px solid var(--line); padding-top: 6px; }
 
 /* --- CRT effect (off under prefers-reduced-motion unless the user turns it on) --------- */

@@ -37,7 +37,8 @@ class Event:
 
     tick: int
     # Monster Mash: attack dodge heal summon death synergy_on synergy_off
-    # TCS-lite: attack (amount = hits landed by a fleet) disabled death scuttle withdraw
+    # TCS-lite: attack (amount = hits landed by a fleet) disabled death scuttle withdraw, and
+    #   status once per side per round (target = per-ship state string a/d/x/s, amount = able)
     kind: str
     actor: str
     target: str = ""

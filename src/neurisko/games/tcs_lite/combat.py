@@ -122,6 +122,19 @@ def simulate(c: Compiled, a: Fleet, b: Fleet, seed: int, log: bool = False) -> B
                     me.alive = able
                     if events is not None:
                         events.append(Event(rnd, "scuttle", f"{SIDES[s]}:fleet", amount=gone))
+        if events is not None:
+            # Per-ship state after the round, for the visual replay: a=able d=disabled
+            # x=destroyed s=scuttled. Logging only; no randomness, so results are unchanged.
+            for s in (0, 1):
+                me = sides[s]
+                alive = set(me.alive)
+                state = "".join(
+                    ("d" if 2 * me.dmg[i] >= me.hp[i] else "a")
+                    if i in alive
+                    else ("x" if me.dmg[i] >= me.hp[i] else "s")
+                    for i in range(len(me.cls))
+                )
+                events.append(Event(rnd, "status", f"{SIDES[s]}:fleet", state, state.count("a")))
         for s in (0, 1):
             me = sides[s]
             able = len(me.able())

@@ -10,6 +10,7 @@ import json
 from typing import Any
 
 from neurisko.engine.game import Game
+from neurisko.web.visual import fleet_visual, monster_visual
 
 KEEP_CONFIG = (
     "generations",
@@ -113,6 +114,12 @@ def system_prompt_of(events: list[dict]) -> str | None:
 def battle_view(game: Game, a: Any, b: Any, seed: int) -> dict[str, Any]:
     """A battle between two designs (game objects, not JSON), ready for the player."""
     r = game.simulate(a, b, seed, log=True)
+    events = r.events or []
+    if game.name == "tcs-lite":
+        visual, events = fleet_visual(game, a, b, events)
+    else:
+        visual = monster_visual(game, a, b, events)
+        visual.pop("survivors")
     return {
         "a": game.to_json(a),
         "b": game.to_json(b),
@@ -122,7 +129,8 @@ def battle_view(game: Game, a: Any, b: Any, seed: int) -> dict[str, Any]:
         "winner": r.winner,
         "ticks": r.ticks,
         "time_unit": "round" if game.name == "tcs-lite" else "tick",
-        "lines": [[ev.kind, game.describe_event(ev)] for ev in r.events or []],
+        "lines": [[ev.kind, game.describe_event(ev)] for ev in events],
+        "visual": visual,
         "stats": [
             [s.label, s.damage_dealt, s.damage_taken, s.kills, s.healing, s.summons, s.survived]
             for s in r.stats

@@ -370,6 +370,12 @@ class TcsLite:
                 return f"{t}fleet {side} SCUTTLES {e.amount} disabled ships"
             case "withdraw":
                 return f"{t}fleet {side} WITHDRAWS ({e.amount} ships disabled)"
+            case "status":
+                s = e.target
+                return (
+                    f"{t}fleet {side}: {s.count('a')} able, {s.count('d')} disabled, "
+                    f"{s.count('x')} destroyed, {s.count('s')} scuttled"
+                )
             case _:
                 return f"{t}{e.kind} {e.actor} {e.amount}"
 
