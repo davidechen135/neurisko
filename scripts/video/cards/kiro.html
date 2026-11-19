@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><link rel="stylesheet" href="../style.css"><link rel="stylesheet" href="card.css">
+<style>
+  .k { display: grid; grid-template-columns: 330px 1fr; gap: 22px; height: 100vh; padding: 34px 40px; box-sizing: border-box; }
+  pre { font-size: 14px; line-height: 1.5; }
+  .chat { font-size: 15px; display: flex; flex-direction: column; gap: 10px; }
+  .msg { border: 1px solid var(--line); padding: 8px 12px; background: var(--panel); }
+  .user { border-color: var(--amber); }
+  .tool { color: var(--dim); font-size: 13px; }
+  .s2, .s3 { opacity: 0; transition: opacity .6s; }
+  body.step2 .s2, body.step3 .s3 { opacity: 1; }
+  h2 { font-size: 15px; }
+</style></head>
+<body class="crt"><div class="screen k">
+  <section class="panel">
+    <h2>.kiro/ <span class="dim">(in the repo)</span></h2>
+<pre>specs/
+  autobattler-simulator/
+  eurisko-engine/
+  balance-report/
+  web-ui/
+  mcp-server/
+  tcs-lite/
+    requirements.md
+    design.md   <span class="dim">+ measured notes</span>
+    tasks.md
+steering/
+  product.md  <span class="dim">sources required</span>
+  tech.md
+  safety.md
+  balance.md  <span class="dim">rulesets/*.toml</span>
+hooks/
+  ruff-on-save
+  tests-after-task
+  balance-on-save
+settings/
+  mcp.json    <span class="amber">neurisko-mcp</span></pre>
+  </section>
+  <section class="chat">
+    <h2>KIRO CHAT · rulesets/monster-mash.toml open <span class="dim">(2026-11-01 session, translated from Chinese)</span></h2>
+    <div class="msg user">Is this ruleset balanced? Propose fixes.</div>
+    <div class="tool">⚙ neurisko · check_ruleset → valid · quick_balance (4 seeds) · verify_patch × 2</div>
+    <div class="msg">
+      <b>witch</b> is the only dominant unit: in <b>0.90</b> of top teams vs a random baseline of
+      <b>0.31</b> (lift 2.89), in 3 of 4 champions.<br>
+      ✗ witch cost 2→3: still dominant (0.70), and flesh_golem becomes dominant.<br>
+      ✓ witch heal 12→7: share 0.90→0.60, nothing else dominant.<br>
+      <span class="dim">4 seeds are noisy; confirm with start_report before applying. I did not edit the file.</span>
+    </div>
+    <div class="msg s3" style="border-color:var(--red)">
+      <span class="red">FULL CHECK (6 seeds × 12 generations):</span> heal 12→7 is <b>not</b> effective:
+      witch 0.67, flesh_golem 0.77 dominant. A quick-check false positive.<br>
+      → steering and the verify_patch note now say: a quick “effective” is only a candidate.
+      Verified fix from the full report: <b>witch.cost 2→3 + flesh_golem.atk 10→8</b>.
+    </div>
+    <div class="msg s2 small dim">MCP tools: check_ruleset · simulate_battle · score_team · quick_balance · verify_patch ·
+      start_report / report_status · prompt balance_review. No LLM inside the server: Kiro explains, Neurisko measures.</div>
+  </section>
+</div></body></html>

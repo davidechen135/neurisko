@@ -21,3 +21,6 @@ reports/*
 # OS / editor
 .DS_Store
 .vscode/
+
+# Demo video build output (the final mp4 is uploaded to YouTube, not committed)
+/video/
