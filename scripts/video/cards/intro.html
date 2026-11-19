@@ -1,8 +1,19 @@
 <!doctype html>
-<html lang="en"><head><meta charset="utf-8"><link rel="stylesheet" href="../style.css"><link rel="stylesheet" href="card.css"></head>
-<body class="crt"><div class="screen card">
-  <p class="big">NEURISKO</p>
-  <p class="line" style="animation-delay:.4s">EURISKO (LENAT, 1981) RESURRECTED WITH AN LLM</p>
-  <p class="line amber" style="animation-delay:1.2s">KIROWEEN 2026 · RESURRECTION</p>
-  <p class="line" style="animation-delay:5s">&gt; FIND A GAME'S EXPLOITS BEFORE THE PLAYERS DO<span class="cursor"></span></p>
+<html lang="en"><head><meta charset="utf-8"><link rel="stylesheet" href="fx.css">
+<style>
+  /* Act II: the resurrection. Synthwave sunset, chrome logo, modern type. */
+  .center { position: absolute; left: 0; right: 0; top: 16%; display: flex; flex-direction: column; align-items: center; gap: 18px; z-index: 3; text-align: center; }
+  .sub { font: 500 24px/1.3 var(--ui); color: #fff; letter-spacing: .04em; margin: 0; padding: 6px 16px; border-radius: 8px; background: rgba(12, 2, 30, .55); backdrop-filter: blur(6px); }
+  .tag { position: absolute; left: 0; right: 0; bottom: 120px; text-align: center; z-index: 3; }
+  .mission { font: italic 800 34px/1.2 var(--display); letter-spacing: .06em; color: #fff; margin: 0;
+             text-shadow: 0 0 18px rgba(255, 90, 210, .9); }
+</style></head>
+<body><div class="fx-card fx-synth">
+  <div class="fx-stars"></div><div class="fx-sun"></div><div class="fx-horizon"></div><div class="fx-grid"></div>
+  <div class="center">
+    <span class="fx-pill fx-step" data-s="0">KIROWEEN 2026 · RESURRECTION</span>
+    <p class="fx-chrome fx-step" data-s="0">NEURISKO</p>
+    <p class="sub fx-step" data-s="0b">Eurisko (Lenat, 1981) — resurrected with an LLM, built with Kiro</p>
+  </div>
+  <div class="tag"><p class="mission fx-step" data-s="1">FIND A GAME'S EXPLOITS BEFORE THE PLAYERS DO</p></div>
 </div></body></html>

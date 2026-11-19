@@ -1,18 +1,26 @@
 <!doctype html>
-<html lang="en"><head><meta charset="utf-8"><link rel="stylesheet" href="../style.css"><link rel="stylesheet" href="card.css">
+<html lang="en"><head><meta charset="utf-8"><link rel="stylesheet" href="../style.css"><link rel="stylesheet" href="fx.css">
 <style>
-  .k { display: grid; grid-template-columns: 330px 1fr; gap: 22px; height: 100vh; padding: 34px 40px; box-sizing: border-box; }
-  pre { font-size: 14px; line-height: 1.5; }
-  .chat { font-size: 15px; display: flex; flex-direction: column; gap: 10px; }
-  .msg { border: 1px solid var(--line); padding: 8px 12px; background: var(--panel); }
-  .user { border-color: var(--amber); }
-  .tool { color: var(--dim); font-size: 13px; }
-  .s2, .s3 { opacity: 0; transition: opacity .6s; }
-  body.step2 .s2, body.step3 .s3 { opacity: 1; }
-  h2 { font-size: 15px; }
+  /* Act IV: modern. Kiro purple, glass panels; code stays monospace. */
+  body { --accent: #a77bff; --fg: #efe9ff; --dim: #a99ccc; --amber: #ffb24a; --red: #ff6f91; --line: rgba(167,123,255,.35);
+         background: radial-gradient(ellipse at 15% 0%, #2a1060 0%, #0c0620 45%, #06030f 100%); color: var(--fg); }
+  .k { display: grid; grid-template-columns: 330px 1fr; gap: 22px; height: 100vh; padding: 64px 40px 34px; box-sizing: border-box; max-width: none; }
+  .glass { background: rgba(255,255,255,.05); border: 1px solid rgba(167,123,255,.35); border-radius: 14px;
+           backdrop-filter: blur(14px); box-shadow: 0 10px 40px rgba(0,0,0,.4), inset 0 1px 0 rgba(255,255,255,.08); padding: 16px 18px; }
+  pre { font: 14px/1.5 var(--font); }
+  .chat { font: 15px/1.45 var(--ui); display: flex; flex-direction: column; gap: 12px; }
+  .msg { border: 1px solid rgba(255,255,255,.12); padding: 10px 14px; background: rgba(255,255,255,.06); border-radius: 12px; }
+  .user { border-color: var(--accent); background: rgba(167,123,255,.18); align-self: flex-end; }
+  .tool { color: var(--dim); font: 13px/1.4 var(--font); }
+  .s2, .s3 { opacity: 0; transform: translateY(10px); transition: opacity .6s, transform .6s; }
+  body.step2 .s2, body.step3 .s3 { opacity: 1; transform: none; }
+  h2 { font: 700 14px/1.2 var(--ui); letter-spacing: .08em; border-bottom: 1px solid var(--line); padding-bottom: 8px; color: #fff; }
+  .brand { position: fixed; top: 18px; left: 40px; font: italic 800 22px/1 var(--display); letter-spacing: .12em; color: #fff;
+           text-shadow: 0 0 16px rgba(167,123,255,.9); }
+  .brand span { color: var(--accent); }
 </style></head>
-<body class="crt"><div class="screen k">
-  <section class="panel">
+<body data-theme="kiro"><div class="brand">BUILT WITH <span>KIRO</span></div><div class="screen k">
+  <section class="glass">
     <h2>.kiro/ <span class="dim">(in the repo)</span></h2>
 <pre>specs/
   autobattler-simulator/
@@ -36,7 +44,7 @@ hooks/
 settings/
   mcp.json    <span class="amber">neurisko-mcp</span></pre>
   </section>
-  <section class="chat">
+  <section class="chat glass">
     <h2>KIRO CHAT · rulesets/monster-mash.toml open <span class="dim">(2026-11-01 session, translated from Chinese)</span></h2>
     <div class="msg user">Is this ruleset balanced? Propose fixes.</div>
     <div class="tool">⚙ neurisko · check_ruleset → valid · quick_balance (4 seeds) · verify_patch × 2</div>

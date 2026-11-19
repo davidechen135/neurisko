@@ -1,10 +1,26 @@
 <!doctype html>
-<html lang="en"><head><meta charset="utf-8"><link rel="stylesheet" href="../style.css"><link rel="stylesheet" href="card.css"></head>
-<body class="crt"><div class="screen card">
-  <p class="big">NEURISKO</p>
-  <p class="line" style="animation-delay:.3s">EURISKO FOUND EXPLOITS BY ACCIDENT.</p>
-  <p class="line amber" style="animation-delay:2s">NEURISKO FINDS THEM ON PURPOSE.</p>
-  <p class="line" style="animation-delay:4s">REPLAY: davidechen135.github.io/neurisko</p>
-  <p class="line" style="animation-delay:4.4s">SOURCE (MIT): github.com/davidechen135/neurisko</p>
-  <p class="line dim small" style="animation-delay:5s">Built with Kiro · specs, steering, hooks and MCP in .kiro/ · TCS-lite is an original game inspired by Traveller: TCS, not affiliated with it.</p>
+<html lang="en"><head><meta charset="utf-8"><link rel="stylesheet" href="fx.css">
+<style>
+  /* Act V: full circle, back to the sunset, now with the links. */
+  .center { position: absolute; left: 0; right: 0; top: 9%; display: flex; flex-direction: column; align-items: center; gap: 14px; z-index: 3; text-align: center; }
+  .fx-chrome { font-size: 112px; }
+  .a { font: 600 26px/1.3 var(--ui); color: #fff; margin: 0; padding: 4px 14px; border-radius: 8px; background: rgba(12, 2, 30, .55); backdrop-filter: blur(6px); }
+  .b { font: italic 800 34px/1.2 var(--display); color: #7ff6ff; margin: 0; letter-spacing: .04em;
+       text-shadow: 0 0 6px #7ff6ff, 0 0 22px #19c6ff, 0 2px 0 #0a0220; padding: 2px 14px; border-radius: 8px; background: rgba(12, 2, 30, .55); }
+  .links { position: absolute; left: 0; right: 0; bottom: 122px; display: flex; flex-direction: column; align-items: center; gap: 10px; z-index: 3; }
+  .links .fx-pill { font-size: 18px; letter-spacing: .04em; background: rgba(10, 4, 24, .6); }
+  .fine { font: 500 13px/1.3 var(--ui); color: rgba(255,255,255,.7); max-width: 1000px; text-align: center; margin: 4px 0 0; }
+</style></head>
+<body><div class="fx-card fx-synth">
+  <div class="fx-stars"></div><div class="fx-sun"></div><div class="fx-horizon"></div><div class="fx-grid"></div>
+  <div class="center">
+    <p class="fx-chrome fx-step on">NEURISKO</p>
+    <p class="a fx-step" data-s="0">Eurisko found exploits by accident.</p>
+    <p class="b fx-step" data-s="0b">NEURISKO FINDS THEM ON PURPOSE.</p>
+  </div>
+  <div class="links">
+    <span class="fx-pill fx-step" data-s="1">▶ REPLAY · davidechen135.github.io/neurisko</span>
+    <span class="fx-pill fx-step" data-s="1">SOURCE (MIT) · github.com/davidechen135/neurisko</span>
+    <p class="fine fx-step" data-s="1">Built with Kiro · specs, steering, hooks and MCP in .kiro/ · TCS-lite is an original game inspired by Traveller: TCS, not affiliated with it.</p>
+  </div>
 </div></body></html>

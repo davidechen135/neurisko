@@ -1,11 +1,36 @@
 <!doctype html>
-<html lang="en"><head><meta charset="utf-8"><link rel="stylesheet" href="../style.css"><link rel="stylesheet" href="card.css"></head>
-<body class="crt"><div class="screen card">
-  <p class="year">1981</p>
-  <p class="line" style="animation-delay:.5s">ORIGINS '81 · TRAVELLER: TRILLION CREDIT SQUADRON</p>
-  <p class="line" style="animation-delay:4s">WINNER: <span class="amber">EURISKO</span> (D. B. LENAT, STANFORD)</p>
-  <p class="line" style="animation-delay:5.5s">FLEET: 96 SHIPS · 75 OF ONE CLASS</p>
-  <p class="line" style="animation-delay:9s">1982: RULES CHANGED · <span class="amber">EURISKO WINS AGAIN</span></p>
-  <p class="line" style="animation-delay:14s">&gt; HEURISTICS THAT REWRITE HEURISTICS<span class="cursor"></span></p>
-  <p class="line small dim" style="animation-delay:1s">Sources: Wikipedia, “Eurisko”, citing M. Gladwell, The New Yorker (2009) and the Journal of the Travellers' Aid Society #10.</p>
-</div></body></html>
+<html lang="en"><head><meta charset="utf-8"><link rel="stylesheet" href="../style.css"><link rel="stylesheet" href="fx.css">
+<style>
+  /* Act I: a 1981 archive tape. Green phosphor on a VHS deck; ffmpeg adds grain and colour bleed. */
+  body { background: #020502; }
+  .tape { background: radial-gradient(ellipse at 40% 45%, #0a1a0d 0%, #020502 75%); font-family: var(--font); color: #39ff7a; }
+  .body { position: absolute; left: 90px; right: 90px; top: 128px; display: flex; flex-direction: column; gap: 16px; z-index: 3; }
+  .year { font: 700 150px/1 var(--font); letter-spacing: .06em; margin: 0 0 6px -6px;
+          text-shadow: 0 0 10px rgba(57,255,122,.85), 0 0 34px rgba(57,255,122,.45); }
+  .l { font-size: 27px; letter-spacing: .05em; margin: 0; text-shadow: 0 0 6px rgba(57,255,122,.6); }
+  .amber { color: #ffb000; text-shadow: 0 0 8px rgba(255,176,0,.6); }
+  .src { position: absolute; left: 90px; bottom: 96px; right: 90px; font-size: 14px; color: #2bb35a; z-index: 3; }
+  .cursor::after { content: "█"; animation: blink 1s steps(1) infinite; }
+  .counter { position: absolute; left: 44px; bottom: 34px; font: 700 22px/1 Menlo, monospace; color: #eee; z-index: 5;
+             text-shadow: 2px 0 0 rgba(255,0,80,.6), -2px 0 0 rgba(0,200,255,.6); }
+</style></head>
+<body><div class="fx-card tape fx-scan">
+  <div class="fx-vhs-osd"><span class="rec">PLAY</span><span>ARCHIVE&nbsp;·&nbsp;<span class="blink">●</span>&nbsp;1981</span></div>
+  <div class="fx-vhs-band"></div>
+  <div class="body">
+    <p class="year fx-step" data-s="0">1981</p>
+    <p class="l fx-step" data-s="0">ORIGINS '81 · TRAVELLER: TRILLION CREDIT SQUADRON</p>
+    <p class="l fx-step" data-s="0b">WINNER: <span class="amber">EURISKO</span> (D. B. LENAT, STANFORD)</p>
+    <p class="l fx-step" data-s="1">FLEET: 96 SHIPS · 75 OF ONE CLASS</p>
+    <p class="l fx-step" data-s="2">1982: RULES CHANGED · <span class="amber">EURISKO WINS AGAIN</span></p>
+    <p class="l fx-step" data-s="3">&gt; HEURISTICS THAT REWRITE HEURISTICS<span class="cursor"></span></p>
+  </div>
+  <p class="src fx-step on">Sources: Wikipedia, “Eurisko”, citing M. Gladwell, The New Yorker (2009) and the Journal of the Travellers' Aid Society #10.</p>
+  <div class="counter">SP&nbsp;<span id="ctr">0:00:00</span></div>
+</div>
+<script>
+  const t0 = performance.now();
+  setInterval(() => { const s = Math.floor((performance.now() - t0) / 1000);
+    document.getElementById('ctr').textContent = `0:${String(Math.floor(s/60)).padStart(2,'0')}:${String(s%60).padStart(2,'0')}`; }, 250);
+</script>
+</body></html>
